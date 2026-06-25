@@ -5,13 +5,10 @@
     "email": "meet@antiochsolutions.com"
   },
   "description": "Practical Claude Code skills from Antioch Solutions — install only the ones you need.",
-  "metadata": {
-    "pluginRoot": "./plugins"
-  },
   "plugins": [
     {
       "name": "ikigai-discovery",
-      "source": "ikigai-discovery",
+      "source": "./plugins/ikigai-discovery",
       "description": "Guides you through a rigorous, adversarial Ikigai interview to find your reason for being, then produces a polished report.",
       "keywords": ["ikigai", "purpose", "coaching", "career", "self-discovery"]
     }

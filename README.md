@@ -46,7 +46,13 @@ plugins/my-skill/
         └── references/      # optional supporting files, referenced from SKILL.md
 ```
 
-Then add one entry to [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json), run the validator, and commit. Use [`plugins/ikigai-discovery`](plugins/ikigai-discovery) as a template.
+Then add one entry to [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) — the `source` **must** be the explicit `./plugins/<name>` path (a bare name fails to install):
+
+```json
+{ "name": "my-skill", "source": "./plugins/my-skill", "description": "…", "keywords": ["…"] }
+```
+
+Run the validator, and commit. Use [`plugins/ikigai-discovery`](plugins/ikigai-discovery) as a template.
 
 ## Validate
 
