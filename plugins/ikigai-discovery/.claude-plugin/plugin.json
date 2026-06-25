@@ -1,0 +1,12 @@
+{
+  "name": "ikigai-discovery",
+  "description": "Guides you through a rigorous, adversarial Ikigai interview to find your reason for being, then produces a polished report.",
+  "author": {
+    "name": "Antioch Solutions",
+    "email": "meet@antiochsolutions.com"
+  },
+  "homepage": "https://www.antiochsolutions.com/skills",
+  "repository": "https://github.com/AntiochSolutions/claude-skills",
+  "license": "MIT",
+  "keywords": ["ikigai", "purpose", "coaching", "career", "self-discovery"]
+}

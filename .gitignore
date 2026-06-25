@@ -1,0 +1,14 @@
+# Packaged skill bundles — the unpacked skill under plugins/ is canonical
+*.skill
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# Node (skills may ship helper scripts)
+node_modules/
+npm-debug.log*
