@@ -9,7 +9,7 @@
     {
       "name": "ikigai-discovery",
       "source": "./plugins/ikigai-discovery",
-      "description": "Guides you through a rigorous, adversarial Ikigai interview to find your reason for being, then produces a polished report.",
+      "description": "Guides you through a rigorous Ikigai interview to find your reason for being, then produces a polished report.",
       "keywords": ["ikigai", "purpose", "coaching", "career", "self-discovery"]
     },
     {
