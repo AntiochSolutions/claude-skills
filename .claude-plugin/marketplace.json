@@ -17,6 +17,12 @@
       "source": "./plugins/refine-epic",
       "description": "Interactively shape a well-formed Agile Epic through an SME interview — a falsifiable Benefit Hypothesis, measurable Business Outcomes, predictive Leading Indicators, quantified NFRs, and Out-of-Scope — then hand back a structured result and a markdown brief for any backlog tool.",
       "keywords": ["epic", "agile", "safe", "backlog-refinement", "benefit-hypothesis", "business-outcomes", "leading-indicators", "product-management", "lean-startup", "mom-test"]
+    },
+    {
+      "name": "build-a-great-elite-question",
+      "source": "./plugins/build-a-great-elite-question",
+      "description": "Interviews you to turn a real founder situation into a sharp, well-diagnosed question for Dan Martell's Elite group, framed as here / there / bottleneck, and produces a one-page prep sheet.",
+      "keywords": ["dan-martell", "elite", "coaching", "founder", "saas", "question-prep", "hot-seat"]
     }
   ]
 }
