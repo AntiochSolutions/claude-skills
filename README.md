@@ -31,6 +31,7 @@ That installs **only** `ikigai-discovery` — none of the other skills. Install 
 | Skill | Install | What it does |
 |-------|---------|--------------|
 | [`ikigai-discovery`](plugins/ikigai-discovery) | `/plugin install ikigai-discovery@antioch-skills` | Guides you through a rigorous, adversarial Ikigai interview to find your reason for being, then produces a polished report. |
+| [`refine-epic`](plugins/refine-epic) | `/plugin install refine-epic@antioch-skills` | Interviews a business SME to shape a well-formed Agile Epic — falsifiable Benefit Hypothesis, measurable Business Outcomes, predictive Leading Indicators, quantified NFRs, Out-of-Scope — then hands back a structured result and a markdown brief. Tracker-agnostic, no API required. |
 
 ## Add a new skill
 

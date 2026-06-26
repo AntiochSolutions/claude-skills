@@ -1,0 +1,12 @@
+{
+  "name": "refine-epic",
+  "description": "Interactively shape a well-formed Agile Epic definition through an SME interview — falsifiable Benefit Hypothesis, measurable Business Outcomes, predictive Leading Indicators, quantified NFRs, and Out-of-Scope — then hand back a structured result and a markdown brief for any backlog tool.",
+  "author": {
+    "name": "Antioch Solutions",
+    "email": "meet@antiochsolutions.com"
+  },
+  "homepage": "https://www.antiochsolutions.com/skills",
+  "repository": "https://github.com/AntiochSolutions/claude-skills",
+  "license": "MIT",
+  "keywords": ["epic", "agile", "safe", "backlog-refinement", "benefit-hypothesis", "business-outcomes", "leading-indicators", "product-management", "lean-startup", "mom-test", "sme-interview"]
+}
