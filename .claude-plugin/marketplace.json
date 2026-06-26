@@ -21,7 +21,7 @@
     {
       "name": "build-a-great-elite-question",
       "source": "./plugins/build-a-great-elite-question",
-      "description": "Interviews you to turn a real founder situation into a sharp, well-diagnosed question for Dan Martell's Elite group, framed as here / there / bottleneck, and produces a one-page prep sheet.",
+      "description": "Interviews you to turn a real founder situation into a sharp, well-diagnosed question for Dan Martell's Elite group, framed as \"I'm Here\" / \"I want to be there\" / \"My bottleneck is...\", and produces a one-page prep sheet.",
       "keywords": ["dan-martell", "elite", "coaching", "founder", "saas", "question-prep", "hot-seat"]
     }
   ]
