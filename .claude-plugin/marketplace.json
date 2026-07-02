@@ -29,6 +29,12 @@
       "source": "./plugins/decompose-epic",
       "description": "Decomposes a refined Agile Epic into skeleton Features and Stories through an SME interview — Mom-Test behavior mining, KJ affinity clustering, per-feature benefit hypotheses, a two-way outcome coverage gate, and an MVP partition — rendered as a feature map for any backlog tool. Optional Miro card-wall mode. Pairs with refine-epic — run that first on a raw epic.",
       "keywords": ["epic", "features", "user-stories", "decomposition", "story-mapping", "affinity-mapping", "kj-method", "product-management", "agile", "mvp", "sme-interview", "miro"]
+    },
+    {
+      "name": "statusline",
+      "source": "./plugins/statusline",
+      "description": "Installs a two-line Claude Code status line — model + reasoning effort, directory, git branch, session name, a color-coded context-usage bar, session cost and duration, and 5-hour/7-day rate-limit usage. Install the plugin, then say \"set up the status line\" — the skill configures it for your platform (Windows, macOS, or Linux) and verifies it works. Requires Python 3.",
+      "keywords": ["statusline", "status-line", "status-bar", "prompt", "context-usage", "rate-limits", "session-cost", "git-branch", "claude-code", "terminal"]
     }
   ]
 }
