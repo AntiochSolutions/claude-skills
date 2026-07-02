@@ -27,7 +27,7 @@
     {
       "name": "decompose-epic",
       "source": "./plugins/decompose-epic",
-      "description": "Decomposes a refined Agile Epic into skeleton Features and Stories through an SME interview — Mom-Test behavior mining, KJ affinity clustering, per-feature benefit hypotheses, a two-way outcome coverage gate, and an MVP partition — rendered as a feature map for any backlog tool. Optional Miro card-wall mode.",
+      "description": "Decomposes a refined Agile Epic into skeleton Features and Stories through an SME interview — Mom-Test behavior mining, KJ affinity clustering, per-feature benefit hypotheses, a two-way outcome coverage gate, and an MVP partition — rendered as a feature map for any backlog tool. Optional Miro card-wall mode. Pairs with refine-epic — run that first on a raw epic.",
       "keywords": ["epic", "features", "user-stories", "decomposition", "story-mapping", "affinity-mapping", "kj-method", "product-management", "agile", "mvp", "sme-interview", "miro"]
     }
   ]

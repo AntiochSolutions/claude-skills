@@ -70,9 +70,10 @@ kindly, for the behavior and the concrete cost underneath. Never intimidate; nev
   **full flow** below. The epic's **Out-of-Scope becomes the divergence fence**, and its **Leading
   Indicators become the candidate pool** for feature success signals.
 - **Raw / unrefined epic supplied** → the coverage gate can't run without outcomes. **Offer to run
-  `refine-epic` first**, or capture a **minimum chain inline** before decomposing: a falsifiable benefit
-  hypothesis + **≥1 measurable Business Outcome** + **≥1 Leading Indicator**. Don't decompose against a
-  missing chain.
+  `refine-epic` first** — and if that skill isn't installed, offer
+  `/plugin install refine-epic@antioch-skills` — or capture a **minimum chain inline** before
+  decomposing: a falsifiable benefit hypothesis + **≥1 measurable Business Outcome** + **≥1 Leading
+  Indicator**. Don't decompose against a missing chain.
 - **Existing decomposition supplied** (a revisit) → mirror `refine-epic`'s refinement branch. Open with
   **"what do you want to change, and why?"**, work **only that thread**, re-run the coverage gate on
   whatever the change touches, leave the rest untouched, and restate only what actually changed.
