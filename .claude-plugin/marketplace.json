@@ -17,6 +17,12 @@
       "source": "./plugins/refine-epic",
       "description": "Interactively shape a well-formed Agile Epic through an SME interview — a falsifiable Benefit Hypothesis, measurable Business Outcomes, predictive Leading Indicators, quantified NFRs, and Out-of-Scope — then hand back a structured result and a markdown brief for any backlog tool.",
       "keywords": ["epic", "agile", "safe", "backlog-refinement", "benefit-hypothesis", "business-outcomes", "leading-indicators", "product-management", "lean-startup", "mom-test"]
+    },
+    {
+      "name": "decompose-epic",
+      "source": "./plugins/decompose-epic",
+      "description": "Decomposes a refined Agile Epic into skeleton Features and Stories through an SME interview — Mom-Test behavior mining, KJ affinity clustering, per-feature benefit hypotheses, a two-way outcome coverage gate, and an MVP partition — rendered as a story map for any backlog tool. Optional Miro card-wall mode.",
+      "keywords": ["epic", "features", "user-stories", "decomposition", "story-mapping", "affinity-mapping", "kj-method", "product-management", "agile", "mvp", "sme-interview", "miro"]
     }
   ]
 }
