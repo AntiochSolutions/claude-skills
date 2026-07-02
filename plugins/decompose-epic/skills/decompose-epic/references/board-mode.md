@@ -32,8 +32,9 @@ board.
 
 - Detect during phase 2 (Set expectations), before deciding how to phrase the expectations line —
   detection has to happen before the offer, and the offer has to happen before divergence starts.
-- Run one ToolSearch call: `select:layout_get_dsl,layout_create,layout_read,board_create,` +
-  `context_explore`. At runtime these tool names may carry a server prefix (for example
+- Run one ToolSearch call with this query:
+  `select:layout_get_dsl,layout_create,layout_read,board_create,context_explore`
+  At runtime these tool names may carry a server prefix (for example
   `mcp__claude_ai_Miro__layout_create`) — match on the suffix after the last `__`, not the full
   string, since the prefix isn't stable across environments.
 - **If the query returns nothing, Miro isn't connected.** Run the text protocol from
@@ -49,12 +50,13 @@ board.
 - Accept either answer the SME gives for *how*: an existing board URL (inspect it with
   `context_explore` before writing anything, so a fresh session doesn't collide with what's already
   there) or a fresh board made with `board_create`.
-- If declined, drop it — run the text protocol for the rest of the session and don't re-offer.
+- If declined, drop it — run the text protocol for the rest of the session and don't re-offer, and never
+  mention Miro again this session — no asides, no 'what the board would show' comparisons.
 
 ## Tool mechanics
 
-Load all five tools in **one** ToolSearch call, immediately after detection succeeds — don't fetch
-them one at a time:
+The single ToolSearch call from Detection & offer already loaded all five tools; do not issue another.
+Here's what each does:
 
 | Tool | Role |
 | --- | --- |
