@@ -134,17 +134,17 @@ This is `decompose-epic`'s analog of `refine-epic`'s chain validation — the ch
 survive before it is allowed to stand. Run it **both directions**, and repair every break in dialog:
 - **Feature → outcome.** Every feature names the **Business Outcome** it serves and the **Leading
   Indicator** it should move. A feature that answers neither is scope without a why — challenge the
-  orphan, then **park it with the SME's consent**, never silently keep it. "A deliverable supporting no
-  impact is a failure even if it works perfectly" (Adzic).
+  orphan, then **park it with the SME's consent**, never silently keep it — a deliverable supporting no
+  impact is a failure even if it works perfectly.
 - **Outcome → feature.** Every epic **Business Outcome has ≥1 feature moving it**. A gap triggers a
   targeted divergent loop — *"what could move this measure?"* — mining a genuinely new capability, not
-  just a new label on an old one (Gilb).
+  just a new label on an old one.
 - **Sufficiency close.** *"If every one of these landed, would the epic's benefit hypothesis be proven?
-  What's missing?"* (Gothelf).
+  What's missing?"*
 
 Repair breaks **before** you proceed — a box-filled tree with a broken outcome thread is a **failure,
-not a pass**. And treat a decomposition where **everything survives** the sweep untouched as a red flag
-(Cagan): expect at least one parked item, and if nothing got parked, sweep again more skeptically before
+not a pass**. And treat a decomposition where **everything survives** the sweep untouched as a red
+flag — expect at least one parked item, and if nothing got parked, sweep again more skeptically before
 moving on.
 
 ## Optional card-wall mode (Miro)

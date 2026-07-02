@@ -170,8 +170,8 @@ outcome-advanced fallback lenses).
 **Definition:** per settled pile, one thread at a time — assemble the four-slot hypothesis, name
 the success signal, run the five-part linter, ask Hubbard's two questions, route NFRs, type
 enablers/spikes honestly, then go/no-go. Fills `features[].name`, `hypothesis`, `successSignal`,
-`outcomeLink`, `type`, `evidence`, `risk`, and `nfrConstraints`; updates the absorbed capability
-cards' `disposition` to the feature name.
+`outcomeLink`, `type`, `evidence`, `risk`, `nfrConstraints`, and `constraintBlock`; updates the
+absorbed capability cards' `disposition` to the feature name.
 
 **Elicitation move — four-slot hypothesis:** assemble it with the SME, one slot at a time: *"we
 believe [epic outcome] will be achieved if [persona] attains [benefit] with [this]."* Use the

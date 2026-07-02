@@ -1,10 +1,11 @@
 # Board mode — optional Miro card-wall protocol
 
-Companion to `SKILL.md` and `interview-guide.md`. This file implements spec §6a one-to-one: when Miro
-MCP tools are connected and the SME accepts the offer, the interview runs in **card-wall mode** — the
-shared wall from phases 4–5 becomes a real Miro board instead of a numbered text list. Load this file
-at phase 2 whenever Miro tools may be present, to run Detection & offer; if detection fails or the
-SME declines, set it aside — the rest of the session runs on `interview-guide.md` alone.
+Companion to `SKILL.md` and `interview-guide.md`. This file implements the design spec
+one-to-one: when Miro MCP tools are connected and the SME accepts the offer, the interview runs
+in **card-wall mode** — the shared wall from phases 4–5 becomes a real Miro board instead of a
+numbered text list. Load this file at phase 2 whenever Miro tools may be present, to run
+Detection & offer; if detection fails or the SME declines, set it aside — the rest of the session
+runs on `interview-guide.md` alone.
 
 **One skill, two media.** The interview itself — phases, question bank, linters, gates — is identical
 in both modes; only the wall medium changes. Nothing here adds or removes a question, a phase, or a
@@ -30,8 +31,8 @@ board.
 
 ## Detection & offer
 
-- Detect during phase 2 (Set expectations), before deciding how to phrase the expectations line —
-  detection has to happen before the offer, and the offer has to happen before divergence starts.
+- Detect during phase 2 (Set expectations) — detection has to happen before the offer, and the offer
+  has to happen before divergence starts.
 - Run one ToolSearch call with this query:
   `select:layout_get_dsl,layout_create,layout_read,board_create,context_explore`
   At runtime these tool names may carry a server prefix (for example
@@ -39,7 +40,9 @@ board.
   string, since the prefix isn't stable across environments.
 - **If the query returns nothing, Miro isn't connected.** Run the text protocol from
   `interview-guide.md` and never mention Miro — not this session, not as an aside, not later if the
-  SME brings up boards generally. Silence is the correct behavior, not an oversight.
+  SME brings up boards generally. Silence is the correct behavior, not an oversight. Exception: if the
+  SME asks directly whether a board or Miro is in play, answer truthfully in one line — *"Miro isn't
+  connected here, we'll keep working in text"* — and don't re-offer it.
 - If the tools are present, offer card-wall mode as the single phase-2 question — one question, one
   answer, the same discipline as every other turn in this interview. Don't fold it into the
   expectations-setting line itself; ask it on its own turn. Verbatim:

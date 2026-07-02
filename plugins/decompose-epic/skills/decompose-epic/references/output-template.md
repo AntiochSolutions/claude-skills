@@ -149,8 +149,8 @@ ranking of any kind; that decision is a separate, human-owned step.
 ## Depth disclaimer
 
 Stories at this stage are Cards only, checked against Cohn's **I/N/V** bar — Independent, Negotiable,
-Valuable. **E/S/T** — Estimable, Small (verified), Testable — are deliberately deferred to
-`refine-feature`'s Conversation-and-Confirmation pass, which is where real acceptance criteria get
-written. A skeleton story that isn't yet estimable, or doesn't yet carry Given-When-Then, is not a
+Valuable. **E/S/T** — Estimable, Small (verified), Testable — are deliberately deferred to a future
+`refine-feature` skill's Conversation-and-Confirmation pass, which is where real acceptance criteria
+get written. A skeleton story that isn't yet estimable, or doesn't yet carry Given-When-Then, is not a
 defect in this output — it's the format working as designed. Rejecting a skeleton for lacking E/S/T is
 a misread of what this skill promises to deliver.
