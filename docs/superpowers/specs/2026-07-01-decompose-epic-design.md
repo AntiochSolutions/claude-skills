@@ -139,6 +139,9 @@ failure mode of an LLM interviewer — Osborn/IDEO phase-gating).
      one hypothesis (an "and" across personas/benefits/outcomes = two features; identical hypotheses =
      one) · instinct-sized in weeks (days = story, months = split further — Cohn; GWT-shaped acceptance
      criteria = a story, demote it — SAFe/ISPI).
+   - Naming: once the hypothesis and linter agree the pile is a real feature, distill its intent
+     phrase into a linted short noun phrase (`features[].name`); propose 2–3 candidates and let the
+     SME pick.
    - Hubbard's two questions before any size talk: adoption ("who actually uses it, how many, how
      soon?") and kill ("what makes this built-but-unused?").
    - NFR routing (Gilb): each epic NFR's must-level stamps onto every feature as a constraint; an NFR
@@ -235,6 +238,7 @@ gates — is identical in both modes; only the wall medium changes.** All board 
       outcomeLink,      // which epic Business Outcome it serves
       type,             // business | enabler(exploration|architecture|infrastructure|compliance) | spike
       evidence,         // validated | some-evidence | assumption | table-stakes
+      risk,             // the biggest built-but-unused risk, in the SME's words (from the kill question)
       tags,             // mvp | contingent (+ discover-first)
       nfrConstraints,   // stamped must-levels
       stories: [ { card, kind } ]   // kind: walking-skeleton | variation | discovery | placeholder

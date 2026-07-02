@@ -170,8 +170,8 @@ outcome-advanced fallback lenses).
 **Definition:** per settled pile, one thread at a time — assemble the four-slot hypothesis, name
 the success signal, run the five-part linter, ask Hubbard's two questions, route NFRs, type
 enablers/spikes honestly, then go/no-go. Fills `features[].name`, `hypothesis`, `successSignal`,
-`outcomeLink`, `type`, `evidence`, and `nfrConstraints`; updates the absorbed capability cards'
-`disposition` to the feature name.
+`outcomeLink`, `type`, `evidence`, `risk`, and `nfrConstraints`; updates the absorbed capability
+cards' `disposition` to the feature name.
 
 **Elicitation move — four-slot hypothesis:** assemble it with the SME, one slot at a time: *"we
 believe [epic outcome] will be achieved if [persona] attains [benefit] with [this]."* Use the
@@ -194,9 +194,15 @@ of the epic's early-warning signals already cover this, or do we need a new one?
   really a story; months means split it further. If its acceptance criteria would read as
   Given-When-Then, it's a story — demote it.
 
+**Name the feature:** once the hypothesis and linter agree this pile is a real feature, distill its
+intent phrase into a short noun phrase — the feature's `name`. Lint it against the same vague verbs
+capability language gets checked for ("manage," "fast," "easy"); propose 2–3 candidates and let the
+SME pick, never impose one (SME-ratifies-everything).
+
 **Hubbard's two questions, before any size talk:**
 - **Adoption:** *"who actually uses this, how many, how soon?"*
-- **Kill:** *"what would make this built-but-unused?"*
+- **Kill:** *"what would make this built-but-unused?"* The answer is recorded verbatim as
+  `features[].risk` — the SME's own words for the biggest built-but-unused risk.
 
 **NFR routing rule (Gilb) — both halves:** every epic NFR's must-level is a cross-cutting
 constraint, stamped onto every feature unquantified at this stage — it isn't a feature of its own.

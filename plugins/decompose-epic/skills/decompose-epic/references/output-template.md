@@ -27,6 +27,7 @@ the markdown map below are always the artifact of record.
       outcomeLink,      // which epic Business Outcome it serves
       type,             // business | enabler(exploration|architecture|infrastructure|compliance) | spike
       evidence,         // validated | some-evidence | assumption | table-stakes
+      risk,             // the biggest built-but-unused risk, in the SME's words (from the kill question)
       tags,             // mvp | contingent (+ discover-first)
       nfrConstraints,   // stamped must-levels
       stories: [ { card, kind } ]   // kind: walking-skeleton | variation | discovery | placeholder
@@ -111,6 +112,9 @@ The closing coverage-gate line is a real assertion — include it only once the 
 ways in dialog (per `interview-guide.md`): every feature named an outcome and an indicator, every epic
 outcome had a feature moving it, and the sufficiency question was answered. If a link is still open, say
 so instead.
+
+The Portfolio-of-bets table's **Biggest risk** column renders `features[].risk` — the kill-question
+answer captured during Feature formation, in the SME's own words.
 
 ---
 

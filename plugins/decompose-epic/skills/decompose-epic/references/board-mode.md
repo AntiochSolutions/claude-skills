@@ -3,8 +3,8 @@
 Companion to `SKILL.md` and `interview-guide.md`. This file implements spec §6a one-to-one: when Miro
 MCP tools are connected and the SME accepts the offer, the interview runs in **card-wall mode** — the
 shared wall from phases 4–5 becomes a real Miro board instead of a numbered text list. Load this file
-only when card-wall mode is active; every other session runs entirely on `interview-guide.md` and
-never mentions Miro.
+at phase 2 whenever Miro tools may be present, to run Detection & offer; if detection fails or the
+SME declines, set it aside — the rest of the session runs on `interview-guide.md` alone.
 
 **One skill, two media.** The interview itself — phases, question bank, linters, gates — is identical
 in both modes; only the wall medium changes. Nothing here adds or removes a question, a phase, or a
