@@ -52,23 +52,25 @@ Ten parallel research passes over the proposed authority slate plus a gap scan. 
 ## 3. Design decisions (user-confirmed)
 
 | Axis | Decision | Rationale |
-|---|---|---|
+| --- | --- | --- |
 | Scope | **Full recommended shape**: core pipeline + two-way coverage gate + MVP partition + evidence tags | Output becomes an evidence plan, not a wish list; coverage gate is the chain-validation analog |
 | Elicitation | **Behavior mining first**: cast-of-characters → last-time walkthroughs; direct asks only as late fan-out probes | Mom-Test-honest; identical interviewing DNA to refine-epic; capability cards carry evidence tags from birth |
 | Clustering lens | **Journey moments default** (Patton backbone / Torres experience map), role-served and outcome-advanced as fallback lenses | Features read as story-map columns in narrative order; fallbacks cover back-office/technical epics |
 | Story depth | **Depth gradient**: MVP features get 3–7 Cards; contingent features get 1–2 placeholders | DEEP doctrine (Cohn/Pichler); uniform depth is over-breaking rocks early |
+| Canvas | **Optional Miro card-wall mode**: text-only numbered-wall protocol is the universal baseline; if Miro MCP tools are connected, offer board mode (see §6a) | KJ's native medium restored when available (SME drags real cards); the suite's no-API/no-credentials promise preserved for everyone else; one skill, two media — interview logic identical |
 
 ## 4. Architecture & packaging
 
 New plugin mirroring `refine-epic` exactly:
 
-```
+```text
 plugins/decompose-epic/
   .claude-plugin/plugin.json
   skills/decompose-epic/
     SKILL.md                        # principles, phase flow, anti-patterns, ending criteria
     references/interview-guide.md   # question bank, repair moves, linters, jargon translations
     references/output-template.md   # canonical model, markdown map, tracker field-mapping
+    references/board-mode.md        # optional Miro card-wall protocol (§6a); interview-guide stays medium-neutral
 ```
 
 Plus a `marketplace.json` entry (keywords: decompose, features, stories, story-mapping, affinity,
@@ -98,7 +100,7 @@ failure mode of an LLM interviewer — Osborn/IDEO phase-gating).
    bets, not a spec." (Cagan's bets framing.)
 3. **Cast of characters** — role brainstorm, one role per turn. "The user" is banned as a role name;
    push for specific roles and other *systems* (Cohn). Needs/obstacles per key role (Gothelf). Pre-fills
-   every story's "As a <role>" and structurally widens coverage.
+   every story's `As a <role>` and structurally widens coverage.
 4. **Divergent behavior mining** — the longest phase. Per key role: last-time walkthrough
    ("walk me through the last time [role] did this, start to finish — don't skip the boring parts" —
    Fitzpatrick/Torres), harvesting each step, wait, handoff, workaround, and complaint as a
@@ -166,7 +168,7 @@ failure mode of an LLM interviewer — Osborn/IDEO phase-gating).
      SPIDR (Lawrence/Cohn), one riskiest-assumption/discovery story (may be concierge/Wizard-of-Oz/
      smoke-test-shaped, translated inline — Ries).
    - Contingent features: 1–2 coarse placeholders marked "to be detailed later."
-   - Card form: "As a <specific role>, I can <activity>, so that <benefit>" — one goal per card,
+   - Card form: `As a <specific role>, I can <activity>, so that <benefit>` — one goal per card,
      solution-free. Quality bar **I/N/V only**; E/S/T deliberately deferred and the output says so.
    - Sea-level QA: "could one person finish this in one sitting and go away happy?" (Cockburn) —
      smaller is a detail, bigger is a feature.
@@ -176,13 +178,48 @@ failure mode of an LLM interviewer — Osborn/IDEO phase-gating).
     Open Measurements. Commitment close (Fitzpatrick, internal-SME currency): "if only one feature
     could ship in month one, which part of your week should disappear first?" / "who else touches
     this — should I talk to them?" / "anything I should have asked?"
-11. **Output** — emit the canonical model + markdown map per §7.
+11. **Output** — emit the canonical model + markdown map per §7. In board mode, additionally render
+    the final story map on the board (§6a).
+
+## 6a. Optional card-wall mode (Miro)
+
+The KJ method's native medium is a wall of physical cards; the numbered-list protocol in phases 4–5 is
+the text-medium adaptation. When a Miro connection is available, the skill offers to run the wall on a
+real board instead. **One skill, two media: the interview logic — phases, question bank, linters,
+gates — is identical in both modes; only the wall medium changes.** All board mechanics live in
+`references/board-mode.md` so `interview-guide.md` stays medium-neutral.
+
+- **Detection & offer.** During setup (phase 2), detect whether Miro MCP tools are connected (via
+  ToolSearch — verified available: `layout_create` creates sticky notes and frames from a DSL;
+  `layout_read` reads back frame membership after the user rearranges). If present, offer board mode
+  as the phase-2 expectations turn; the user may also supply an existing board URL. If absent or
+  declined, run the text protocol — never mention Miro again.
+- **Source of truth.** The conversation's capability-card state is canonical; the board is a mirror.
+  Before acting on any arrangement, re-read the board (`layout_read`) — never assume it still matches.
+  If Miro calls fail mid-session, say so and continue in text mode with no loss of state.
+- **Divergence (phase 4).** Each capability card is dropped onto the board as a sticky note the moment
+  it's captured — verbatim SME wording, color-coded by source tag (observed-step / workaround /
+  stated-request). The filling wall makes divergence momentum visible ("let's get past ~20 cards"
+  becomes literal). No grouping, no frames yet.
+- **Clustering (phase 5).** Agent creates **unlabeled** frames (Group A, B, C… — KJ's name-last rule
+  holds on the board too) and provisionally sorts stickies into them. Then the drag handoff: *"Drag
+  cards to wherever they belong — make new piles, park misfits between piles — and tell me when
+  you're done."* Agent re-reads the board, diffs frame membership against its last known state, and
+  **reflects every move back in words** ("you moved 'chase missing signatures' into the pile with the
+  dispute items — tell me about that"), which forces the verbal articulation KJ wants. Cards parked
+  between frames are treated as explicit ambiguity signals to resolve in dialog. Naming happens last,
+  by retitling each frame with the SME's intent phrase.
+- **Output (phase 11).** Optionally render the finished story map on the board: feature frames as
+  columns in narrative-flow order, hypothesis + tags in each frame's header area, story stickies
+  beneath (walking-skeleton first), constraint block and parked lot as side frames. The markdown map +
+  structured model are still produced regardless — **the board is a working surface and a visual
+  deliverable, never the artifact of record.**
 
 ## 7. Output
 
 ### Canonical model
 
-```
+```text
 {
   epicRef:          { title, benefitHypothesis, businessOutcomes, leadingIndicators }  // restated
   castOfCharacters: [ { role, needs, obstacles } ]
@@ -241,7 +278,9 @@ real acceptance criteria or Given-When-Then (refine-feature's job) · uniform ex
 add a Capability tier (SAFe Essential rule: too-big clusters split into more features, never a new
 layer) · let every unknown become a spike · decompose alone — every split is ratified by the SME ·
 ask more than one question per turn · finish without the coverage gate, the MVP partition, and the
-SME-confirmed map.
+SME-confirmed map · require Miro or degrade the interview when it's absent · name board frames before
+piles settle · act on a board arrangement without re-reading it first · treat the board as the
+artifact of record (the markdown map + model are always produced).
 
 ## 9. Ending criteria
 
@@ -257,4 +296,5 @@ and answered the commitment close.
 
 Prioritization/sequencing beyond the MVP partition (no WSJF, no ranking) · estimation of any kind ·
 real acceptance criteria and story Conversation/Confirmation (`refine-feature`) · feature-level
-quantification beyond the success-signal line · writing to any tracker API · sprint/PI planning.
+quantification beyond the success-signal line · writing to any backlog-tracker API (the optional Miro
+card wall in §6a is a facilitation surface, not a tracker write-back) · sprint/PI planning.
