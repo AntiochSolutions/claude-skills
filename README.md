@@ -26,6 +26,12 @@ That installs **only** `ikigai-discovery` — none of the other skills. Install 
 
 > `AntiochSolutions/claude-skills` is the GitHub repo you add; `antioch-skills` (the part after `@`) is the marketplace name skills install from.
 
+**Already added the marketplace a while ago?** Claude Code installs from a local copy that doesn't refresh on its own — if a skill listed below comes back "not found", update first:
+
+```text
+/plugin marketplace update antioch-skills
+```
+
 ## Available skills
 
 | Skill | Install | What it does |
