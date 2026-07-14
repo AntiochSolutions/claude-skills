@@ -39,7 +39,7 @@ That installs **only** `ikigai-discovery` — none of the other skills. Install 
 | [`ikigai-discovery`](plugins/ikigai-discovery) | `/plugin install ikigai-discovery@antioch-skills` | Guides you through a rigorous Ikigai interview to find your reason for being, then produces a polished report. |
 | [`refine-epic`](plugins/refine-epic) | `/plugin install refine-epic@antioch-skills` | Interviews a business SME to shape a well-formed Agile Epic — falsifiable Benefit Hypothesis, measurable Business Outcomes, predictive Leading Indicators, quantified NFRs, Out-of-Scope — then hands back a structured result and a markdown brief. Tracker-agnostic, no API required. |
 | [`build-a-great-elite-question`](plugins/build-a-great-elite-question) | `/plugin install build-a-great-elite-question@antioch-skills` | Interviews you to turn a real founder situation into a sharp, well-diagnosed question for Dan Martell's Elite group, framed as "I'm Here" / "I want to be there" / "My bottleneck is...", and produces a one-page prep sheet. |
-| [`decompose-epic`](plugins/decompose-epic) | `/plugin install decompose-epic@antioch-skills` | Decomposes a refined epic into skeleton Features and Stories via an SME interview — behavior mining, affinity clustering, an outcome coverage gate, and an MVP partition — output as a feature map. Optional Miro card-wall mode. Tracker-agnostic, no API required. Pairs with [`refine-epic`](plugins/refine-epic) — run that first on a raw epic. |
+| [`decompose-epic`](plugins/decompose-epic) | `/plugin install decompose-epic@antioch-skills` | Decomposes a refined epic into skeleton Features and Stories via an SME interview — behavior mining, affinity clustering, an outcome coverage gate, and an MVP partition — output as a feature map, optionally materialized as a **backlog store** of markdown files (with a Miro Card mirror). Optional Miro card-wall mode. Tracker-agnostic, no API required. Pairs with [`refine-epic`](plugins/refine-epic) — run that first on a raw epic. |
 | [`statusline`](plugins/statusline) | `/plugin install statusline@antioch-skills` | Installs a two-line Claude Code status line — model + reasoning effort, directory, git branch, session name, a color-coded context bar, cost, duration, and 5h/7d rate-limit usage. After installing, say "set up the status line". Requires Python 3. |
 
 ## Add a new skill
@@ -63,6 +63,14 @@ Then add one entry to [`.claude-plugin/marketplace.json`](.claude-plugin/marketp
 ```
 
 Run the validator, and commit. Use [`plugins/ikigai-discovery`](plugins/ikigai-discovery) as a template.
+
+### Shared reference: `backlog-store.md`
+
+[`plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md`](plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md)
+is the canonical **backlog-store convention** for the epic-shaping suite (refine-epic →
+decompose-epic → refine-feature → refine-story). The refine-feature and refine-story plugins carry
+**verbatim copies** of it (plugins install independently) — when the convention changes, update
+**every copy in the same commit**.
 
 ## Validate
 

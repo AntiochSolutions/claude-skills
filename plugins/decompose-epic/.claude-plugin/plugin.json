@@ -1,6 +1,6 @@
 {
   "name": "decompose-epic",
-  "description": "Decomposes a refined Agile Epic into skeleton Features and skeleton Stories through an SME interview — Mom-Test behavior mining, KJ affinity clustering, per-feature benefit hypotheses, a two-way outcome coverage gate, and an MVP partition. Optional Miro card-wall mode. Tracker-agnostic, no API required.",
+  "description": "Decomposes a refined Agile Epic into skeleton Features and skeleton Stories through an SME interview — Mom-Test behavior mining, KJ affinity clustering, per-feature benefit hypotheses, a two-way outcome coverage gate, and an MVP partition. Can materialize the map as a backlog store of markdown files (optional Miro Card mirror). Optional Miro card-wall mode. Tracker-agnostic, no API required.",
   "author": {
     "name": "Antioch Solutions",
     "email": "meet@antiochsolutions.com"

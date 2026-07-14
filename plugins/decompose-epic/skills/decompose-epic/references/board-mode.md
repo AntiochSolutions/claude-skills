@@ -64,7 +64,7 @@ Here's what each does:
 | Tool | Role |
 | --- | --- |
 | `layout_get_dsl` | Returns the DSL format spec — the prerequisite call, see below. |
-| `layout_create` | Creates frames and sticky notes from DSL text. |
+| `layout_create` | Creates frames, sticky notes, and Cards from DSL text. |
 | `layout_read` | Reads existing board items back as DSL, including each item's parent frame. |
 | `board_create` | Creates a fresh board when the SME doesn't supply one. |
 | `context_explore` | Inspects an existing board the SME hands you before writing to it. |
@@ -140,23 +140,18 @@ Here's what each does:
   `interview-guide.md`'s Affinity clustering), retitle that frame from `Group A` to the intent
   phrase. Never retitle a frame ahead of that conversation.
 
-## Story-map render (phase 11, optional)
+## Story-map mirror (phase 11)
 
-- Optional and additive. Run it only after the canonical model and the markdown map
-  (`output-template.md`) are already finished — the render re-presents what's already final; it
-  doesn't produce anything new.
-- One frame per feature, arranged left-to-right as columns in narrative-flow order — the same order
-  the markdown map's Features section uses.
-- Frame title: feature name plus its tags, e.g. `Faster onboarding — MVP, business`.
-- Inside each frame, a text item holding the feature's hypothesis and success signal — the four-slot
-  hypothesis and the Who-Does-What-By-How-Much line, verbatim from the canonical model.
-- Beneath that, one sticky per story, walking-skeleton story first, then variations, discovery, and
-  placeholders in the order `output-template.md` lists them.
-- Two side frames outside the narrative-flow row: `Cross-cutting constraints` (the NFR constraint
-  block) and `Parked` (parked items with their evidence).
-- Say this to the SME, and mean it: the markdown map and the structured model are produced regardless
-  of whether this render happens. The board render is an optional extra deliverable, never a
-  substitute for either.
+Phase 11's board output is the **Card story-map mirror** defined in `backlog-store.md` — offered
+only after the SME has accepted the backlog-store file write, as its own single question. Everything
+about that render lives in `backlog-store.md` and is followed exactly: **Cards always** (never
+stickies — backlog items are epics/features/stories now, so the Card rule binds them), one frame per
+feature, `<ID> — <title>` Card titles, the state line opening each description, status theme colors,
+and the truncation convention. In a card-wall session, render the mirror in a fresh area of the same
+board unless the SME names another; the divergence stickies from phases 4–5 stay exactly where they
+are — raw capability cards are not backlog items, so the Card rule does not bind them. The mirror is
+a render of the files, never a substitute for them: the store tree, the markdown map, and the
+structured model are the deliverables whether or not a board render happens.
 
 ## Rules recap
 
@@ -168,5 +163,7 @@ Here's what each does:
    force it has in text.
 4. **Never act on an arrangement without re-reading the board first.** Call `layout_read` before
    every diff, every reflection, every claim about what's where.
-5. **The board is never the artifact of record.** The canonical model and the markdown map
-   (`output-template.md`) are what ships; the board is a working surface, always disposable.
+5. **The board is never the artifact of record.** The canonical model, the markdown map
+   (`output-template.md`), and — when the SME accepts the write — the backlog-store files
+   (`backlog-store.md`) are what ships; the board is a working surface or a mirror of the files,
+   always re-renderable.
