@@ -1,6 +1,7 @@
 # Design: Backlog store convention + decompose-epic retrofit (Spec A)
 
-**Date:** 2026-07-07
+**Date:** 2026-07-07 · **Amended:** 2026-07-14 (files-always record, item IDs, parent roll-ups —
+see `2026-07-14-refine-feature-design-review.md`)
 **Status:** Approved by user (design sections confirmed in brainstorming session)
 **Companions:** `2026-07-07-refine-feature-story-design.md` (Spec B — the two skills that consume this
 store); `2026-07-01-decompose-epic-design.md` (the skill being retrofitted)
@@ -11,50 +12,86 @@ store); `2026-07-01-decompose-epic-design.md` (the skill being retrofitted)
 
 The epic-shaping suite (refine-epic → decompose-epic → refine-feature → refine-story) gains a shared
 **backlog store**: a durable system of record where the epic, its features, and their stories live as
-individually addressable artifacts. Two media, chosen per backlog:
+individually addressable artifacts.
 
-- **Markdown medium** — one file per item in a nested directory tree, in the user's own repo.
-- **Miro medium** — one **Card** object per item on a Miro board (user rule: epic, features, and
-  stories are ALWAYS the Card object type — never sticky notes or shapes).
+**The markdown tree is the single system of record — always** (amended 2026-07-14; supersedes the
+original one-medium-per-backlog design). One file per item in a nested directory tree, written in the
+working folder where the skill runs. A **Miro board may additionally mirror** the tree as a Card
+story-map (user rule: epic, features, and stories are ALWAYS the Card object type — never sticky
+notes or shapes), but the board is a render of the files, never the record — the same stance
+decompose-epic's card wall already takes ("the board is only a mirror").
 
-A backlog lives in exactly **one** medium. Cross-medium sync is out of scope for v1 (future work).
-decompose-epic is retrofitted to materialize the store at output; refine-feature and refine-story
-(Spec B) read items from it and update them in place.
+Mirror sync is **one-way, files → board**: a skill writes the files first, then re-renders the Cards
+it touched when a board is attached. Board edits are facilitation input, never read back as record
+state. decompose-epic is retrofitted to materialize the store at output; refine-feature and
+refine-story (Spec B) read items from it and update them in place.
 
-## 2. Markdown medium — the tree
+## 2. The tree (system of record)
 
 ```text
 backlog/
-  <epic-slug>/
+  Epic #01 - Customer Onboarding/
     epic.md
-    features/
-      01-<feature-slug>/
-        feature.md
-        stories/
-          01-<story-slug>.md
-          02-<story-slug>.md
+    Features/
+      Feature #01 - Self-serve signup.md
+      stories for #01 - Self-serve signup/
+        Story #01 - Create account with work email.md
+        Story #02 - Invite a teammate.md
+      Feature #02 - Guided first project.md
+      stories for #02 - Guided first project/
+        Story #03 - Start from a template.md
 ```
 
-- Default root is `./backlog/` in the directory where the skill runs; the user may name another.
-- Numeric prefixes on feature directories and story files carry narrative/walking-skeleton order and
-  match the `order` front-matter field.
-- Slugs are kebab-case, derived from titles, stable once created (renames change `title`, not `id`).
-- The story *list* is never duplicated inside `feature.md` — it is derived from the `stories/`
-  directory (single source of truth).
+- Default root is `./backlog/` in the directory where the skill runs; the user may name another. The
+  root exists so several epics can sit side by side and so ID allocation has a scan boundary.
+- Topology (user-specified 2026-07-14): one **folder per epic** (`Epic #NN - <Title>`) holding
+  `epic.md` and a `Features/` folder; each feature is a **file** (`Feature #NN - <Title>.md`) with a
+  **sibling stories folder** (`stories for #NN - <Feature Title>/`) holding one file per story
+  (`Story #NN - <Story Title>.md`, the story title being its short activity phrase).
+
+### Identifiers (amended 2026-07-14)
+
+- Every item gets a **store-unique, type-prefixed sequential ID** minted at creation: epics
+  `E01, E02, …` · features `F01, F02, …` · stories `S01, S02, …` — zero-padded to two digits
+  (growing naturally to three past 99).
+- Uniqueness is **per backlog root, across all epics in it** (tracker-style): feature numbers do not
+  restart per epic and story numbers do not restart per feature, so a bare `S17` is unambiguous.
+  Allocation: highest existing ID of that type anywhere under the root, plus one.
+- IDs are **permanent** — never reused, never renumbered; parked and superseded items keep theirs.
+- Minted by whichever skill creates the item: decompose-epic at materialization; refine-feature for
+  added/split story Cards; refine-story for peeled children.
+- The ID is the `id` front-matter value, and its number is embedded in the name
+  (`Feature #03 - …` ⇔ `F03`). Names carry the human title verbatim, with characters illegal in
+  filenames replaced by `-` and trailing dots/spaces trimmed. A **retitle renames** the file/folder
+  to match — a feature retitle also renames its stories folder — with the embedded `#NN` keeping
+  identity stable through renames; `order` lives **only** in front-matter, so reordering renames
+  nothing.
+
+### Parent roll-ups (amended 2026-07-14)
+
+Each parent lists its children: the epic file (`epic.md`) carries a `## Features` section and each
+feature file a `## Stories` section — a table of `ID · title · status` (stories show the full Card line), sorted by
+`order`, the feature roll-up marking the nominated first slice. These are **derived views under a
+refresh-on-write contract**: any write-back that creates, parks, supersedes, re-statuses, retitles,
+or reorders a child regenerates the parent's roll-up in the same write-back — and the epic's
+`## Features` row whenever a feature's status or title changes. The child files remain ground truth;
+a skill that detects drift on load repairs the roll-up silently. (Supersedes the original
+never-duplicate-the-story-list rule.)
 
 ### Front-matter schemas
 
 Every file is YAML front-matter (machine state) + markdown body (the human-readable brief). Field
 names use camelCase, matching the suite's canonical models.
 
-**epic.md**
+**`epic.md`** (inside `Epic #NN - <Title>/`)
 
 ```yaml
 ---
-id: <epic-slug>
+id: E01
 type: epic
 title: <business-language title>
 status: refined          # epics arrive refined from refine-epic
+board: <miro-board-url>  # optional — the attached mirror board; absent when none
 ---
 ```
 
@@ -63,13 +100,13 @@ Leading Indicators, NFRs, Out-of-Scope, Open Measurements), plus decompose-epic'
 (Out-of-Scope additions, Open Measurements additions, parked items with evidence, evidence
 checkpoint).
 
-**feature.md**
+**`Features/Feature #NN - <Title>.md`**
 
 ```yaml
 ---
-id: <feature-slug>
+id: F01
 type: feature
-epic: <epic-slug>
+epic: E01                      # parent epic's ID
 title: <short noun phrase>
 order: 1                       # narrative position
 status: skeleton               # skeleton | refined | needs-discovery
@@ -87,16 +124,18 @@ Body sections at skeleton stage (written by decompose-epic, sharpened in place b
 criteria`, `## Dependencies, risks & deferrals`, `## Knowledge-state report` (or `## Discovery brief`
 when it exits that way).
 
-**stories/NN-\<story-slug\>.md**
+**`stories for #NN - <Feature Title>/Story #NN - <Story Title>.md`**
 
 ```yaml
 ---
-id: <story-slug>
+id: S01
 type: story
-feature: <feature-slug>
+feature: F01                   # parent feature's ID
+title: <short activity phrase> # names the file; the Card line below remains the story
 order: 1
-status: skeleton               # skeleton | ready | parked
+status: skeleton               # skeleton | ready | parked | superseded
 kind: walking-skeleton         # walking-skeleton | variation | discovery | placeholder
+tags: []                       # optional — e.g. illustrative (curation-added, SAFe)
 ---
 ```
 
@@ -110,31 +149,38 @@ The Card line itself never fattens (Jeffries: detail is attached, not inlined).
 | Type | Lifecycle | Transitioned by |
 | --- | --- | --- |
 | epic | `refined` (fixed) | refine-epic (outside the store) |
-| feature | `skeleton` → `refined` \| `needs-discovery` | refine-feature |
-| story | `skeleton` → `ready`; any → `parked` | refine-story (`ready`); refine-feature curation (`parked`, new skeletons) |
+| feature | `skeleton` → `refined` \| `needs-discovery`; `needs-discovery` → `refined` (re-entry once the team brings discovery results back) | refine-feature |
+| story | `skeleton` → `ready`; any → `parked`; `parked` → `skeleton` (un-park); any → `superseded` (replaced by split/recombine, children listed in the body) | refine-story (`ready`); refine-feature curation (`parked`, un-park, `superseded`, new skeletons) |
 
-Parked stories keep their file with `status: parked` and a one-line reason appended — scope
-conservation; nothing is silently deleted.
+Parked stories keep their file with `status: parked` and a one-line reason appended; a story replaced
+by a coarse split or a REPAIR recombine keeps its file as `status: superseded` with a
+"Split into S12 · S13"-style line — scope conservation; nothing is silently deleted.
 
-## 3. Miro medium — the Card story-map
+## 3. Miro mirror — the Card story-map (optional)
 
-Same model projected onto a board. **Every epic, feature, and story is a Miro Card object.**
+The same model projected onto a board as a **one-way mirror of the tree** — an optional extra
+surface, never the record. **Every epic, feature, and story is a Miro Card object.**
 
 - **Topology:** the epic Card sits at the top of the map. One **frame per feature**, arranged
   left-to-right in narrative order; each frame holds its feature Card at the top and its story Cards
   beneath in `order` (walking-skeleton first).
-- **Card title** = item title (for stories, the full `As a … I can … so that …` line).
-- **Card description** = the markdown body (same content as the file body in the markdown medium).
+- **Card title** = `<ID> — <item title>` (for stories, `<ID> — As a … I can … so that …`), so board
+  and files cross-reference at a glance.
+- **Card description** = the markdown body (same content as the item's file body).
 - **Card tags** = `status:<value>` plus the front-matter `tags` and `evidence` values (e.g. `mvp`,
-  `assumption`). Tags are the machine-readable state in this medium.
+  `assumption`). Tags are the machine-readable state on the board.
 - **Frame title** = feature `order` + title (frames give skills reliable structure to read back via
   the existing `layout_read` mechanics).
-- Skills address a backlog by **board URL**; item selection is by reading frames and Card tags.
+- The mirror is attached via the epic's `board` front-matter field (or by the user mid-session);
+  skills address the backlog by its **directory path** and re-render only the Cards their write-back
+  touched.
 
-**Known constraint to verify at implementation:** Miro Card descriptions have a length ceiling. The
-convention: if a refined body exceeds the limit, truncate at a section boundary and append the marker
-`[…truncated — full text maintained in conversation output]`; never silently drop content. The
-implementation task must verify the actual limit and behavior.
+**Known constraints to verify at implementation:** (a) Miro Card descriptions have a length ceiling —
+the convention: if a refined body exceeds the limit, truncate at a section boundary and append the
+marker `[…truncated — full text in <item's file path>]`; the file always holds the complete text, so
+truncation never loses content. (b) The Miro MCP toolset must be verified able to **create, read
+back, and tag Card objects** at all — decompose-epic's board mode verified sticky notes and frames
+only, and the ALWAYS-Cards rule is load-bearing for this whole section.
 
 Sticky notes remain the medium for decompose-epic's *divergence wall* (raw capability cards are not
 epics/features/stories, so the Card rule does not bind them). Only persisted backlog items are Cards.
@@ -144,11 +190,14 @@ epics/features/stories, so the Card rule does not bind them). Only persisted bac
 Scope: the interview (phases 1–10) is untouched. Changes:
 
 1. **Output phase (11) — materialize the store.** After the SME confirms the map, the skill offers to
-   write the backlog store: **markdown mode** (ask for the root directory, default `./backlog/`;
-   write the full tree — `epic.md` from the epic input, `feature.md` per feature, one story file per
-   Card) or **Miro Cards mode** (create the Card story-map per §3 on the session's board, or a board
-   the user names). The paste-anywhere markdown feature-map brief remains available in both cases,
-   and remains the only output when the user declines materialization.
+   write the backlog store. Accepting always writes the **markdown tree** (ask for the root
+   directory, default `./backlog/`; mint IDs; create `Epic #NN - <Title>/` with `epic.md` from the
+   epic input — including its `## Features` roll-up — one `Feature #NN - <Title>.md` per feature
+   with its `## Stories` roll-up, and one `Story #NN - <Title>.md` per Card inside the feature's
+   `stories for #NN - <Title>/` folder). When Miro MCP tools are detected, additionally offer the **board mirror** (render the Card
+   story-map per §3 on the session's board or a board the user names, and record it in the epic's
+   `board` field). The paste-anywhere markdown feature-map brief remains available in all cases, and
+   remains the only output when the user declines materialization.
 2. **`references/backlog-store.md`** added to the plugin — the canonical convention text (§2–§3 of
    this spec, rendered as a reference file). This file is duplicated verbatim into the refine-feature
    and refine-story plugins (Spec B), because marketplace plugins install independently; the repo
@@ -156,18 +205,25 @@ Scope: the interview (phases 1–10) is untouched. Changes:
 3. **`references/board-mode.md` update** — the "Story-map render (phase 11, optional)" section is
    replaced by a pointer to the Card materialization in `backlog-store.md`. Divergence/clustering
    sections are untouched.
-4. **SKILL.md phase-11 paragraph** updated to name the two materialization modes.
+4. **SKILL.md phase-11 paragraph** updated to name the tree materialization and the optional board
+   mirror.
 
 ## 5. Item addressing (consumed by Spec B skills)
 
-A skill session opens by locating the backlog: the user gives a directory path (markdown medium) or a
-board URL (Miro medium; offered only when Miro MCP tools are detected — same detection-and-offer
-etiquette as decompose-epic's board mode, including the never-mention-when-absent rule). The skill
-lists candidate items (features with `status: skeleton`/`needs-discovery`, or stories with
-`status: skeleton`, per skill) by title and lets the user pick exactly one per session.
+A skill session opens by locating the backlog: the user gives the store's directory path (the files
+are the record; an attached board mirror is discovered from the epic's `board` field and re-rendered
+after write-back — Miro is only ever mentioned when its MCP tools are detected, same etiquette as
+decompose-epic's board mode). The skill lists **default candidates** by ID and title — features with
+`status: skeleton`/`needs-discovery`, or stories with `status: skeleton`, per skill — and lets the
+user pick exactly one per session. Items past those statuses stay addressable (amended 2026-07-14,
+matching the suite's revisit convention): a `refined` feature or `ready` story may be re-opened as a
+**revisit session** ("what do you want to change, and why?" — work only that thread), and a `parked`
+story may be selected during refine-feature curation to **un-park** (back to `skeleton`, reason
+recorded).
 
 ## 6. Out of scope
 
-Cross-medium sync or migration · retrofitting refine-epic (epics enter the store via decompose-epic) ·
+Two-way board sync (the mirror is strictly files → board; board edits never flow back as record
+state) · retrofitting refine-epic (epics enter the store via decompose-epic) ·
 tracker (Jira/ADO) export beyond the existing field-mapping guidance · validating store integrity as a
 standalone tool · version history inside the store (git / Miro history serve that).
