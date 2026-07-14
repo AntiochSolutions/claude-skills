@@ -167,20 +167,28 @@ surface, never the record. **Every epic, feature, and story is a Miro Card objec
 - **Card title** = `<ID> — <item title>` (for stories, `<ID> — As a … I can … so that …`), so board
   and files cross-reference at a glance.
 - **Card description** = the markdown body (same content as the item's file body).
-- **Card tags** = `status:<value>` plus the front-matter `tags` and `evidence` values (e.g. `mvp`,
-  `assumption`). Tags are the machine-readable state on the board.
+- **Card state** (verified 2026-07-14: the MCP exposes **no tag API** — `tags=` is silently ignored
+  on create and no tag field exists on read-back, so Miro tag objects are NOT used): the first
+  description line carries `status: <value> · tags: <values> · evidence: <value>`, and the Card
+  **theme color** encodes status at a glance — skeleton `#2d9bf0` (blue) · refined/ready `#23c27f`
+  (green) · needs-discovery `#ffa500` (orange) · parked/superseded `#808080` (gray). Both round-trip
+  via `layout_read`/`board_list_items`; since the files are the record, board state is a render, not
+  machine truth.
 - **Frame title** = feature `order` + title (frames give skills reliable structure to read back via
   the existing `layout_read` mechanics).
 - The mirror is attached via the epic's `board` front-matter field (or by the user mid-session);
   skills address the backlog by its **directory path** and re-render only the Cards their write-back
   touched.
 
-**Known constraints to verify at implementation:** (a) Miro Card descriptions have a length ceiling —
-the convention: if a refined body exceeds the limit, truncate at a section boundary and append the
-marker `[…truncated — full text in <item's file path>]`; the file always holds the complete text, so
-truncation never loses content. (b) The Miro MCP toolset must be verified able to **create, read
-back, and tag Card objects** at all — decompose-epic's board mode verified sticky notes and frames
-only, and the ALWAYS-Cards rule is load-bearing for this whole section.
+**Constraints — verified empirically 2026-07-14** (scratch board `uXjVH7116GY=`): (a) Card
+**create and read-back work** via `layout_create` / `layout_read` / `board_list_items` — title,
+`desc`, `theme`, and frame parenting all round-trip, so the ALWAYS-Cards rule is implementable.
+(b) **Tags are NOT available** through the MCP (no tag tools; `tags=` silently dropped on create; no
+tag field on read-back) — hence the state-line + theme-color encoding above. (c) An
+**~8,000-character description was accepted and stored un-truncated** (tail marker verified),
+comfortably above typical refined bodies; the truncation convention remains as a safety net for
+extreme cases — truncate at a section boundary and append
+`[…truncated — full text in <item's file path>]`; the file always holds the complete text.
 
 Sticky notes remain the medium for decompose-epic's *divergence wall* (raw capability cards are not
 epics/features/stories, so the Card rule does not bind them). Only persisted backlog items are Cards.

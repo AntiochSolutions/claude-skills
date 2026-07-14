@@ -92,8 +92,12 @@ Decisions taken while applying them (veto and re-amend if wrong):
 
 ## 3. Remaining pre-build checklist
 
-- [ ] Verify the Miro MCP toolset can **create, read back, and tag Card objects** (only stickies and
-      frames were verified for decompose-epic) and measure the Card-description ceiling (Spec A §3).
+- [x] **Verified 2026-07-14** (scratch board `uXjVH7116GY=`, safe to delete): Cards create and read
+      back via `layout_create`/`layout_read`/`board_list_items` — title, desc, theme color, and
+      frame parenting all round-trip; an ~8k-character description stored un-truncated (tail marker
+      confirmed). **Tags are NOT exposed by the MCP** (`tags=` silently ignored on create; no tag
+      field on read-back; no tag tools) — Spec A §3 now encodes state as a first-line description
+      state line plus a status theme color instead of Miro tag objects.
 - [ ] Second fresh-context review of the amended specs before dispatching the build (this review is
       one pass; the plan-gate protocol wants two).
 - [ ] Build order: Spec A (store + decompose-epic retrofit) first, then refine-feature, then
