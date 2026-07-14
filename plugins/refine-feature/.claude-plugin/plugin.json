@@ -1,0 +1,12 @@
+{
+  "name": "refine-feature",
+  "description": "Takes one skeleton feature from the backlog store to build-ready through an SME interview — four-risks triage (fast lane / full pass / discovery-brief exit), a behavior-change hypothesis, a quantified success signal, dual-test feature acceptance criteria, critical-few NFRs, and shallow story-set curation (add/split/park/repair + first slice). Writes back to the backlog store in place (optional Miro Card mirror). Tracker-agnostic, no API required.",
+  "author": {
+    "name": "Antioch Solutions",
+    "email": "meet@antiochsolutions.com"
+  },
+  "homepage": "https://www.antiochsolutions.com/skills",
+  "repository": "https://github.com/AntiochSolutions/claude-skills",
+  "license": "MIT",
+  "keywords": ["feature", "feature-refinement", "backlog-refinement", "acceptance-criteria", "benefit-hypothesis", "success-signal", "nfr", "story-splitting", "discovery", "product-management", "agile", "safe", "sme-interview", "backlog-store", "miro"]
+}

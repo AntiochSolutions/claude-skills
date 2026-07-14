@@ -31,6 +31,12 @@
       "keywords": ["epic", "features", "user-stories", "decomposition", "story-mapping", "affinity-mapping", "kj-method", "product-management", "agile", "mvp", "sme-interview", "miro"]
     },
     {
+      "name": "refine-feature",
+      "source": "./plugins/refine-feature",
+      "description": "Takes one skeleton feature from the backlog store to build-ready through an SME interview — four-risks triage (fast lane / full pass / discovery-brief exit), a behavior-change hypothesis, a quantified success signal, dual-test feature acceptance criteria, critical-few NFRs, and shallow story-set curation with a nominated first slice. Writes back to the backlog store in place (optional Miro Card mirror). Pairs with decompose-epic — run that first to create the store.",
+      "keywords": ["feature", "feature-refinement", "backlog-refinement", "acceptance-criteria", "benefit-hypothesis", "success-signal", "nfr", "story-splitting", "discovery", "product-management", "agile", "sme-interview", "backlog-store"]
+    },
+    {
       "name": "statusline",
       "source": "./plugins/statusline",
       "description": "Installs a two-line Claude Code status line — model + reasoning effort, directory, git branch, session name, a color-coded context-usage bar, session cost and duration, and 5-hour/7-day rate-limit usage. Install the plugin, then say \"set up the status line\" — the skill configures it for your platform (Windows, macOS, or Linux) and verifies it works. Requires Python 3.",
