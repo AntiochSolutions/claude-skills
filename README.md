@@ -58,6 +58,32 @@ Then **restart Claude Code** — plugin changes apply to new sessions.
   `refine-epic` itself changes — existing epics enter the store whenever `decompose-epic` runs on
   them.
 
+### Migrating an existing epic (and Miro board) into the store
+
+Refined an epic with the original `refine-epic` and kept your working state on a Miro board? The
+sync is strictly **one-way, files → board** — so you materialize the files first, then re-render
+the board in the new Card format. Nothing is converted in place, and the epic itself doesn't need
+re-running.
+
+1. **Upgrade** per the section above, then start Claude Code in the repo/folder where the backlog
+   should live (the store defaults to `./backlog/` there; a git repo gives it history).
+2. **Run `/decompose-epic`** and hand it what exists: paste the original refine-epic brief (or,
+   with Miro connected, give the board URL and let the session read it off the board). No feature
+   decomposition yet → it runs the full interview. Features/stories already sketched → offer them
+   as an *existing decomposition*: the revisit branch asks "what do you want to change, and why?"
+   and re-checks only what's touched.
+3. **Say yes twice at the end:** *"save as a backlog store?"* creates the markdown tree —
+   `Epic #01 - <Title>/`, feature files, story files, permanent `E01/F01/S01` IDs — which is now
+   the system of record; *"render the Card story-map mirror?"* puts the **new Card format** on your
+   board (Card objects only, `F03 — <title>` titles, a status line opening each description, status
+   theme colors), and records the board URL in `epic.md` so future sessions keep it refreshed.
+4. **Old board content stays put** — the mirror is a clean render beside it; keep the old wall as
+   history or archive it by hand.
+
+From then on the files are the truth: every `/refine-feature` and `/refine-story` session updates
+the files and re-renders just the Cards it touched. Edits made directly on the board never flow
+back — by design.
+
 ## Available skills
 
 | Skill | Install | What it does |
