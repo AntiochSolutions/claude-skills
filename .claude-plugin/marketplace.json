@@ -37,6 +37,12 @@
       "keywords": ["feature", "feature-refinement", "backlog-refinement", "acceptance-criteria", "benefit-hypothesis", "success-signal", "nfr", "story-splitting", "discovery", "product-management", "agile", "sme-interview", "backlog-store"]
     },
     {
+      "name": "refine-story",
+      "source": "./plugins/refine-story",
+      "description": "Takes one story Card from the backlog store to ready-for-sprint-planning through an SME interview — a real happy path, Example-Mapping rule/example mining with Break-the-Model refutation, an adaptive Confirmation (checklist by default; example table or Given-When-Then only when the cases demand it), INVEST E/S/T engines with honest splitting, and the Demo-and-Read-Back gate. The Card line never fattens. Writes back to the backlog store in place (optional Miro Card mirror). Pairs with refine-feature — run that on the feature first.",
+      "keywords": ["story", "user-stories", "story-refinement", "backlog-refinement", "acceptance-criteria", "example-mapping", "given-when-then", "invest", "story-splitting", "product-management", "agile", "sme-interview", "backlog-store"]
+    },
+    {
       "name": "statusline",
       "source": "./plugins/statusline",
       "description": "Installs a two-line Claude Code status line — model + reasoning effort, directory, git branch, session name, a color-coded context-usage bar, session cost and duration, and 5-hour/7-day rate-limit usage. Install the plugin, then say \"set up the status line\" — the skill configures it for your platform (Windows, macOS, or Linux) and verifies it works. Requires Python 3.",

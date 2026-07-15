@@ -124,8 +124,9 @@ holding its question bank; pick **exactly one** question per turn and reflect ba
    ("Decide when `<condition>`" + expiry); slow-research questions raised now so answers cook before
    refine-story needs them. Bank: **Dependencies, risks & deferrals**.
 
-Then the gate, then the write-back (`references/output-template.md`), then the knowledge-state
-report — delivered in dialog and confirmed by the SME.
+Then the gate, then the knowledge-state report — drafted in dialog and **confirmed by the SME** —
+then the write-back (`references/output-template.md`), which carries the confirmed report into the
+file. Confirmation before writing means one write, not two.
 
 ## The Benefit-Trace Gate (route-scoped)
 The load-bearing check, run **before** writing back; repair breaks in dialog:

@@ -5,6 +5,10 @@ quality machinery (lint battery, guards, ledger, glossary). Pick **exactly one**
 reflect back before the next, and translate every term of art the moment you use it. Questions are
 stems, not scripts — adapt wording to the SME's own vocabulary, keep the *move* intact.
 
+**The one-question rule applies to stems too:** a stem containing more than one question mark is a
+**sequence of turns** — ask the first, hold the rest. Multi-part stems below are banks of sequential
+moves, never one utterance.
+
 ## Intake & timing guard (phase 0)
 
 - Opening (after the user picks a feature): *"I've got `F03 — <title>` open, with its <N> story
@@ -212,9 +216,10 @@ case?"* Don't delete negotiability; frame it with a boundary.
 - **"Call me when you're done":** mentally append it to the criterion — if you'd be nervous getting
   that call, it needs elaboration.
 
-**Provenance tags** — every number the SME gives: `measured` (points at a source) · `SME-estimate`
-(experienced judgment, no source) · `guess-to-verify` (flagged for instrumentation). Write the tag
-into the artifact next to the number.
+**Provenance tags** — every number that **enters the artifact** carries one: `measured` (points at
+a source) · `SME-estimate` (experienced judgment, no source) · `guess-to-verify` (flagged for
+instrumentation). Numbers that stay conversational stay unwritten — untagged means unwritten, never
+tag-free in the file.
 
 **Jargon translations** (teach inline, one plain sentence, the moment a term is needed):
 - *benefit hypothesis* → "the bet we're making — who changes their behavior, and what we win if

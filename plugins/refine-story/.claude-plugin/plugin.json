@@ -1,0 +1,12 @@
+{
+  "name": "refine-story",
+  "description": "Takes one story Card from the backlog store to ready-for-sprint-planning through an SME interview — a real happy path, Example-Mapping rule/example mining with Break-the-Model refutation, an adaptive Confirmation (checklist by default, example table or Given-When-Then only when the cases demand it), INVEST E/S/T engines with honest splitting, and the Demo-and-Read-Back gate. The Card line never fattens; complexity calibrates depth (no spike exit). Writes back to the backlog store in place (optional Miro Card mirror). Tracker-agnostic, no API required.",
+  "author": {
+    "name": "Antioch Solutions",
+    "email": "meet@antiochsolutions.com"
+  },
+  "homepage": "https://www.antiochsolutions.com/skills",
+  "repository": "https://github.com/AntiochSolutions/claude-skills",
+  "license": "MIT",
+  "keywords": ["story", "user-stories", "story-refinement", "backlog-refinement", "acceptance-criteria", "example-mapping", "given-when-then", "gherkin", "invest", "story-splitting", "three-amigos", "product-management", "agile", "sme-interview", "backlog-store", "miro"]
+}
