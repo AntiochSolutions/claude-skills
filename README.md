@@ -32,6 +32,32 @@ That installs **only** `ikigai-discovery` — none of the other skills. Install 
 /plugin marketplace update antioch-skills
 ```
 
+### Returning users — upgrading to the full epic-shaping suite
+
+Already using `refine-epic`? It's now the first of **four** skills that work a shared backlog:
+**refine-epic → decompose-epic → refine-feature → refine-story**. To get the rest:
+
+```text
+/plugin marketplace update antioch-skills
+
+/plugin install decompose-epic@antioch-skills
+/plugin install refine-feature@antioch-skills
+/plugin install refine-story@antioch-skills
+```
+
+Then **restart Claude Code** — plugin changes apply to new sessions.
+
+- The marketplace update comes **first**, always — without it the new plugins come back "not found".
+- **Already had `decompose-epic` installed?** Update it (a plain re-install won't bump the pinned
+  version): in a terminal, `claude plugin update decompose-epic@antioch-skills` — or use the
+  `/plugin` manager UI. The update teaches it to **materialize the backlog store**.
+- The workflow: `/refine-epic` as before → `/decompose-epic`, which now ends by offering to save
+  the map as a **backlog store** (one markdown file per epic/feature/story — say yes and give it a
+  folder, default `./backlog/`) → `/refine-feature` on one feature at a time → `/refine-story` on
+  one story Card at a time, both picking items straight from that store. Nothing about
+  `refine-epic` itself changes — existing epics enter the store whenever `decompose-epic` runs on
+  them.
+
 ## Available skills
 
 | Skill | Install | What it does |
