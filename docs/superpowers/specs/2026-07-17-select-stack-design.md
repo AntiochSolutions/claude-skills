@@ -31,6 +31,10 @@ Design pillars (each grounded in the research brief's findings):
   maintainer of record is a coding agent.
 - **Agent-actionable output.** The stack brief is written to be *obeyed* by a build agent:
   short, imperative, negative space named explicitly, wired into the project's CLAUDE.md.
+- **Non-negotiable engineering floor.** Six practices ship in every stack without
+  variation (QA/PROD environments, scripted infrastructure, API-first with managed
+  keys, gated PROD promotion, strict TDD — §4), and a **portability rule** keeps every
+  service Azure-movable so the Tier-2 escalation never requires re-tooling.
 
 Scope: web apps. One stack decision per epic. The skill writes markdown only — no code,
 no scaffolding, no account creation. Tracker-agnostic; no API needed at interview time
@@ -72,8 +76,13 @@ downstream act (a Claude Code build session).
 - Load epic.md + all feature files + all story files for the chosen epic (multi-epic
   roots: ask which epic).
 - **Maturity check:** prefer stores whose MVP features are `status: refined` and stories
-  `ready`. Skeleton-only stores proceed with a stated confidence note ("more confirming
-  questions ahead") — refinement depth changes confirmation burden, not eligibility.
+  `ready`. Any maturity proceeds — refinement depth changes confirmation burden, not
+  eligibility. On a skeleton-heavy store the skill says so up front ("more confirming
+  questions ahead"), every STACK.md gains a **confidence appendix** listing which demand
+  signals were *derived from refined content* vs. *assumed from skeletons or defaults*
+  (including absent NFRs, §5), and when confidence is low the read-back recommends
+  running refine-feature/refine-story on the MVP items before starting the build
+  session.
 - **Revisit branch:** if epic front-matter already has `stack:` (or STACK.md exists),
   ask what changed and why; supersede the old file (`status: superseded` + pointer line,
   the store's supersede idiom); re-derive only what's touched.
@@ -139,21 +148,54 @@ the builder's instincts is itself a reliability feature, and the founder-facing 
 says so.
 
 | Layer | House default | Named not-to-use (Hold) |
-|---|---|---|
+| --- | --- | --- |
 | Framework | Next.js 16.x, App Router, single monolith repo | Pages Router, CRA, Remix, microservices, API gateways |
 | Language | TypeScript 5, Node 20+ | — |
 | UI | Tailwind v4 (CSS-first config) + shadcn/ui | tailwind.config.js (v3 idiom), CSS-in-JS |
-| Database | PostgreSQL: Supabase (when bundling auth/storage/realtime helps) or Neon (bare DB, scale-to-zero); **pooled connection string unconditional** | MongoDB, DynamoDB, Firebase RTDB as primary store; any vector/graph/KV primary |
+| API layer | API-first (non-negotiable, below): OpenAPI-compliant routes, Swagger page, app-managed API keys | UI-only capabilities; undocumented endpoints |
+| Database | PostgreSQL: Supabase or Neon **strictly as managed Postgres** (portability rule, below); **pooled connection string unconditional** | MongoDB, DynamoDB, Firebase RTDB as primary store; any vector/graph/KV primary; Supabase Auth/Realtime/Storage |
 | ORM | Drizzle | Prisma (sanctioned alternative only — named so the agent doesn't dither) |
-| Auth | Better Auth (open-source, no per-MAU bill); Supabase Auth if Supabase selected; **never hand-rolled** | NextAuth/Auth.js on new builds; hand-written password/session code |
+| Auth | Better Auth (open-source, no per-MAU bill, runs anywhere); **never hand-rolled** | NextAuth/Auth.js on new builds; hand-written password/session code; platform-bound auth (Supabase Auth) |
+| Realtime/signaling | Portable layer, only when triggered: Pusher/Ably (pub-sub), PartyKit/Durable Objects (presence) | Supabase Realtime (platform-bound) |
 | Background jobs | Inngest (in-stack by default — Vercel Cron is fire-and-forget, no retries; nearly every backlog with notifications/reminders trips durable jobs) | Celery, hand-rolled Redis queues |
 | Email | Resend (+ React Email) | SendGrid free tier (no longer exists) |
-| Payments | Stripe Checkout + Billing | — (merchant-of-record is a swap, not a default) |
-| File storage | Supabase Storage (with Supabase) or Cloudflare R2 (zero egress) | Vercel Blob as primary; S3 for founders (AWS account overhead) |
+| Payments | Stripe Checkout + Billing, routed through the product-classification rule (§5) | — |
+| File storage | Cloudflare R2 (zero egress, S3-compatible, platform-independent) | Vercel Blob as primary; Supabase Storage (platform-bound); S3 for founders (AWS account overhead) |
 | State/data fetch | Zustand + TanStack Query | Redux for new builds |
-| Hosting | Vercel | Kubernetes, Docker Swarm, Terraform, self-managed VMs |
+| Hosting | Vercel (Azure is the Tier-2 escalation target, below) | Kubernetes, Docker Swarm, self-managed VMs, click-ops (unscripted) infrastructure |
 | Quality | Vitest + Playwright, ESLint, GitHub Actions | — |
 | Observability | Sentry, client + server, wired before first deploy | — |
+
+**Portability rule:** every service in the stack must survive a hosting move to Azure with
+no re-tooling. Supabase/Neon is therefore used *only* as managed Postgres (a Tier-2 move
+is a `pg_dump` and a redeploy); auth is a portable library (Better Auth), realtime is a
+portable service, storage is S3-compatible R2. Platform-bound conveniences (Supabase
+Auth/Realtime/Storage, Vercel Blob) are Hold-listed for exactly this reason.
+
+### Non-negotiables
+
+Every STACK.md carries these without variation, regardless of demand profile or founder
+preference — presented in phase 4 as "included, not optional":
+
+1. **Two environments, QA and PROD** — as two fully isolated projects (separate app
+   deployment + separate database). Every artifact, including infrastructure, is built in
+   QA first. QA may run free tiers (pause/sleep quirks don't matter there); PROD runs the
+   paid tiers.
+2. **All infrastructure is scripted** and lives in the GitHub repo alongside the app code
+   (IaC scripts on the default stack; Bicep on Azure). No click-ops.
+3. **API-first**: anything possible via the UI is possible via the API. The API is
+   OpenAPI/Swagger compliant, and a Swagger page is emitted for every API, secured by
+   API key.
+4. **App-managed API keys**: the application emits, stores, and revokes API keys; the API
+   layer authenticates with them.
+5. **PROD promotion only on explicit user authorization** — implemented as a GitHub
+   Actions environment gate with required approval, not as prose.
+6. **Strict TDD** during the build: Red-Green-Refactor, written into KICKOFF.md's build
+   rules.
+
+Founder-half honesty note: API-first, key management, and a QA environment add real scope
+to an MVP; the cost table shows QA at ~$0 (free tiers) and the founder half states the
+scope cost plainly rather than hiding it.
 
 **No-veto items** (presented as "included, not optional"; founders never ask for them and
 their absence is invisible until it hurts):
@@ -177,13 +219,14 @@ is added. Count *services* (each = a bill, a dashboard, a failure mode), not jus
 libraries. Buying undifferentiated capabilities (Stripe, managed auth, Resend) is not a
 token spend; each *additional novel* service is.
 
-### Swap rules — graduated three tiers
+### Swap rules — two tiers
 
 Every swap names: trigger → swap → cost of swapping. A swap fires only on a **cited
 trigger** (story/feature ID, NFR line, or constraint answer). Default response to any
-demand signal: solve it with the house stack first.
+demand signal: solve it with the house stack first. There is no replatform tier — the
+portability rule plus the Azure escalation covers every case that used to require one.
 
-**Tier 1 — Additive (house stack stays):**
+**Tier 1 — Additive & settings (house stack stays):**
 
 - AI is the *product* (real ML workloads, Python-native libs) → add a Python FastAPI
   sidecar service; AI as a *feature* stays TS + Vercel AI SDK (streaming chat,
@@ -193,36 +236,42 @@ demand signal: solve it with the house stack first.
   the trigger is presence/fan-out semantics, not the word "real-time."
 - Mobile-app-later → Turborepo monorepo with Expo sharing non-UI TS code. This *keeps*
   the house stack — it is an argument for TS/React, not against.
-- Selling internationally without accounting support → merchant-of-record (Paddle /
-  Lemon Squeezy, ~5%+50¢) instead of raw Stripe; the trigger is "who remits sales tax,"
-  a constraint answer, not a technical signal.
+- Merchant-of-record (Paddle / Lemon Squeezy, ~5%+50¢) instead of raw Stripe — routed
+  through the **product-classification rule** (§5): what is being sold determines
+  whether tax processing is worth buying at all.
 - Heavy/long background compute beyond Inngest steps → Trigger.dev (noting its
   DB-exposure requirement) or the Python sidecar.
-
-**Tier 2 — Plan/tier (same vendors, bigger tier):**
-
-- HIPAA → Vercel Pro + self-serve BAA (available since Sept 2025) + a BAA from *every*
-  vendor touching PHI (Supabase Team + HIPAA add-on, or Neon Scale). HIPAA no longer
-  forces off Vercel; it forces a BAA chain.
 - p95 ≤ 200–300ms with intermittent traffic → disable DB scale-to-zero / always-on
-  compute (serverless PG cold start measured ~1.8s median).
+  compute (serverless PG cold start measured ~1.8s median). A setting, not a move.
 - RPO ≤ 1h → PITR add-on (~$100/mo — priced to the founder as an NFR line item);
-  RPO ≤ 24h is covered by Pro-tier daily backups.
-- "EU data region" → region pick at project creation, recorded in the scaffold commands
-  (region is effectively immutable). Costs nothing; not a replatform.
+  RPO ≤ 24h is covered by paid-tier daily backups.
+- "Data in region X" (when the vendor offers the region) → region pick at project
+  creation, recorded in the scaffold commands (region is effectively immutable).
 
-**Tier 3 — Replatform (rare, real, expensive):**
+**Tier 2 — Azure escalation (hosting + database move; nothing else re-tools):**
 
-- Strict EU **sovereignty** (no US-parent provider; Schrems II reading) → EU PaaS
-  (Scalingo / Clever Cloud class). The one compliance trigger that genuinely leaves
-  Vercel.
-- A real Ruby or PHP **maintainer exists** (a person, named, who will actually maintain
-  it) → Rails 8 / Laravel wholesale, with the kickoff prompt pointing the agent at the
-  framework's own agent guidance (llms.txt, Laravel Boost).
-- Sustained hosting bill > ~$300/mo → Hetzner + Coolify class self-hosting (documented
-  97% cost cuts; below that threshold the self-hosting ops tax exceeds the savings).
-- Contractual SLA or ≥ 99.99% availability → Enterprise-tier hosting / multi-region.
-  Below that: no self-serve tier sells an SLA at all — STACK.md says so plainly.
+Triggers — any one of:
+
+- Compliance requiring a BAA chain or formal audit posture (HIPAA, SOC 2 pressure from
+  enterprise customers).
+- Data residency or sovereignty: Canada, EU, or any region/sovereignty demand the
+  default vendors can't satisfy — Azure has full multi-region support including Canada
+  and EU regions.
+- A contractual SLA or ≥ 99.99% availability, or genuine multi-region — no self-serve
+  tier on the default stack sells an SLA at all (STACK.md says so plainly).
+- Sustained hosting cost > ~$300/mo on the default stack.
+- The founder wants or qualifies for **Microsoft for Startups Founders Hub credits**
+  (~$1,000–5,000 of Azure credit) — checked during the phase-3 accounts walk.
+
+The move: Vercel → Azure App Service or Container Apps; Supabase/Neon → Azure Database
+for PostgreSQL (a `pg_dump` migration — the portability rule's payoff); infrastructure
+scripts in Bicep; region pinned at creation. Everything else carries over unchanged:
+Better Auth, Drizzle, R2, Resend, Stripe, Inngest, the portable realtime layer, Sentry,
+GitHub Actions, and both non-negotiable environments.
+
+Cost of swapping: more setup than Vercel's zero-config path, no preview-deploy DX, and
+Next.js hosting is second-class relative to Vercel — offset early by the founder
+credits. The founder half prices Azure with credits applied.
 
 **Swap discipline (McKinley):** founder budget is **0–1 innovation tokens**, spendable
 only on the core differentiator cited to the epic's Benefit Hypothesis. The interview
@@ -257,9 +306,10 @@ Tiers:
   approval lead time — injects a timeline question into phase 3**), realtime layer,
   model APIs (per-token — flagged in budget), Inngest beyond included tier.
 - **(c) Architecture-bending — must be settled before scaffold** (retrofit is expensive):
-  offline **writes**/sync engine, i18n route structure, public API (challenge it — rarely
-  genuine in an MVP), live collaboration. These get an explicit decision in phase 2 even
-  if the founder wants to defer.
+  offline **writes**/sync engine, i18n route structure, a partner/developer API program
+  (beyond the built-in API-first baseline: outbound webhooks, per-customer rate limits,
+  versioning guarantees — challenge it, rarely genuine in an MVP), live collaboration.
+  These get an explicit decision in phase 2 even if the founder wants to defer.
 
 Signal inventory (full table in the reference; headline rows):
 
@@ -268,7 +318,15 @@ Signal inventory (full table in the reference; headline rows):
 - **Instrumentation (structural):** Leading Indicators, Open Measurements, Meter lines →
   analytics/event capture is a build requirement even with no dashboard story.
 - **Payments:** pay/subscribe/plan/invoice/refund/trial → Stripe + webhook endpoint +
-  idempotent fulfillment (Inngest); international + no accountant → MoR swap.
+  idempotent fulfillment (Inngest), routed through the **product-classification rule**:
+  first ask *what is being sold* — SaaS subscription, digital product, professional
+  services, or physical goods. Then discuss the business implications honestly:
+  professional services are generally not sales-taxable; SaaS taxability varies by US
+  state and by country; digital products are widely taxed. The choice presented is
+  merchant-of-record (Paddle/Lemon Squeezy — they remit tax, ~5%+50¢) vs. Stripe +
+  Stripe Tax (cheaper, tax filing stays the founder's problem) vs. plain Stripe (right
+  for non-taxable services). Classification first, tax-burden-vs-cost second,
+  recommendation third.
 - **Uploads:** upload/attach/photo/document/import → presigned direct-to-bucket;
   download-heavy → R2 (zero egress).
 - **Search:** find vs **search-as-you-type** → tsvector vs Meilisearch/Typesense; the
@@ -276,8 +334,9 @@ Signal inventory (full table in the reference; headline rows):
 - **Notifications:** notify/remind/alert → Resend default; **"text them"** → SMS branch
   with cost + lead-time injection; push → PWA/web-push.
 - **Real-time:** live/instantly/without refreshing → verification question ("live" vs
-  "fresh"): polling → nothing; live data → Supabase Realtime/Pusher; presence/co-editing
-  → tier-1 collaboration swap.
+  "fresh"): polling → nothing; live data → portable pub-sub layer (Pusher/Ably);
+  presence/co-editing → tier-1 collaboration swap. Never Supabase Realtime (portability
+  rule).
 - **Reporting:** download/report/chart → CSV streaming (trivial), PDF → background job,
   dashboards → SQL + Recharts; no BI tools at founder scale.
 - **AI features:** suggest/summarize/draft/chatbot/extract → Vercel AI SDK + model API
@@ -285,6 +344,9 @@ Signal inventory (full table in the reference; headline rows):
 - **Integrations:** compatibility NFR + ## Dependencies + "syncs with X" → inbound
   webhooks via Inngest (signature verification, idempotency); OAuth-based sync flagged
   as a scope multiplier.
+- **API consumers:** "our customers' developers" / "other tools pull data" → the
+  API-first baseline already exists (non-negotiable); this signal only adds the partner
+  program extras from tier (c).
 - **i18n:** in-Spanish/multi-language → next-intl + [locale] routing scaffolded day one;
   distinguish translation from mere currency/date formatting.
 - **Offline/PWA:** in-the-field/without-signal/syncs-later → three escalating tiers;
@@ -299,18 +361,26 @@ link, manual onboarding) get a "no-code-yet" annotation offered in phase 2.
 
 ### NFR threshold table (from epic.md's quantified NFRs)
 
-| NFR | Changes nothing when | Forces a tier/setting when | Forces replatform when |
-|---|---|---|---|
+| NFR | Changes nothing when | Forces a setting when | Forces Azure (Tier 2) when |
+| --- | --- | --- | --- |
 | Availability | ≤ 99.9% aspirational | — | contractual SLA or ≥ 99.99% |
-| Latency | p95 ≥ 500ms | p95 ≤ 200–300ms intermittent → always-on DB | p95 ≤ 100ms global → edge/multi-region path |
+| Latency | p95 ≥ 500ms | p95 ≤ 200–300ms intermittent → always-on DB | p95 ≤ 100ms globally → multi-region |
 | Scale | ≤ ~1,000 concurrent (≈ ≤ 700 RPS) | sustained beyond → DB compute sizing | — |
 | RPO | ≤ 24h (daily backups) | ≤ 1h → PITR (+~$100/mo) | — |
 | RTO | — | any stated minutes → challenge; nothing self-serve guarantees it | — |
-| Residency | EU region pick | — | EU sovereignty |
+| Residency | vendor offers the region | — | Canada/EU/sovereignty beyond vendor regions |
 
 The uptime disambiguation question ("promised in a contract, or a hope?") is mandatory
 whenever the epic carries an availability NFR. Pooling is unconditional, not
 threshold-gated — the real ceiling is Postgres connections under serverless, not RPS.
+
+**NFRs absent from the store:** never a blocker. The skill applies the founder-scale
+defaults (the "changes nothing" column: ≤ 99.9% aspirational, p95 ≥ 500ms, RPO 24h) and
+asks only the 1–2 threshold questions the demand profile makes load-bearing (uptime
+contract-or-hope if customers are promised anything; recovery tolerance if the app holds
+business-critical data). STACK.md then carries an **assumptions block** — "no NFRs were
+recorded; this stack assumes X/Y/Z — re-run refine-epic to firm these up" — and the gaps
+appear in the confidence appendix (§7).
 
 ## 6. Interview flow (`interview-guide.md`)
 
@@ -339,27 +409,36 @@ accounting).
 budget mid (after value is established — GPCTBA order):
 
 1. **Accounts** — per-asset walk, past tense: "Where's the domain registered? Any email
-   on it? Any Google/Stripe/AWS/hosting account already billing you?" An existing
-   account can decide layers (Supabase account → Supabase flavor; Stripe → payments).
-2. **Budget** — anchor then brackets: state the landscape ("apps like this run $0–5/mo
-   as a demo, ~$35/mo in production, $100+/mo when everything's paid"), then pick-one
-   brackets. Separately the **hard cap**: "What's the absolute maximum this may cost per
-   month before we should turn it off? Give me a number." → becomes the spend cap.
+   on it? Any Google/Microsoft/Stripe/AWS/hosting account already billing you? Is the
+   company incorporated?" An existing account can decide layers (Stripe → payments;
+   a Microsoft relationship or an incorporated startup → check **Microsoft for Startups
+   Founders Hub** eligibility, which arms the Azure Tier-2 credits trigger).
+2. **Business** — when the payments signal fired: the **product-classification
+   question** ("what exactly is being sold — a subscription to software, a digital
+   product, your professional services, physical goods?") followed by the
+   tax-processing-vs-cost discussion (§5). Then **budget** — anchor then brackets:
+   state the landscape ("apps like this run $0–5/mo as a demo, ~$35/mo in production,
+   $100+/mo when everything's paid"), then pick-one brackets. Separately the **hard
+   cap**: "What's the absolute maximum this may cost per month before we should turn it
+   off? Give me a number." → becomes the spend cap.
 3. **Scale** — honest 12-month users ("your honest number, not the pitch-deck number");
    busiest-single-moment concurrent users; uptime contract-or-hope disambiguation.
 4. **Operations** — who maintains after launch; who gets the 2am error email (→ Sentry
    target); timeline + injected lead-time items; compliance asked concretely ("any
-   users in the EU + a lawyer telling you data must stay there?"; "health data?").
+   users in the EU or Canada + a lawyer telling you data must stay there?"; "health
+   data?") — compliance answers arm the Azure Tier-2 triggers.
 
 **Phase 4 — Recommend, layer by layer.** Per layer: conclusion first in outcome
 language, one analogy max; house default **plus the named not-triggered swap** ("we'd
 only move to Railway if the backlog had long-running jobs — it doesn't, per the
 profile") — never a single-option ultimatum; bounded veto: *keep / take the named swap /
-name a constraint I missed*. Triggered swaps show citation + tier + token cost. No-veto
-items presented as included. Running cost table accumulates; NFR-forced costs itemized
-with a keep-or-relax choice ("1-hour recovery adds ~$100/mo — keep or relax the NFR?").
-Layer order: shape+framework → database → auth → services (payments/email/storage/jobs/
-realtime/AI) → hosting → quality+observability.
+name a constraint I missed*. Triggered swaps show citation + tier + token cost. The
+no-veto items and the six non-negotiables are presented as included, not optional.
+Running cost table accumulates; NFR-forced costs itemized with a keep-or-relax choice
+("1-hour recovery adds ~$100/mo — keep or relax the NFR?"); when Azure fires, pricing
+shows founder credits applied. Layer order: shape+framework+API → database → auth →
+services (payments/email/storage/jobs/realtime/AI) → hosting+environments →
+quality+observability.
 
 **Phase 5 — Write & read back.** Write STACK.md + KICKOFF.md (§7); set `stack:` in
 epic.md front-matter (only epic-file touch). Closing read-back: the stack in three
@@ -387,6 +466,11 @@ re-run phase 4 for affected layers and rewrite artifacts whole).
   deliberately; no provider-abstraction layers will be built" stated outright.
 - The boring-technology rationale in one paragraph, including that boring stacks are
   what the AI builder builds most reliably.
+- The **confidence appendix**: which demand signals were derived from refined content
+  vs. assumed from skeletons or defaults, plus the assumptions block when NFRs were
+  absent (§5) and the recommendation to refine before building when confidence is low.
+- The non-negotiables restated in founder language, with the scope-cost honesty note
+  (API-first + keys + QA environment add real build scope; QA runs ~$0 on free tiers).
 
 **Agent half** (the part that must be obeyed):
 
@@ -404,6 +488,11 @@ re-run phase 4 for affected layers and rewrite artifacts whole).
   before first deploy with alert target, spend cap setup step with the founder's
   number, region in the create commands, verification loop (typecheck, Vitest, ESLint,
   build) wired so the agent can self-verify.
+- The six non-negotiables as imperative rules: QA + PROD as two isolated projects with
+  everything built in QA first; all infrastructure scripted and committed to the GitHub
+  repo; API-first with OpenAPI compliance, an emitted Swagger page, and app-managed API
+  keys; PROD promotion only via the approval-gated GitHub Actions environment; strict
+  TDD (Red-Green-Refactor) throughout the build.
 - One-line rationale kept on rules (rationale helps compliance; descriptive filler
   hurts). `IMPORTANT`/`YOU MUST` on only the 3–5 build-breaking rules.
 - Category bans with escape conditions: "no Kubernetes / microservices / MongoDB /
@@ -424,14 +513,18 @@ session in the repo. It says, in order:
 
 1. Read `<epic folder>/STACK.md` and the backlog store; enter plan mode; produce a
    milestone plan for approval. Never "build the app."
-2. Milestone 1 is the **walking skeleton**: scaffold per STACK.md's commands, then the
-   store's nominated first-slice story, deployed and runnable end-to-end.
+2. Milestone 1 is the **walking skeleton**: scaffold per STACK.md's commands, stand up
+   the QA environment + the scripted infrastructure + the approval-gated
+   promotion pipeline, then the store's nominated first-slice story — deployed and
+   runnable end-to-end *in QA*. Wire the CLAUDE.md import here too.
 3. Then dependency-first story order from the backlog. "No orphaned code — every step
-   integrates into the previous one."
+   integrates into the previous one." Build strictly TDD: Red-Green-Refactor, test
+   first, every story.
 4. Every milestone ends with the named checks run for **evidence** (test output, build
-   exit code, screenshot), and an adversarial review of the diff against STACK.md + the
-   story's acceptance criteria before the slice counts as done. Wire the CLAUDE.md
-   import in milestone 1.
+   exit code, screenshot, the Swagger page rendering for any new API surface), and an
+   adversarial review of the diff against STACK.md + the story's acceptance criteria
+   before the slice counts as done. Deploys land in QA; promotion to PROD happens only
+   when the user authorizes it through the gate.
 
 Body of file: the milestone scaffolding the build session reads — milestone table
 (walking skeleton first, then ordered stories with IDs), the verification loop
@@ -464,6 +557,12 @@ scaffolder-emitted agent files.
   (and, for non-negotiables, without offering the enforcement snippet).
 - **Quoting stale facts as current.** Pricing/version claims without the as-of stamp or
   runtime re-verification.
+- **Negotiating the non-negotiables.** Dropping the QA environment, API-first, TDD, the
+  promotion gate, or scripted infrastructure because the founder (or the layer's cost
+  table) pushes back — they're the floor, not options.
+- **Platform-bound convenience.** Reaching for a vendor's bundled auth/realtime/storage
+  because it's one click closer — every such pick breaks the portability rule and
+  re-tools the Azure path.
 
 ## 9. Ending criteria & testing
 
@@ -476,7 +575,8 @@ Testing (build-phase verification, sibling pattern):
 - Tabletop transcripts: a mature store (refined features, ready stories, rich NFRs) and
   a skeleton-only store, walked through all phases (0–5); a revisit-branch walkthrough.
 - Artifact lint: emitted STACK.md agent half under the line budget; front-matter fields
-  complete; kickoff prompt self-contained (names files, scope, verification).
+  complete; all six non-negotiables present in the agent half and KICKOFF.md; kickoff
+  prompt self-contained (names files, scope, verification).
 - Seam check: all four `backlog-store.md` copies byte-identical in the same commit;
   `stack:` field documented in the convention section of every copy.
 - Marketplace validation: `node scripts/validate-marketplace.mjs` + `claude plugin
