@@ -216,10 +216,10 @@ front-matter field, and makes house-stack.md show up in Task 8's `validatedAsOf`
 ```bash
 grep -n '^## ' plugins/select-stack/skills/select-stack/references/house-stack.md
 grep -c 'Tier 2 — Azure escalation' plugins/select-stack/skills/select-stack/references/house-stack.md
-! grep -qiE 'tier[ -]?3' plugins/select-stack/skills/select-stack/references/house-stack.md
+! grep -qiE 'tier[ -]?3' plugins/select-stack/skills/select-stack/references/house-stack.md; echo "EXIT:$?"
 ```
 
-Expected: the nine `##` sections listed in Interfaces, in order; then ≥ 1; then exit 0 (the file never contains "Tier 3" in any casing/hyphenation — write "no replatform tier").
+Expected: the nine `##` sections listed in Interfaces, in order; then ≥ 1; then `EXIT:0` (the file never contains "Tier 3" in any casing/hyphenation — write "no replatform tier").
 
 - [ ] **Step 3: Commit**
 
@@ -433,7 +433,7 @@ git commit -m "feat: add select-stack output templates (STACK.md, KICKOFF.md, wi
   1. New row in the Available skills table, after the `refine-story` row:
 
 ```markdown
-| [`select-stack`](plugins/select-stack) | `/plugin install select-stack@antioch-skills` | Interviews a non-technical founder to select the tech stack a Claude Code instance will build — derives the app's demands from the backlog store (every signal cited), asks only founder-level constraint questions, applies a researched house stack with an Azure escalation tier and six non-negotiables (QA+PROD, scripted infra, API-first, gated releases, TDD), and writes STACK.md + KICKOFF.md into the epic folder. Pairs with [`decompose-epic`](plugins/decompose-epic) — run that first to create the store. |
+| [`select-stack`](plugins/select-stack) | `/plugin install select-stack@antioch-skills` | Interviews a non-technical founder to select the tech stack a Claude Code instance will build — derives the app's demands from the backlog store (every signal cited), asks only founder-level constraint questions, applies a researched house stack with an Azure escalation tier and six non-negotiables (QA+PROD, scripted infra, API-first, managed API keys, gated releases, TDD), and writes STACK.md + KICKOFF.md into the epic folder. Pairs with [`decompose-epic`](plugins/decompose-epic) — run that first to create the store. |
 ```
 
   2. "Returning users" section: change "first of **four** skills" to "first of **five** skills", extend the chain to "refine-epic → decompose-epic → refine-feature → refine-story → select-stack", add `/plugin install select-stack@antioch-skills` to the install block, and append to the workflow sentence: "→ `/select-stack` once the store exists, to choose the tech stack and generate the build kickoff."
@@ -474,9 +474,9 @@ git commit -m "feat: register select-stack in marketplace and README"
 for p in 'Phase 0 — Intake' 'Phase 1 — Derive the demand profile' 'Phase 2 — Confirm the demand profile' 'Phase 3 — Constraint interview' 'Phase 4 — Recommend, layer by layer' 'Phase 5 — Write & read back'; do
   grep -c "$p" plugins/select-stack/skills/select-stack/SKILL.md plugins/select-stack/skills/select-stack/references/interview-guide.md
 done | grep ':0' && echo 'FAIL: a phase name is missing from a file above' || echo 'OK: all six phase names present in both files'
-# "Tier 3" appears nowhere in the plugin, any casing/hyphenation (expect exit 0 —
+# "Tier 3" appears nowhere in the plugin, any casing/hyphenation (must print EXIT:0 —
 # docs say "no replatform tier"/"no third tier"; escalation ladders use "levels"):
-! grep -rqiE 'tier[ -]?3' plugins/select-stack/
+! grep -rqiE 'tier[ -]?3' plugins/select-stack/; echo "EXIT:$?"
 # Non-negotiable tokens present in all three carriers (each printed count >= 1):
 grep -c 'Red-Green-Refactor' plugins/select-stack/skills/select-stack/SKILL.md plugins/select-stack/skills/select-stack/references/house-stack.md plugins/select-stack/skills/select-stack/references/output-template.md
 grep -c 'API-first' plugins/select-stack/skills/select-stack/SKILL.md plugins/select-stack/skills/select-stack/references/house-stack.md plugins/select-stack/skills/select-stack/references/output-template.md
