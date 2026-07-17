@@ -26,7 +26,7 @@
 - Portability rule: Supabase/Neon strictly as managed Postgres; Better Auth for auth; Pusher/Ably/PartyKit for realtime; Cloudflare R2 for storage — a Tier-2 Azure move must require zero re-tooling. Supabase Auth/Realtime/Storage and Vercel Blob are Hold-listed.
 - Emitted-STACK.md rule (lives in output-template.md): agent half under 200 lines, ~30–60 imperative rules, hardest constraints first, `IMPORTANT` on only 3–5 rules.
 - Interview caps: whole session ≤ ~20 founder questions; Phase 3 is ~8–12; one question per turn; multiple choice preferred.
-- House-stack stamp: `Validated as of: 2026-07`; pricing facts carry inline as-of dates and a runtime re-verification instruction.
+- House-stack stamp: the literal token `validatedAsOf: 2026-07` (matching the emitted STACK.md front-matter field); pricing facts carry inline as-of dates and a runtime re-verification instruction.
 - The four `backlog-store.md` copies (decompose-epic, refine-feature, refine-story, select-stack) MUST be byte-identical after every task that touches any of them.
 - Every commit message ends with this trailer (the `git commit -m` blocks in tasks show the subject line only — append the trailer when executing): `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`
 
@@ -51,7 +51,11 @@
   - Keep-in-sync note (lines ~8–10): change "duplicated verbatim into the refine-feature and refine-story plugins" to "duplicated verbatim into the refine-feature, refine-story, and select-stack plugins".
   - Tree example (`## The tree`, lines ~14–26): add two lines under the epic folder, directly after `epic.md`: `    STACK.md` and `    KICKOFF.md`, each with a trailing comment `# optional — stack decision (select-stack)` / `# optional — build bootstrap (select-stack)`.
   - epic.md schema block (`## Front-matter schemas`, `board:` line ~97): add directly below the `board:` line: `stack: STACK.md             # optional — the epic's stack decision file; omit when none`.
-  - Status-lifecycles table (lines ~149–153): add a row: `| stack | \`decided\` (revised in place on re-selection) | select-stack |`.
+  - Status-lifecycles table (lines ~149–153): add exactly this row (shown fenced so the backticks are unambiguous):
+
+```text
+| stack | `decided` (revised in place on re-selection) | select-stack |
+```
 
 - [ ] **Step 2b: Insert the new section** into the canonical copy, placed after the `## Status lifecycles` section (ends ~line 157) and before `## Miro mirror` (~line 159) — heading level `##` matches the file:
 
@@ -87,12 +91,12 @@ cp plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plug
 cp plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/select-stack/skills/select-stack/references/backlog-store.md
 ```
 
-- [ ] **Step 4: Verify byte-identity across all four copies (each command: NO output, exit 0):**
+- [ ] **Step 4: Verify byte-identity across all four copies** — each command must print `EXIT:0`. NOTE: on this Windows repo git prints `warning: ... LF will be replaced by CRLF ...` lines to **stderr** on every run — those warnings are NOT diff output, do NOT indicate failure, and must NOT be "fixed" (no line-ending renormalization, no `.gitattributes`); only the exit code matters:
 
 ```bash
-git diff --no-index plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/refine-feature/skills/refine-feature/references/backlog-store.md
-git diff --no-index plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/refine-story/skills/refine-story/references/backlog-store.md
-git diff --no-index plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/select-stack/skills/select-stack/references/backlog-store.md
+git diff --no-index --quiet plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/refine-feature/skills/refine-feature/references/backlog-store.md; echo "EXIT:$?"
+git diff --no-index --quiet plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/refine-story/skills/refine-story/references/backlog-store.md; echo "EXIT:$?"
+git diff --no-index --quiet plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/select-stack/skills/select-stack/references/backlog-store.md; echo "EXIT:$?"
 ```
 
 (No validator run in this task — `scripts/validate-marketplace.mjs` never reads `references/` files, so it cannot fail from anything this task changes; byte-identity is the live gate here.)
@@ -138,22 +142,21 @@ git commit -m "docs: extend backlog-store convention with stack decision artifac
 ```yaml
 ---
 name: select-stack
-description: "Use when a backlog store (from decompose-epic) needs a technology-stack decision before a Claude Code build session — interviews a non-technical founder to select the stack, deriving functional demands from the epic, features, and stories themselves (every signal cited) and asking only founder-level constraint questions (existing accounts, budget, honest scale, operations, compliance). Produces STACK.md (plain-language rationale + agent-actionable build rules) and KICKOFF.md (staged, TDD-first build bootstrap) in the epic folder. Use after decompose-epic — and ideally refine-feature/refine-story — and before starting the build session. Triggers: tech stack, stack selection, what should Claude build this with, architecture for founders, STACK.md, kickoff prompt."
+description: "Use when a backlog store (from decompose-epic) needs a technology-stack decision before a Claude Code build session — interviews a non-technical founder to select the stack, deriving functional demands from the epic, features, and stories themselves (every signal cited) and asking only founder-level constraint questions (existing accounts, budget, honest scale, timeline, operations, compliance). Produces STACK.md (plain-language rationale + agent-actionable build rules) and KICKOFF.md (staged, TDD-first build bootstrap) in the epic folder. Use after decompose-epic — and ideally refine-feature/refine-story — and before starting the build session. Triggers: tech stack, stack selection, what should Claude build this with, architecture for founders, STACK.md, kickoff prompt."
 user-invocable: true
 ---
 ```
 
-Body sections, in order, following the sibling SKILL.md section pattern (overview, process, gates, references, anti-patterns, ending criteria); the announce line is the superpowers announce idiom, not copied from a sibling:
+Body sections, in order, following the sibling SKILL.md section pattern (overview, process, gates, references, anti-patterns, ending criteria — no announce line; siblings carry none):
 
-1. **Announce at start:** "Using select-stack to choose the technical stack for `<epic>` from its backlog store."
-2. **Overview** — 2 short paragraphs from spec §1, covering all five pillars: fifth suite member; house stack + swap rules (double consensus); demand-profile-first (founder never gets asked a framework question); boring-technology discipline (0–1 innovation tokens, LLM-familiarity as the boring criterion); agent-actionable output; non-negotiable engineering floor + portability rule.
-3. **Hard requirements** — backlog store required (no store → explain the suite order, offer decompose-epic, stop); web apps; one stack decision per epic; skill writes markdown only (no code, no scaffolding, no accounts).
-4. **Process** — the six phases by exact name (Global Constraints), one paragraph each summarizing spec §6, each ending with which reference to load: Phase 0 → backlog-store.md; Phase 1 → demand-signals.md + house-stack.md; Phase 2 → demand-signals.md (verification questions); Phase 3 → interview-guide.md; Phase 4 → house-stack.md (layer order, veto script); Phase 5 → output-template.md. Include the revisit branch (existing `stack:` field → what changed and why → revise STACK.md in place with a dated revision note → re-run affected phases only).
-5. **Non-negotiables & no-veto items** — the six non-negotiables and two no-veto items listed verbatim from Global Constraints, with: "presented as included, not optional — never offered for veto."
-6. **Interview rules** — one question per turn; multiple choice preferred; ≤ ~20 founder questions total; Mom-Test form (past tense, behavior-anchored); plain language, jargon translated on first use.
-7. **References table** — the five files with one-line purpose each.
-8. **Anti-patterns** — the ten from spec §8, one line each: asking the founder a framework question; the quiz; single-option ultimatum; sizing for the pitch deck; free-tier production; unpriced NFRs; trusting prose to bind the builder; quoting stale facts as current; negotiating the non-negotiables; platform-bound convenience.
-9. **Ending criteria** — spec §9 list: demand profile confirmed (tier-c settled), four constraint areas answered, every layer decided, token ledger closed, artifacts written and linked, read-back delivered.
+1. **Overview** — 2 short paragraphs from spec §1, covering all five pillars: fifth suite member; house stack + swap rules (double consensus); demand-profile-first (founder never gets asked a framework question); boring-technology discipline (0–1 innovation tokens, LLM-familiarity as the boring criterion); agent-actionable output; non-negotiable engineering floor + portability rule.
+2. **Hard requirements** — backlog store required (no store → explain the suite order, offer decompose-epic, stop); web apps; one stack decision per epic; skill writes markdown only (no code, no scaffolding, no accounts).
+3. **Process** — the six phases by exact name (Global Constraints), one paragraph each summarizing spec §6, each ending with which reference to load: Phase 0 → backlog-store.md; Phase 1 → demand-signals.md + house-stack.md; Phase 2 → demand-signals.md (verification questions); Phase 3 → interview-guide.md; Phase 4 → house-stack.md (layer order, veto script); Phase 5 → output-template.md. Include the revisit branch (existing `stack:` field → what changed and why → revise STACK.md in place with a dated revision note → re-run affected phases only).
+4. **Non-negotiables & no-veto items** — the six non-negotiables and two no-veto items listed verbatim from Global Constraints, with: "presented as included, not optional — never offered for veto."
+5. **Interview rules** — one question per turn; multiple choice preferred; ≤ ~20 founder questions total; Mom-Test form (past tense, behavior-anchored); plain language, jargon translated on first use.
+6. **References table** — the five files with one-line purpose each.
+7. **Anti-patterns** — the ten from spec §8, one line each: asking the founder a framework question; the quiz; single-option ultimatum; sizing for the pitch deck; free-tier production; unpriced NFRs; trusting prose to bind the builder; quoting stale facts as current; negotiating the non-negotiables; platform-bound convenience.
+8. **Ending criteria** — spec §9 list: demand profile confirmed (tier-c settled), four constraint areas answered, every layer decided, token ledger closed, artifacts written and linked, read-back delivered.
 
 - [ ] **Step 3: Verify structure:**
 
@@ -164,7 +167,7 @@ grep -c 'Phase 0 — Intake' plugins/select-stack/skills/select-stack/SKILL.md
 grep -c 'references/house-stack.md' plugins/select-stack/skills/select-stack/SKILL.md
 ```
 
-Expected: exactly 8 body sections (Overview, Hard requirements, Process, Non-negotiables & no-veto items, Interview rules, References, Anti-patterns, Ending criteria — the announce line sits above the first `##`); then exactly 1; then ≥ 1; then ≥ 1.
+Expected: exactly 8 body sections (Overview, Hard requirements, Process, Non-negotiables & no-veto items, Interview rules, References, Anti-patterns, Ending criteria); then exactly 1; then ≥ 1; then ≥ 1.
 
 - [ ] **Step 4: Commit**
 
@@ -182,7 +185,7 @@ git commit -m "feat: scaffold select-stack plugin with SKILL.md flow controller"
 
 **Interfaces:**
 - Consumes: spec §4 (whole section — the house-stack table, portability rule, non-negotiables, no-veto items, pricing stance, radical-simplicity rule, swap tiers, token discipline, drift protection).
-- Produces: the NINE section names Phase 4 routing depends on, in order: `## The house stack`, `## Portability rule`, `## Non-negotiables`, `## No-veto items`, `## Pricing stance`, `## Radical simplicity`, `## Swap rules`, `## Innovation-token discipline`, `## Drift protection`. Tier names per Global Constraints.
+- Produces: the stamp block (above all sections) plus the NINE section names Phase 4 routing depends on, in order: `## The house stack`, `## Portability rule`, `## Non-negotiables`, `## No-veto items`, `## Pricing stance`, `## Radical simplicity`, `## Swap rules`, `## Innovation-token discipline`, `## Drift protection`. Tier names per Global Constraints. Non-negotiable 5 renders with GC's "approval-gated" wording (now also spec §4's wording — the Task 8 grep depends on the token).
 
 - [ ] **Step 1: Write the file** with this structure and content (spec §4 is the source; transcribe its table and lists faithfully):
 
@@ -470,7 +473,7 @@ git commit -m "feat: register select-stack in marketplace and README"
 # 0 anywhere is a failure):
 for p in 'Phase 0 — Intake' 'Phase 1 — Derive the demand profile' 'Phase 2 — Confirm the demand profile' 'Phase 3 — Constraint interview' 'Phase 4 — Recommend, layer by layer' 'Phase 5 — Write & read back'; do
   grep -c "$p" plugins/select-stack/skills/select-stack/SKILL.md plugins/select-stack/skills/select-stack/references/interview-guide.md
-done
+done | grep ':0' && echo 'FAIL: a phase name is missing from a file above' || echo 'OK: all six phase names present in both files'
 # "Tier 3" appears nowhere in the plugin, any casing/hyphenation (expect exit 0 —
 # docs say "no replatform tier"/"no third tier"; escalation ladders use "levels"):
 ! grep -rqiE 'tier[ -]?3' plugins/select-stack/
@@ -482,19 +485,19 @@ grep -c 'approval-gated' plugins/select-stack/skills/select-stack/SKILL.md plugi
 # Portability rule: Supabase platform services only ever in Hold/never contexts —
 # this one is manual: read every printed line and confirm it is a prohibition:
 grep -rn 'Supabase Auth\|Supabase Realtime\|Supabase Storage' plugins/select-stack/
-# Artifact front-matter fields present where expected (output-template.md and the
-# backlog-store.md copy must both appear in these hits):
+# Artifact front-matter fields present where expected (house-stack.md,
+# output-template.md, and the backlog-store.md copy must ALL THREE appear):
 grep -rln 'validatedAsOf' plugins/select-stack/
 ```
 
-- [ ] **Step 2: Read SKILL.md end to end** against spec §§4, 6, 8, 9 — confirm every phase routes to an existing reference file, the ending criteria match, and SKILL.md's non-negotiables section lists ALL SIX from Global Constraints (the token greps in Step 1 only witness three of them — QA+PROD, scripted infrastructure, and gated promotion need this by-eye check). Also open output-template.md and confirm ALL SIX non-negotiables appear in BOTH templates: the STACK.md agent-half rules AND the KICKOFF.md content (file-level greps cannot tell the halves apart). Fix inline if not.
+- [ ] **Step 2: Read SKILL.md end to end** against spec §§4, 6, 8, 9 — confirm every phase routes to an existing reference file, the ending criteria match, and SKILL.md's non-negotiables section lists ALL SIX from Global Constraints (the Step 1 token greps witness four — API-first, API keys, TDD, and the approval-gated promotion; QA+PROD and scripted infrastructure need this by-eye check). Also open output-template.md and confirm ALL SIX non-negotiables appear in BOTH templates: the STACK.md agent-half rules AND the KICKOFF.md content (file-level greps cannot tell the halves apart). Fix inline if not.
 
-- [ ] **Step 3: Byte-identity across all four backlog-store.md copies** (each command: NO output, exit 0):
+- [ ] **Step 3: Byte-identity across all four backlog-store.md copies** — each command must print `EXIT:0`. Git's `LF will be replaced by CRLF` stderr warnings are NOT failures and must not be "fixed"; only the exit code matters:
 
 ```bash
-git diff --no-index plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/refine-feature/skills/refine-feature/references/backlog-store.md
-git diff --no-index plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/refine-story/skills/refine-story/references/backlog-store.md
-git diff --no-index plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/select-stack/skills/select-stack/references/backlog-store.md
+git diff --no-index --quiet plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/refine-feature/skills/refine-feature/references/backlog-store.md; echo "EXIT:$?"
+git diff --no-index --quiet plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/refine-story/skills/refine-story/references/backlog-store.md; echo "EXIT:$?"
+git diff --no-index --quiet plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/select-stack/skills/select-stack/references/backlog-store.md; echo "EXIT:$?"
 ```
 
 - [ ] **Step 3b: Tabletop walkthrough (spec §9).** In the session scratchpad (NOT the repo), materialize a minimal fixture store **exactly per `plugins/select-stack/skills/select-stack/references/backlog-store.md`'s schemas — the shapes decompose-epic and refine-feature/refine-story would emit**, including: the tree naming grammar (`Epic #01 - <Title>/epic.md`, `Features/Feature #01 - <Title>.md`, `stories for #01 - <title>/Story #NN - <title>.md`); epic.md with full front-matter and body sections (Description, Benefit Hypothesis, Business Outcomes, Leading Indicators, one quantified NFR, Open Measurements, `## Features` roll-up last); one `tags: [mvp]` feature with `status: refined` and a Meter line; three stories (`kind: walking-skeleton` + two variations — decompose-epic's invariant gives MVP features 3–7 Cards) with `status: ready`, real-role Card lines, one mentioning "members pay dues"; roll-ups with a `First slice:` line. Then walk Phases 0–5 on paper against the shipped docs, checking at each phase: the reference file named by SKILL.md exists and contains the moves that phase needs; the structural signals (role census, instrumentation from Leading Indicators/Meter) derive; the payments signal routes through the product-classification rule; the NFR hits the threshold table; Phase 4's layer order and veto script are present; Phase 5's templates cover every field the walkthrough produced, including the read-back script. **Then draft the sample artifacts the walkthrough implies** — the fixture's STACK.md agent half and KICKOFF.md — and lint them per spec §9: agent half under 200 lines and roughly 30–60 rules, front-matter fields complete, all six non-negotiables present in the agent half AND in KICKOFF.md, kickoff prompt self-contained (names files, scope, verification). Repeat the walkthrough abbreviated for (a) a skeleton-only store — features and stories `status: skeleton`, no NFR section, epic stays `status: refined` (the convention fixes epic status; a skeleton epic is a shape no upstream skill emits) — exercising the confidence appendix + NFR-absent fallback, and (b) an epic that already has `stack:` (revisit branch: revise in place, dated revision micro-ADR). Fix any doc gap found, inline.

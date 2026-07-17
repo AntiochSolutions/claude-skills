@@ -191,8 +191,8 @@ preference — presented in phase 4 as "included, not optional":
    API key.
 4. **App-managed API keys**: the application emits, stores, and revokes API keys; the API
    layer authenticates with them.
-5. **PROD promotion only on explicit user authorization** — implemented as a GitHub
-   Actions environment gate with required approval, not as prose.
+5. **PROD promotion only on explicit user authorization** — implemented as an
+   approval-gated GitHub Actions environment, not as prose.
 6. **Strict TDD** during the build: Red-Green-Refactor, written into KICKOFF.md's build
    rules.
 
@@ -352,9 +352,10 @@ Signal inventory (full table in the reference; headline rows):
   program extras from tier (c).
 - **i18n:** in-Spanish/multi-language → next-intl + [locale] routing scaffolded day one;
   distinguish translation from mere currency/date formatting.
-- **Offline/PWA:** in-the-field/without-signal/syncs-later → three escalating tiers;
-  offline *writes* is the most architecture-bending signal in the taxonomy; "usable on
-  phone" alone = responsive design, not PWA.
+- **Offline/PWA:** in-the-field/without-signal/syncs-later → three escalating levels
+  (installable shell / offline reads / offline writes); offline *writes* is the most
+  architecture-bending signal in the taxonomy; "usable on phone" alone = responsive
+  design, not PWA.
 
 Scoping rules: derive from `tags: [mvp]` features only; contingent features are noted as
 "stack must not preclude" but never sized for. Numbers are weighted by provenance tags.
