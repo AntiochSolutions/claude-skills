@@ -198,12 +198,13 @@ name). Work it in this order:
 - **Keywords:** `suggest`, `summarize`, `summary`, `draft`, `chatbot`, `chat`, `extract`, `recommend`, `generate`, `AI`, `search by meaning`, `semantic`, `smart`.
 - **Implication:** AI **as a feature** → **Vercel AI SDK** (streaming chat, `generateObject`
   extraction) + a **model-API cost line** (per-token — flagged in budget). "search by
-  meaning" → **pgvector RAG** (reuse the one Postgres, under ~10M vectors). AI **as the
-  product** (real ML workloads, Python-native libs, cited to the Benefit Hypothesis) → a
-  **Python FastAPI sidecar** — a high-threshold tier-1 swap and the one place an innovation
-  token may be spent.
-- **Tier:** (a) pgvector RAG covered by the house stack; (b) service-addition for model APIs;
-  (c) architecture-bending only when AI is the product (the sidecar).
+  meaning" → **pgvector RAG** (reuse the one Postgres, under ~10M vectors). AI as the
+  *product* triggers the high-threshold `Tier 1 — Additive & settings` sidecar swap (see
+  `house-stack.md`) — settle it against the epic's Benefit Hypothesis before spending an
+  innovation token.
+- **Tier:** (a) pgvector RAG covered by the house stack; (b) service-addition for model APIs
+  (per-token cost line) — including when AI is the product, which additionally triggers the
+  `Tier 1 — Additive & settings` sidecar swap (see `house-stack.md`).
 - **Verification question:** none — but classify feature-vs-product against the Benefit
   Hypothesis before spending a token.
 

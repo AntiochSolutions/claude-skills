@@ -24,7 +24,7 @@ to any demand signal: **solve it with the house stack first.**
 | Realtime/signaling | Portable layer, only when triggered: Pusher/Ably (pub-sub), PartyKit/Durable Objects (presence) | Supabase Realtime (platform-bound) |
 | Background jobs | Inngest (in-stack by default — Vercel Cron is fire-and-forget, no retries; nearly every backlog with notifications/reminders trips durable jobs) | Celery, hand-rolled Redis queues |
 | Email | Resend (+ React Email) | SendGrid free tier (no longer exists) |
-| Payments | Stripe Checkout + Billing, routed through the product-classification rule (§5) | — |
+| Payments | Stripe Checkout + Billing, routed through the product-classification rule (see `demand-signals.md`) | — |
 | File storage | Cloudflare R2 (zero egress, S3-compatible, platform-independent) | Vercel Blob as primary; Supabase Storage (platform-bound); S3 for founders (AWS account overhead) |
 | State/data fetch | Zustand + TanStack Query | Redux for new builds |
 | Hosting | Vercel (Azure is the Tier 2 escalation target, below) | Kubernetes, Docker Swarm, self-managed VMs, click-ops (unscripted) infrastructure |
@@ -130,8 +130,8 @@ House stack stays; a swap adds a service or flips a setting:
 - **Mobile-app-later** → Turborepo monorepo with Expo sharing non-UI TS code. This *keeps*
   the house stack — it is an argument for TS/React, not against.
 - **Merchant-of-record** (Paddle / Lemon Squeezy, ~5%+50¢ (†)) instead of raw Stripe —
-  routed through the **product-classification rule** (§5): what is being sold determines
-  whether tax processing is worth buying at all.
+  routed through the **product-classification rule** (see `demand-signals.md`): what is
+  being sold determines whether tax processing is worth buying at all.
 - **Heavy/long background compute** beyond Inngest steps → Trigger.dev (noting its
   DB-exposure requirement) or the Python sidecar.
 - **p95 ≤ 200–300ms with intermittent traffic** → disable DB scale-to-zero / always-on

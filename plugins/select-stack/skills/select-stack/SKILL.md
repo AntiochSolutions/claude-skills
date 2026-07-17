@@ -98,7 +98,8 @@ show pricing with founder credits applied. Layer order: shape+framework+API → 
 services (payments/email/storage/jobs/realtime/AI) → hosting+environments → quality+observability.
 Load `references/house-stack.md` for the layer table and the two-tier swap rules —
 `Tier 1 — Additive & settings` and `Tier 2 — Azure escalation` (there is no replatform tier) —
-plus the veto script.
+and `references/interview-guide.md`'s Phase 4 section for the veto script and per-layer
+presentation.
 
 **Phase 5 — Write & read back.** Write STACK.md + KICKOFF.md into the epic folder; set
 `stack: STACK.md` in `epic.md` front-matter (the only epic-file touch — all other fields and the
@@ -172,7 +173,7 @@ Do NOT:
 
 - **Ask the founder a framework question.** Any question naming a technology the founder didn't say
   first is a fail — constraints in, recommendations out.
-- **Run the quiz.** Walking all 12 stack layers as questions; the store answers most layers, the
+- **Run the quiz.** Walking every stack layer as a question; the store answers most layers, the
   founder answers four constraint areas.
 - **Give a single-option ultimatum.** A recommendation with no named not-triggered swap invites
   reflexive pushback — always show the reasoned alternative and why it isn't triggered.

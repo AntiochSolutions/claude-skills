@@ -136,8 +136,10 @@ A per-asset walk of what already exists — factual, never hypothetical. One ass
 
 ### Business (budget mid)
 
-- **Product classification — only when the payments signal fired.** Ask the classification
-  question from the **product-classification rule** in `demand-signals.md`:
+- **Product classification — only when the payments signal fired.** First ask
+  *"Who handles your accounting — you, a bookkeeper, a firm?"* → its answer feeds the
+  tax-burden-vs-cost discussion below. Then ask the classification question from the
+  **product-classification rule** in `demand-signals.md`:
   *"What exactly is being sold — a subscription to software, a digital product, your professional services, physical goods?"*
   Then work the tax-burden-vs-cost discussion and
   land the processor recommendation **in the order that rule specifies** (classification

@@ -417,10 +417,11 @@ budget mid (after value is established — GPCTBA order):
    company incorporated?" An existing account can decide layers (Stripe → payments;
    a Microsoft relationship or an incorporated startup → check **Microsoft for Startups
    Founders Hub** eligibility, which arms the Azure Tier-2 credits trigger).
-2. **Business** — when the payments signal fired: the **product-classification
-   question** ("what exactly is being sold — a subscription to software, a digital
-   product, your professional services, physical goods?") followed by the
-   tax-processing-vs-cost discussion (§5). Then **budget** — anchor then brackets:
+2. **Business** — when the payments signal fired: first "who handles your accounting —
+   you, a bookkeeper, a firm?" (feeds the tax-burden-vs-cost discussion), then the
+   **product-classification question** ("what exactly is being sold — a subscription to
+   software, a digital product, your professional services, physical goods?") followed by
+   the tax-processing-vs-cost discussion (§5). Then **budget** — anchor then brackets:
    state the landscape ("apps like this run $0–5/mo as a demo, ~$35/mo in production,
    $100+/mo when everything's paid"), then pick-one brackets. Separately the **hard
    cap**: "What's the absolute maximum this may cost per month before we should turn it
@@ -553,7 +554,7 @@ scaffolder-emitted agent files.
 
 - **Asking the founder a framework question.** Any question containing a technology name
   the founder didn't say first is a fail; constraints in, recommendations out.
-- **The quiz.** Walking all 12 stack layers as questions. The store answers most layers;
+- **The quiz.** Walking every stack layer as a question. The store answers most layers;
   the founder answers four constraint areas.
 - **Single-option ultimatum.** A recommendation with no named not-triggered swap invites
   reflexive pushback; always show the reasoned alternative and why it isn't triggered.
