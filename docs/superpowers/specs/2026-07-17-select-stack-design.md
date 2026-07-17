@@ -1,7 +1,7 @@
 # Design: select-stack
 
 **Date:** 2026-07-17
-**Status:** approved in section review; awaiting user spec review
+**Status:** approved 2026-07-17 (section review + user review complete)
 **Research:** `2026-07-17-select-stack-research-brief.md` (12-lane workflow, 2026-07-17)
 
 ## 1. Overview & positioning
@@ -519,7 +519,8 @@ session in the repo. It says, in order:
    runnable end-to-end *in QA*. Wire the CLAUDE.md import here too.
 3. Then dependency-first story order from the backlog. "No orphaned code — every step
    integrates into the previous one." Build strictly TDD: Red-Green-Refactor, test
-   first, every story.
+   first, every story. Every story ships API-first: its capability exposed through the
+   OpenAPI-documented API with app-managed API keys, Swagger page updated.
 4. Every milestone ends with the named checks run for **evidence** (test output, build
    exit code, screenshot, the Swagger page rendering for any new API surface), and an
    adversarial review of the diff against STACK.md + the story's acceptance criteria
