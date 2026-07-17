@@ -1,0 +1,12 @@
+{
+  "name": "select-stack",
+  "description": "Interviews a non-technical founder to select the tech stack a Claude Code instance will build — reads the backlog store to derive functional demands, asks only founder-level constraint questions, applies a researched house stack with graduated swap rules (Azure escalation tier), and writes STACK.md + KICKOFF.md into the epic folder. Tracker-agnostic, no API required.",
+  "author": {
+    "name": "Antioch Solutions",
+    "email": "meet@antiochsolutions.com"
+  },
+  "homepage": "https://www.antiochsolutions.com/skills",
+  "repository": "https://github.com/AntiochSolutions/claude-skills",
+  "license": "MIT",
+  "keywords": ["tech-stack", "stack-selection", "architecture", "founder", "web-app", "nextjs", "azure", "api-first", "tdd", "backlog-store", "kickoff-prompt", "sme-interview", "product-management", "agile"]
+}
