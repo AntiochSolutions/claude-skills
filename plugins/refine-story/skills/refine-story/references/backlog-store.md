@@ -1,13 +1,13 @@
 # The backlog store — shared convention
 
-The epic-shaping suite (refine-epic → decompose-epic → refine-feature → refine-story) keeps its work
+The epic-shaping suite (refine-epic → decompose-epic → refine-feature → refine-story → select-stack) keeps its work
 in a **backlog store**: one markdown file per epic, feature, and story, in the user's working
 folder. **The markdown tree is the single system of record — always.** A Miro board may mirror it as
 a Card story-map, but the board is a render of the files, never the record.
 
-> **Keep in sync:** this file is duplicated verbatim into the refine-feature and refine-story
-> plugins (marketplace plugins install independently). When the convention changes, change every
-> copy in the same commit.
+> **Keep in sync:** this file is duplicated verbatim into the refine-feature, refine-story, and
+> select-stack plugins (marketplace plugins install independently). When the convention changes,
+> change every copy in the same commit.
 
 ## The tree (system of record)
 
@@ -15,6 +15,8 @@ a Card story-map, but the board is a render of the files, never the record.
 backlog/
   Epic #01 - Customer Onboarding/
     epic.md
+    STACK.md               # optional — stack decision (select-stack)
+    KICKOFF.md             # optional — build bootstrap (select-stack)
     Features/
       Feature #01 - Self-serve signup.md
       stories for #01 - Self-serve signup/
@@ -95,6 +97,7 @@ type: epic
 title: Customer Onboarding
 status: refined            # epics arrive refined from refine-epic
 board: <miro-board-url>    # optional — the attached mirror board; omit when none
+stack: STACK.md             # optional — the epic's stack decision file; omit when none
 ---
 ```
 
@@ -151,10 +154,32 @@ refine-story pass, never inlined into the line itself.
 | epic | `refined` (fixed) | refine-epic (outside the store) |
 | feature | `skeleton` → `refined` \| `needs-discovery`; `needs-discovery` → `refined` | refine-feature |
 | story | `skeleton` → `ready`; any → `parked`; `parked` → `skeleton`; any → `superseded` | refine-story (`ready`); refine-feature curation (the rest) |
+| stack | `decided` (revised in place on re-selection) | select-stack |
 
 Parked stories keep their file with `status: parked` and a one-line reason; a story replaced by a
 split or a recombine keeps its file as `status: superseded` with a `Split into S12 · S13`-style
 line. Scope conservation: nothing is silently deleted, and IDs are never reused.
+
+## Stack decision artifacts
+
+An epic folder may contain two additional singleton files, written by the
+`select-stack` skill and addressed by path (no `id` field, no ID prefix):
+
+- `STACK.md` — the epic's technology-stack decision. Front-matter:
+  `type: stack`, `epic: <E##>`, `status: decided`, `validatedAsOf: <YYYY-MM>`,
+  `houseStackVersion: <stamp>`.
+- `KICKOFF.md` — the staged build bootstrap for a Claude Code session.
+  Front-matter: `type: kickoff`, `epic: <E##>`, `stack: STACK.md`.
+
+Linkage: epic.md front-matter may carry an optional `stack: STACK.md` field
+(omitted when none), following the `board:` precedent — see the epic.md schema
+above. Never a body section — `## Features` remains the last body section.
+
+Both files sit outside the roll-up refresh contract and outside the Miro mirror
+(Cards render only epic/feature/story). On re-selection both files are revised
+**in place** — the revised STACK.md records what changed as a dated revision
+note, and prior versions live in git history. The item-file supersede idiom
+does not apply to these path-addressed singletons.
 
 ## Miro mirror (optional — Cards, always)
 
