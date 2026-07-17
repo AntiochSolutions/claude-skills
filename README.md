@@ -34,8 +34,8 @@ That installs **only** `ikigai-discovery` — none of the other skills. Install 
 
 ### Returning users — upgrading to the full epic-shaping suite
 
-Already using `refine-epic`? It's now the first of **four** skills that work a shared backlog:
-**refine-epic → decompose-epic → refine-feature → refine-story**. To get the rest:
+Already using `refine-epic`? It's now the first of **five** skills that work a shared backlog:
+**refine-epic → decompose-epic → refine-feature → refine-story → select-stack**. To get the rest:
 
 ```text
 /plugin marketplace update antioch-skills
@@ -43,6 +43,7 @@ Already using `refine-epic`? It's now the first of **four** skills that work a s
 /plugin install decompose-epic@antioch-skills
 /plugin install refine-feature@antioch-skills
 /plugin install refine-story@antioch-skills
+/plugin install select-stack@antioch-skills
 ```
 
 Then **restart Claude Code** — plugin changes apply to new sessions.
@@ -54,7 +55,8 @@ Then **restart Claude Code** — plugin changes apply to new sessions.
 - The workflow: `/refine-epic` as before → `/decompose-epic`, which now ends by offering to save
   the map as a **backlog store** (one markdown file per epic/feature/story — say yes and give it a
   folder, default `./backlog/`) → `/refine-feature` on one feature at a time → `/refine-story` on
-  one story Card at a time, both picking items straight from that store. Nothing about
+  one story Card at a time, both picking items straight from that store → `/select-stack` once the
+  store exists, to choose the tech stack and generate the build kickoff. Nothing about
   `refine-epic` itself changes — existing epics enter the store whenever `decompose-epic` runs on
   them.
 
@@ -94,6 +96,7 @@ back — by design.
 | [`decompose-epic`](plugins/decompose-epic) | `/plugin install decompose-epic@antioch-skills` | Decomposes a refined epic into skeleton Features and Stories via an SME interview — behavior mining, affinity clustering, an outcome coverage gate, and an MVP partition — output as a feature map, optionally materialized as a **backlog store** of markdown files (with a Miro Card mirror). Optional Miro card-wall mode. Tracker-agnostic, no API required. Pairs with [`refine-epic`](plugins/refine-epic) — run that first on a raw epic. |
 | [`refine-feature`](plugins/refine-feature) | `/plugin install refine-feature@antioch-skills` | Takes one skeleton feature from the backlog store to build-ready via an SME interview — four-risks triage with a fast lane and a discovery-brief exit, a quantified success signal, dual-test feature acceptance criteria, NFR binding, and shallow story-set curation (add/split/park/repair + a nominated first slice). Writes back to the store in place. Pairs with [`decompose-epic`](plugins/decompose-epic) — run that first to create the store. |
 | [`refine-story`](plugins/refine-story) | `/plugin install refine-story@antioch-skills` | Takes one story Card from the backlog store to ready-for-sprint-planning via an SME interview — a real happy path, Example-Mapping rule/example mining, an adaptive Confirmation (checklist by default; table or Given-When-Then only when the cases demand it), INVEST checks with honest splitting, and a demo-narration gate. The Card line never fattens. Pairs with [`refine-feature`](plugins/refine-feature) — run that on the feature first. |
+| [`select-stack`](plugins/select-stack) | `/plugin install select-stack@antioch-skills` | Interviews a non-technical founder to select the tech stack a Claude Code instance will build — derives the app's demands from the backlog store (every signal cited), asks only founder-level constraint questions, applies a researched house stack with an Azure escalation tier and six non-negotiables (QA+PROD, scripted infra, API-first, managed API keys, gated releases, TDD), and writes STACK.md + KICKOFF.md into the epic folder. Pairs with [`decompose-epic`](plugins/decompose-epic) — run that first to create the store. |
 | [`statusline`](plugins/statusline) | `/plugin install statusline@antioch-skills` | Installs a two-line Claude Code status line — model + reasoning effort, directory, git branch, session name, a color-coded context bar, cost, duration, and 5h/7d rate-limit usage. After installing, say "set up the status line". Requires Python 3. |
 
 ## Add a new skill
@@ -122,9 +125,9 @@ Run the validator, and commit. Use [`plugins/ikigai-discovery`](plugins/ikigai-d
 
 [`plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md`](plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md)
 is the canonical **backlog-store convention** for the epic-shaping suite (refine-epic →
-decompose-epic → refine-feature → refine-story). The refine-feature and refine-story plugins carry
-**verbatim copies** of it (plugins install independently) — when the convention changes, update
-**every copy in the same commit**.
+decompose-epic → refine-feature → refine-story → select-stack). The refine-feature, refine-story,
+and select-stack plugins carry **verbatim copies** of it (plugins install independently) — when the
+convention changes, update **every copy in the same commit**.
 
 ## Validate
 

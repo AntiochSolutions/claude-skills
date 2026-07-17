@@ -43,6 +43,12 @@
       "keywords": ["story", "user-stories", "story-refinement", "backlog-refinement", "acceptance-criteria", "example-mapping", "given-when-then", "invest", "story-splitting", "product-management", "agile", "sme-interview", "backlog-store"]
     },
     {
+      "name": "select-stack",
+      "source": "./plugins/select-stack",
+      "description": "Interviews a non-technical founder to select the tech stack a Claude Code instance will build — reads the backlog store to derive functional demands (every signal cited to a feature or story), asks only founder-level constraint questions (existing accounts, budget brackets, honest scale, operations, compliance), and applies a researched house stack with graduated swap rules and an Azure escalation tier. Writes STACK.md (plain-language rationale + agent-actionable build rules) and KICKOFF.md (a staged, TDD-first build bootstrap) into the epic folder. Pairs with decompose-epic — run that first to create the store.",
+      "keywords": ["tech-stack", "stack-selection", "architecture", "founder", "web-app", "nextjs", "azure", "api-first", "tdd", "backlog-store", "kickoff-prompt", "sme-interview", "product-management", "agile"]
+    },
+    {
       "name": "statusline",
       "source": "./plugins/statusline",
       "description": "Installs a two-line Claude Code status line — model + reasoning effort, directory, git branch, session name, a color-coded context-usage bar, session cost and duration, and 5-hour/7-day rate-limit usage. Install the plugin, then say \"set up the status line\" — the skill configures it for your platform (Windows, macOS, or Linux) and verifies it works. Requires Python 3.",
