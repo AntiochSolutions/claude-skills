@@ -15,11 +15,11 @@
 - **Spec path (read this, nothing else):** the authoritative spec is `docs/superpowers/specs/2026-07-17-select-stack-design.md`. Every "spec §N" citation in a task means THAT file. Do NOT use `docs/superpowers/specs/2026-07-17-select-stack-research-brief.md` — it is a near-twin research document, not the spec.
 - Repo rules: one plugin per skill; `plugins/select-stack/.claude-plugin/plugin.json` + `skills/select-stack/SKILL.md`; marketplace `source` MUST be `./plugins/select-stack`; NO `version` field anywhere.
 - Suite conventions: YAML front-matter with camelCase fields; store tree is `<root>/Epic #NN - <Title>/epic.md` etc.; IDs `E##/F##/S##` are never reused or renumbered; `## Features` roll-up stays the LAST body section of epic.md.
-- Shared vocabulary (use these EXACT names in every file):
+- Shared vocabulary (use these EXACT names in every file — this list is the normative rendering of spec §6's phase headings; where a spec heading carries a parenthetical like "(silent)", the name below is still the one to use in plugin files):
   - Phases: `Phase 0 — Intake`, `Phase 1 — Derive the demand profile`, `Phase 2 — Confirm the demand profile`, `Phase 3 — Constraint interview`, `Phase 4 — Recommend, layer by layer`, `Phase 5 — Write & read back`.
-  - Swap tiers: `Tier 1 — Additive & settings` (house stack stays), `Tier 2 — Azure escalation` (hosting + database move). There is no third tier — in plugin files write "no third tier" or "no replatform tier"; NEVER write the literal string "Tier 3" (a zero-match grep enforces this).
+  - Swap tiers: `Tier 1 — Additive & settings` (house stack stays), `Tier 2 — Azure escalation` (hosting + database move). There is no third tier — in plugin files write "no third tier" or "no replatform tier"; NEVER write "Tier 3" in any casing or hyphenation (`Tier 3`, `Tier-3`, `tier 3` — a case-insensitive zero-match grep enforces this). Escalation ladders in OTHER contexts (e.g. the offline/PWA signal's three escalating options) are named "levels", never "tiers".
   - Demand tiers: `(a) covered by the house stack`, `(b) service-addition`, `(c) architecture-bending`.
-  - Artifacts: `STACK.md` (`type: stack`, `status: decided`, lifecycle `decided → superseded`, fields `epic`, `validatedAsOf`, `houseStackVersion`) and `KICKOFF.md` (`type: kickoff`, fields `epic`, `stack: STACK.md`) — epic-folder siblings, addressed by path, no `id` field.
+  - Artifacts: `STACK.md` (`type: stack`, `status: decided` — the only status; on re-selection the file is revised IN PLACE with a dated revision micro-ADR, prior versions in git history; fields `epic`, `validatedAsOf`, `houseStackVersion`) and `KICKOFF.md` (`type: kickoff`, fields `epic`, `stack: STACK.md`) — epic-folder siblings, addressed by path, no `id` field. The store's item-file supersede idiom does NOT apply to these path-addressed singletons.
   - Epic linkage: OPTIONAL `stack: STACK.md` front-matter field on epic.md (the `board:` precedent).
 - The SIX NON-NEGOTIABLES (verbatim concepts, present in house-stack.md, output-template.md, and SKILL.md's gates): (1) QA + PROD as two fully isolated projects, everything including infrastructure built in QA first; (2) all infrastructure scripted and committed to the GitHub repo; (3) API-first — anything the UI can do the API can do, OpenAPI/Swagger compliant, Swagger page emitted per API, secured by API key; (4) the app emits and manages API keys; (5) PROD promotion only on explicit user authorization via an approval-gated GitHub Actions environment; (6) strict TDD (Red-Green-Refactor) during the build.
 - No-veto items: Sentry (client + server, before first deploy) and a platform spend cap set to the founder's hard-cap number.
@@ -28,7 +28,7 @@
 - Interview caps: whole session ≤ ~20 founder questions; Phase 3 is ~8–12; one question per turn; multiple choice preferred.
 - House-stack stamp: `Validated as of: 2026-07`; pricing facts carry inline as-of dates and a runtime re-verification instruction.
 - The four `backlog-store.md` copies (decompose-epic, refine-feature, refine-story, select-stack) MUST be byte-identical after every task that touches any of them.
-- Every commit message ends with the repo's standard co-author trailer.
+- Every commit message ends with this trailer (the `git commit -m` blocks in tasks show the subject line only — append the trailer when executing): `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`
 
 ---
 
@@ -42,16 +42,16 @@
 
 **Interfaces:**
 - Consumes: the shipped backlog-store.md convention (read the canonical copy first — tree layout, front-matter schemas, status-lifecycles section, Miro-mirror section).
-- Produces: a `## Stack decision artifacts` section, a `stack:` line in the epic.md schema block, a `stack` lifecycle row, and tree-example lines — all four copies byte-identical. Tasks 2–6 may reference the section by name. Spec source: §3 "Artifact placement & conventions" + "Convention ripple".
+- Produces: six changes to the canonical file — the intro suite-list edit, the keep-in-sync note edit, tree-example lines, a `stack:` line in the epic.md schema block, a `stack` lifecycle row, and the new `## Stack decision artifacts` section — with all four copies byte-identical. Tasks 2–6 may reference the section by name. Spec source: §3 "Artifact placement & conventions" + "Convention ripple".
 
 - [ ] **Step 1: Read the canonical copy** (`plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md`) end to end. Note its heading levels and where the status-lifecycles and Miro-mirror sections sit.
 
-- [ ] **Step 2a: Update the existing touch-points in the canonical copy** (four small edits — the convention must describe the new artifacts everywhere it describes epics, not only in the new section):
+- [ ] **Step 2a: Update the existing touch-points in the canonical copy** (five small edits — the convention must describe the new artifacts everywhere it describes epics, not only in the new section):
   - Intro paragraph (line ~3): extend the suite list to `(refine-epic → decompose-epic → refine-feature → refine-story → select-stack)`.
   - Keep-in-sync note (lines ~8–10): change "duplicated verbatim into the refine-feature and refine-story plugins" to "duplicated verbatim into the refine-feature, refine-story, and select-stack plugins".
   - Tree example (`## The tree`, lines ~14–26): add two lines under the epic folder, directly after `epic.md`: `    STACK.md` and `    KICKOFF.md`, each with a trailing comment `# optional — stack decision (select-stack)` / `# optional — build bootstrap (select-stack)`.
   - epic.md schema block (`## Front-matter schemas`, `board:` line ~97): add directly below the `board:` line: `stack: STACK.md             # optional — the epic's stack decision file; omit when none`.
-  - Status-lifecycles table (lines ~149–153): add a row: `| stack | \`decided\` → \`superseded\` | select-stack |`.
+  - Status-lifecycles table (lines ~149–153): add a row: `| stack | \`decided\` (revised in place on re-selection) | select-stack |`.
 
 - [ ] **Step 2b: Insert the new section** into the canonical copy, placed after the `## Status lifecycles` section (ends ~line 157) and before `## Miro mirror` (~line 159) — heading level `##` matches the file:
 
@@ -63,7 +63,7 @@ An epic folder may contain two additional singleton files, written by the
 
 - `STACK.md` — the epic's technology-stack decision. Front-matter:
   `type: stack`, `epic: <E##>`, `status: decided`, `validatedAsOf: <YYYY-MM>`,
-  `houseStackVersion: <stamp>`. Lifecycle: `decided → superseded`.
+  `houseStackVersion: <stamp>`.
 - `KICKOFF.md` — the staged build bootstrap for a Claude Code session.
   Front-matter: `type: kickoff`, `epic: <E##>`, `stack: STACK.md`.
 
@@ -72,9 +72,10 @@ Linkage: epic.md front-matter may carry an optional `stack: STACK.md` field
 above. Never a body section — `## Features` remains the last body section.
 
 Both files sit outside the roll-up refresh contract and outside the Miro mirror
-(Cards render only epic/feature/story). On re-selection the old STACK.md is
-superseded (`status: superseded` plus a pointer line to its replacement), never
-deleted.
+(Cards render only epic/feature/story). On re-selection both files are revised
+**in place** — the revised STACK.md records what changed as a dated revision
+note, and prior versions live in git history. The item-file supersede idiom
+does not apply to these path-addressed singletons.
 ```
 
 - [ ] **Step 3: Propagate to all three other copies** (creating the select-stack directory):
@@ -147,7 +148,7 @@ Body sections, in order, following the sibling SKILL.md section pattern (overvie
 1. **Announce at start:** "Using select-stack to choose the technical stack for `<epic>` from its backlog store."
 2. **Overview** — 2 short paragraphs from spec §1, covering all five pillars: fifth suite member; house stack + swap rules (double consensus); demand-profile-first (founder never gets asked a framework question); boring-technology discipline (0–1 innovation tokens, LLM-familiarity as the boring criterion); agent-actionable output; non-negotiable engineering floor + portability rule.
 3. **Hard requirements** — backlog store required (no store → explain the suite order, offer decompose-epic, stop); web apps; one stack decision per epic; skill writes markdown only (no code, no scaffolding, no accounts).
-4. **Process** — the six phases by exact name (Global Constraints), one paragraph each summarizing spec §6, each ending with which reference to load: Phase 0 → backlog-store.md; Phase 1 → demand-signals.md + house-stack.md; Phase 2 → demand-signals.md (verification questions); Phase 3 → interview-guide.md; Phase 4 → house-stack.md (layer order, veto script); Phase 5 → output-template.md. Include the revisit branch (existing `stack:` field → what changed and why → supersede → re-run affected phases only).
+4. **Process** — the six phases by exact name (Global Constraints), one paragraph each summarizing spec §6, each ending with which reference to load: Phase 0 → backlog-store.md; Phase 1 → demand-signals.md + house-stack.md; Phase 2 → demand-signals.md (verification questions); Phase 3 → interview-guide.md; Phase 4 → house-stack.md (layer order, veto script); Phase 5 → output-template.md. Include the revisit branch (existing `stack:` field → what changed and why → revise STACK.md in place with a dated revision note → re-run affected phases only).
 5. **Non-negotiables & no-veto items** — the six non-negotiables and two no-veto items listed verbatim from Global Constraints, with: "presented as included, not optional — never offered for veto."
 6. **Interview rules** — one question per turn; multiple choice preferred; ≤ ~20 founder questions total; Mom-Test form (past tense, behavior-anchored); plain language, jargon translated on first use.
 7. **References table** — the five files with one-line purpose each.
@@ -163,7 +164,7 @@ grep -c 'Phase 0 — Intake' plugins/select-stack/skills/select-stack/SKILL.md
 grep -c 'references/house-stack.md' plugins/select-stack/skills/select-stack/SKILL.md
 ```
 
-Expected: ≥ 7 body sections; then exactly 1; then ≥ 1; then ≥ 1.
+Expected: exactly 8 body sections (Overview, Hard requirements, Process, Non-negotiables & no-veto items, Interview rules, References, Anti-patterns, Ending criteria — the announce line sits above the first `##`); then exactly 1; then ≥ 1; then ≥ 1.
 
 - [ ] **Step 4: Commit**
 
@@ -188,11 +189,14 @@ git commit -m "feat: scaffold select-stack plugin with SKILL.md flow controller"
 1. **Stamp block** (top of file, right after the H1):
 
 ```markdown
-**Validated as of:** 2026-07 · **Agent-default data measured against:** the mid-2026
+`validatedAsOf: 2026-07` · agent-default data measured against the mid-2026
 Claude Code generation. Treat every layer as "the most LLM-familiar stable major,"
 not "the newest release." When web tools are available, re-verify facts marked (†)
 before quoting them; otherwise quote them WITH their as-of date.
 ```
+
+(The literal `validatedAsOf:` token matches spec §4 and the emitted STACK.md's
+front-matter field, and makes house-stack.md show up in Task 8's `validatedAsOf` grep.)
 
 2. `## The house stack` — the full 16-row Adopt/Hold table from spec §4 (Framework through Observability, including the API-layer and Realtime/signaling rows), followed by the double-consensus rationale paragraph (founder-market data AND measured Claude Code defaults; aligning with the builder's instincts is a reliability feature).
 3. `## Portability rule` — spec §4 paragraph: every service must survive an Azure move with no re-tooling; Supabase/Neon as managed Postgres only; the Hold-listed platform-bound conveniences and why.
@@ -209,10 +213,10 @@ before quoting them; otherwise quote them WITH their as-of date.
 ```bash
 grep -n '^## ' plugins/select-stack/skills/select-stack/references/house-stack.md
 grep -c 'Tier 2 — Azure escalation' plugins/select-stack/skills/select-stack/references/house-stack.md
-! grep -q 'Tier 3' plugins/select-stack/skills/select-stack/references/house-stack.md
+! grep -qiE 'tier[ -]?3' plugins/select-stack/skills/select-stack/references/house-stack.md
 ```
 
-Expected: the nine `##` sections listed in Interfaces, in order; then ≥ 1; then exit 0 (the file never contains the literal string "Tier 3" — write "no replatform tier").
+Expected: the nine `##` sections listed in Interfaces, in order; then ≥ 1; then exit 0 (the file never contains "Tier 3" in any casing/hyphenation — write "no replatform tier").
 
 - [ ] **Step 3: Commit**
 
@@ -236,7 +240,7 @@ git commit -m "feat: add select-stack house-stack reference (stack table, swap t
 
 1. `## How to read a store` — from spec §3: structural signals guaranteed in every store (role census from Card lines + security NFR → auth shape; Leading Indicators + Open Measurements + Meter lines → instrumentation demand); the confirmed-absent list that MUST be interviewed (budget, accounts, team skills, timeline); maturity → confidence appendix behavior.
 2. `## Demand tiers` — definitions of (a) covered by the house stack, (b) service-addition (with cost line), (c) architecture-bending (settled before scaffold, listed: offline writes/sync, i18n route structure, partner/developer API program beyond the API-first baseline, live collaboration).
-3. `## Signal inventory` — one subsection or table row per signal, all from spec §5: auth/roles, instrumentation, payments (with the full **product-classification rule**: ask what is being sold — SaaS subscription / digital product / professional services / physical goods — then the tax discussion: services generally not sales-taxable, SaaS varies by US state and country, digital products widely taxed; choice = MoR (Paddle/Lemon Squeezy ~5%+50¢) vs Stripe + Stripe Tax vs plain Stripe; classification first, burden-vs-cost second, recommendation third), uploads, search, notifications (SMS = A2P 10DLC fees + days of approval → **injects a timeline question into Phase 3**), real-time (portable pub-sub only, never Supabase Realtime), reporting, AI features, integrations, API consumers (API-first baseline already exists; signal only adds tier-c partner extras), i18n, offline/PWA.
+3. `## Signal inventory` — one subsection or table row per signal, all from spec §5: auth/roles, instrumentation, payments (with the full **product-classification rule**: ask what is being sold — SaaS subscription / digital product / professional services / physical goods — then the tax discussion: services generally not sales-taxable, SaaS varies by US state and country, digital products widely taxed; choice = MoR (Paddle/Lemon Squeezy ~5%+50¢) vs Stripe + Stripe Tax vs plain Stripe; classification first, burden-vs-cost second, recommendation third), uploads, search, notifications (SMS = A2P 10DLC fees + days of approval → **injects a timeline question into Phase 3**), real-time (portable pub-sub only, never Supabase Realtime), reporting, AI features, integrations, API consumers (API-first baseline already exists; signal only adds tier-c partner extras), i18n, offline/PWA (name the offline signal's three escalating options "levels" — installable shell / offline reads / offline writes — never "tiers", per the Global-Constraints vocabulary rule).
 4. `## Verification questions` — the four ambiguity probes verbatim: "live" vs "fresh"; "works on phone" vs "works offline"; "find" vs "search-as-you-type"; "notify them" vs "text them".
 5. `## NFR thresholds` — the 6-row table from spec §5 exactly (columns: NFR / Changes nothing when / Forces a setting when / Forces Azure (Tier 2) when), the uptime contract-or-hope rule, the pooling-is-unconditional note, and the **NFRs-absent fallback** paragraph (defaults + 1–2 load-bearing threshold questions + assumptions block + confidence appendix).
 6. `## Scoping rules` — mvp-tags only; contingent = "must not preclude," never sized for; provenance-weighted numbers; existing enabler-feature check; Real Options plug-in; the validate-manually ("no-code-yet") flag.
@@ -248,7 +252,7 @@ grep -n '^## ' plugins/select-stack/skills/select-stack/references/demand-signal
 grep -c 'product-classification' plugins/select-stack/skills/select-stack/references/demand-signals.md
 ```
 
-Expected: the six `##` sections in order; product-classification ≥ 2 mentions.
+Expected: the six `##` sections in order; product-classification ≥ 1 (the payments row names the rule; other referrers live in other files).
 
 - [ ] **Step 3: Commit**
 
@@ -281,7 +285,7 @@ git commit -m "feat: add select-stack demand-signals reference (taxonomy, NFR th
    - **Operations:** "After launch, who edits content, and who gets the 2am error email?" (→ Sentry target) / timeline incl. injected lead-time items / compliance: "Any users in the EU or Canada — and a lawyer telling you their data must stay there?" / "Any health data?" (answers arm Azure Tier-2 triggers).
 6. `## Phase 4 — Recommend, layer by layer` — layer order (shape+framework+API → database → auth → services → hosting+environments → quality+observability); per-layer script: conclusion first in outcome language, one analogy max, house default + the named not-triggered swap ("we'd only move to X if Y — it isn't, per `<citation>`"), bounded veto (*keep / take the named swap / name a constraint I missed*); non-negotiables and no-veto items presented as included; running cost table; NFR keep-or-relax offers; Azure pricing shown with credits applied; token ledger maintained aloud.
 7. `## Phase 5 — Write & read back` — write both artifacts per output-template.md; set `stack:` in epic front-matter; then deliver the closing read-back following output-template.md's `## Read-back script` section (the script's content lives THERE, since Phase 5 loads that file — this section just says to run it).
-8. `## Revisit branch` — what changed and why → supersede old STACK.md → re-run only affected phases (new demand signal → Phases 1–2 delta; new constraint → Phase 3 delta; always re-run Phase 4 for affected layers; rewrite artifacts whole).
+8. `## Revisit branch` — what changed and why → revise STACK.md in place (dated revision micro-ADR; git history keeps prior versions) → re-run only affected phases (new demand signal → Phases 1–2 delta; new constraint → Phase 3 delta; always re-run Phase 4 for affected layers; rewrite artifacts whole).
 
 - [ ] **Step 2: Verify structure:**
 
@@ -295,7 +299,7 @@ Expected: six phase headings with the exact Global-Constraints names, in order.
 
 ```bash
 git add plugins/select-stack/skills/select-stack/references/interview-guide.md
-git commit -m "feat: add select-stack interview guide (phases, question bank, veto script)"
+git commit -m "feat: add select-stack interview guide (phases, constraint questions, veto script)"
 ```
 
 ---
@@ -377,7 +381,7 @@ Then the body spec: milestone table (walking skeleton first, then ordered story 
 
 plus one PreToolUse-hook sentence describing the alternative. Prose is advisory; hooks are deterministic.
 
-5. `## Write-back contract` — write both files; set `stack:` in epic.md front-matter preserving all other fields, `## Features` roll-up untouched; never persisted: raw transcript, estimates/schedule dates, secrets (account NAMES only, never keys); supersede-never-delete on revisit.
+5. `## Write-back contract` — write both files; set `stack:` in epic.md front-matter preserving all other fields, `## Features` roll-up untouched; never persisted: raw transcript, estimates/schedule dates, secrets (account NAMES only, never keys); on revisit, revise both files in place — the revised STACK.md opens its micro-ADR list with a dated revision entry, prior versions in git history.
 
 6. `## Read-back script` — the closing read-back Phase 5 delivers (spec §6 Phase 5): the stack in three sentences; monthly cost at launch vs. with everything on paid plans; the innovation-token ledger (spent and refused, with citations); the next step verbatim: "open a fresh Claude Code session in the repo and paste the kickoff prompt."
 
@@ -430,7 +434,7 @@ git commit -m "feat: add select-stack output templates (STACK.md, KICKOFF.md, wi
 ```
 
   2. "Returning users" section: change "first of **four** skills" to "first of **five** skills", extend the chain to "refine-epic → decompose-epic → refine-feature → refine-story → select-stack", add `/plugin install select-stack@antioch-skills` to the install block, and append to the workflow sentence: "→ `/select-stack` once the store exists, to choose the tech stack and generate the build kickoff."
-  3. "Shared reference" section: change the copy count from refine-feature/refine-story carrying copies to "The refine-feature, refine-story, and select-stack plugins carry **verbatim copies** of it" (keep the same-commit rule sentence).
+  3. "Shared reference" section (README ~lines 121–127): TWO edits — (a) the section's opening parenthetical lists the suite as "(refine-epic → decompose-epic → refine-feature → refine-story)"; extend it to "(refine-epic → decompose-epic → refine-feature → refine-story → select-stack)" so it matches the five-member chain edit 2 installs; (b) change the copies sentence to "The refine-feature, refine-story, and select-stack plugins carry **verbatim copies** of it" (keep the same-commit rule sentence).
 
 - [ ] **Step 3: Run the validator:**
 
@@ -467,13 +471,14 @@ git commit -m "feat: register select-stack in marketplace and README"
 for p in 'Phase 0 — Intake' 'Phase 1 — Derive the demand profile' 'Phase 2 — Confirm the demand profile' 'Phase 3 — Constraint interview' 'Phase 4 — Recommend, layer by layer' 'Phase 5 — Write & read back'; do
   grep -c "$p" plugins/select-stack/skills/select-stack/SKILL.md plugins/select-stack/skills/select-stack/references/interview-guide.md
 done
-# The literal string "Tier 3" appears nowhere in the plugin (expect exit 0 —
-# docs say "no replatform tier"/"no third tier" instead):
-! grep -rq 'Tier 3' plugins/select-stack/
+# "Tier 3" appears nowhere in the plugin, any casing/hyphenation (expect exit 0 —
+# docs say "no replatform tier"/"no third tier"; escalation ladders use "levels"):
+! grep -rqiE 'tier[ -]?3' plugins/select-stack/
 # Non-negotiable tokens present in all three carriers (each printed count >= 1):
 grep -c 'Red-Green-Refactor' plugins/select-stack/skills/select-stack/SKILL.md plugins/select-stack/skills/select-stack/references/house-stack.md plugins/select-stack/skills/select-stack/references/output-template.md
 grep -c 'API-first' plugins/select-stack/skills/select-stack/SKILL.md plugins/select-stack/skills/select-stack/references/house-stack.md plugins/select-stack/skills/select-stack/references/output-template.md
-grep -c 'API key' plugins/select-stack/skills/select-stack/references/house-stack.md plugins/select-stack/skills/select-stack/references/output-template.md
+grep -c 'API key' plugins/select-stack/skills/select-stack/SKILL.md plugins/select-stack/skills/select-stack/references/house-stack.md plugins/select-stack/skills/select-stack/references/output-template.md
+grep -c 'approval-gated' plugins/select-stack/skills/select-stack/SKILL.md plugins/select-stack/skills/select-stack/references/house-stack.md plugins/select-stack/skills/select-stack/references/output-template.md
 # Portability rule: Supabase platform services only ever in Hold/never contexts —
 # this one is manual: read every printed line and confirm it is a prohibition:
 grep -rn 'Supabase Auth\|Supabase Realtime\|Supabase Storage' plugins/select-stack/
@@ -482,11 +487,17 @@ grep -rn 'Supabase Auth\|Supabase Realtime\|Supabase Storage' plugins/select-sta
 grep -rln 'validatedAsOf' plugins/select-stack/
 ```
 
-- [ ] **Step 2: Read SKILL.md end to end** against spec §§6, 8, 9 — confirm every phase routes to an existing reference file and the ending criteria match. Also open output-template.md and confirm ALL SIX non-negotiables appear in BOTH templates: the STACK.md agent-half rules AND the KICKOFF.md content (file-level greps cannot tell the halves apart — this is the by-eye check that closes that gap). Fix inline if not.
+- [ ] **Step 2: Read SKILL.md end to end** against spec §§4, 6, 8, 9 — confirm every phase routes to an existing reference file, the ending criteria match, and SKILL.md's non-negotiables section lists ALL SIX from Global Constraints (the token greps in Step 1 only witness three of them — QA+PROD, scripted infrastructure, and gated promotion need this by-eye check). Also open output-template.md and confirm ALL SIX non-negotiables appear in BOTH templates: the STACK.md agent-half rules AND the KICKOFF.md content (file-level greps cannot tell the halves apart). Fix inline if not.
 
-- [ ] **Step 3: Byte-identity across all four backlog-store.md copies** (same three `git diff --no-index` commands as Task 1 Step 4; all silent, exit 0).
+- [ ] **Step 3: Byte-identity across all four backlog-store.md copies** (each command: NO output, exit 0):
 
-- [ ] **Step 3b: Tabletop walkthrough (spec §9).** In the session scratchpad (NOT the repo), materialize a minimal fixture store **exactly per `plugins/select-stack/skills/select-stack/references/backlog-store.md`'s schemas — the shapes decompose-epic and refine-feature/refine-story would emit**, including: the tree naming grammar (`Epic #01 - <Title>/epic.md`, `Features/Feature #01 - <Title>.md`, `stories for #01 - <title>/Story #NN - <title>.md`); epic.md with full front-matter and body sections (Description, Benefit Hypothesis, Business Outcomes, Leading Indicators, one quantified NFR, Open Measurements, `## Features` roll-up last); one `tags: [mvp]` feature with `status: refined` and a Meter line; two stories (`kind: walking-skeleton` + one variation) with `status: ready`, real-role Card lines, one mentioning "members pay dues"; roll-ups with a `First slice:` line. Then walk Phases 0–5 on paper against the shipped docs, checking at each phase: the reference file named by SKILL.md exists and contains the moves that phase needs; the structural signals (role census, instrumentation from Leading Indicators/Meter) derive; the payments signal routes through the product-classification rule; the NFR hits the threshold table; Phase 4's layer order and veto script are present; Phase 5's templates cover every field the walkthrough produced, including the read-back script. Repeat abbreviated for (a) a skeleton-only store — `status: skeleton` everywhere, no NFR section — exercising the confidence appendix + NFR-absent fallback, and (b) an epic that already has `stack:` (revisit branch). Fix any doc gap found, inline.
+```bash
+git diff --no-index plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/refine-feature/skills/refine-feature/references/backlog-store.md
+git diff --no-index plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/refine-story/skills/refine-story/references/backlog-store.md
+git diff --no-index plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md plugins/select-stack/skills/select-stack/references/backlog-store.md
+```
+
+- [ ] **Step 3b: Tabletop walkthrough (spec §9).** In the session scratchpad (NOT the repo), materialize a minimal fixture store **exactly per `plugins/select-stack/skills/select-stack/references/backlog-store.md`'s schemas — the shapes decompose-epic and refine-feature/refine-story would emit**, including: the tree naming grammar (`Epic #01 - <Title>/epic.md`, `Features/Feature #01 - <Title>.md`, `stories for #01 - <title>/Story #NN - <title>.md`); epic.md with full front-matter and body sections (Description, Benefit Hypothesis, Business Outcomes, Leading Indicators, one quantified NFR, Open Measurements, `## Features` roll-up last); one `tags: [mvp]` feature with `status: refined` and a Meter line; three stories (`kind: walking-skeleton` + two variations — decompose-epic's invariant gives MVP features 3–7 Cards) with `status: ready`, real-role Card lines, one mentioning "members pay dues"; roll-ups with a `First slice:` line. Then walk Phases 0–5 on paper against the shipped docs, checking at each phase: the reference file named by SKILL.md exists and contains the moves that phase needs; the structural signals (role census, instrumentation from Leading Indicators/Meter) derive; the payments signal routes through the product-classification rule; the NFR hits the threshold table; Phase 4's layer order and veto script are present; Phase 5's templates cover every field the walkthrough produced, including the read-back script. **Then draft the sample artifacts the walkthrough implies** — the fixture's STACK.md agent half and KICKOFF.md — and lint them per spec §9: agent half under 200 lines and roughly 30–60 rules, front-matter fields complete, all six non-negotiables present in the agent half AND in KICKOFF.md, kickoff prompt self-contained (names files, scope, verification). Repeat the walkthrough abbreviated for (a) a skeleton-only store — features and stories `status: skeleton`, no NFR section, epic stays `status: refined` (the convention fixes epic status; a skeleton epic is a shape no upstream skill emits) — exercising the confidence appendix + NFR-absent fallback, and (b) an epic that already has `stack:` (revisit branch: revise in place, dated revision micro-ADR). Fix any doc gap found, inline.
 
 - [ ] **Step 4: Full validation:**
 
@@ -495,9 +506,9 @@ node scripts/validate-marketplace.mjs
 claude plugin validate .
 ```
 
-Expected: the marketplace validator passes with 8 plugins. `claude plugin validate` is advisory for this deliverable (it reads marketplace.json/plugin.json, not skill content; warnings about the deliberately omitted `version` are acceptable) — record its output either way.
+Expected: the marketplace validator passes with 8 plugins, exit 0. `claude plugin validate .` must also finish green (exit 0) per spec §9 — **warnings** (e.g., about the deliberately omitted `version`) are acceptable; **errors** block: fix and re-run before committing.
 
-- [ ] **Step 5: If ANY inline fix was made in Steps 2–3b, re-run Steps 1, 3, and 4 before committing** — a fix applied after the oracles ran is unverified until they run again (this especially guards a single-copy edit to backlog-store.md breaking four-copy identity).
+- [ ] **Step 5: If ANY inline fix was made in Steps 2–3b, re-run Steps 1, 3, and 4 before committing — plus Step 2's by-eye checks whenever SKILL.md or output-template.md was touched** — a fix applied after the oracles ran is unverified until they run again (this especially guards a single-copy edit to backlog-store.md breaking four-copy identity, and a template edit dropping a non-negotiable from one half).
 
 - [ ] **Step 6: Commit any fixes**
 

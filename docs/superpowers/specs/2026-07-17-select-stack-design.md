@@ -84,8 +84,11 @@ downstream act (a Claude Code build session).
   running refine-feature/refine-story on the MVP items before starting the build
   session.
 - **Revisit branch:** if epic front-matter already has `stack:` (or STACK.md exists),
-  ask what changed and why; supersede the old file (`status: superseded` + pointer line,
-  the store's supersede idiom); re-derive only what's touched.
+  ask what changed and why; revise the file **in place** (STACK.md is a path-addressed
+  singleton — the store's supersede idiom can't apply, since a replacement would occupy
+  the superseded file's only address; git history holds prior versions, and the revised
+  file records what changed as a dated revision micro-ADR); re-derive only what's
+  touched.
 
 ### What the store can and cannot supply (from the seam audit)
 
@@ -118,7 +121,7 @@ NFR prose.
   plain names without `#NN` cannot confuse ID allocation.
 - Front-matter (camelCase, per store convention):
   - STACK.md: `type: stack`, `epic: E01`, `status: decided` (lifecycle:
-    `decided → superseded`), `validatedAsOf: <YYYY-MM>` (house-stack data vintage),
+    `decided`, revised in place on re-selection), `validatedAsOf: <YYYY-MM>` (house-stack data vintage),
     `houseStackVersion` (the reference doc's stamp it was applied from).
   - KICKOFF.md: `type: kickoff`, `epic: E01`, `stack: STACK.md`.
 - Addressed by path — singleton per epic, no new ID prefix.
@@ -391,7 +394,7 @@ the preferred answer first); plain language with technical terms translated on f
 
 **Phase 0 — Intake.** As §3. No founder questions beyond store path / epic choice.
 
-**Phase 1 — Derive (silent).** Run the taxonomy over the store. Produce the demand
+**Phase 1 — Derive the demand profile (silent).** Run the taxonomy over the store. Produce the demand
 profile: signal → citation(s) → confidence → tier. Run the NFR threshold table. Note
 enabler features, Real Options entries, mvp/contingent partition, validate-manually
 candidates. Nothing is shown yet.
@@ -445,7 +448,8 @@ epic.md front-matter (only epic-file touch). Closing read-back: the stack in thr
 sentences; costs at launch vs. paid-everything; token ledger (spent/refused); next step
 ("open a fresh Claude Code session in the repo and paste the kickoff prompt").
 
-**Revisit branch:** what changed and why → supersede old STACK.md → re-run only affected
+**Revisit branch:** what changed and why → revise STACK.md in place (dated revision
+micro-ADR; git history keeps prior versions) → re-run only affected
 phases (new demand signal → phases 1–2 delta; new constraint → phase 3 delta; always
 re-run phase 4 for affected layers and rewrite artifacts whole).
 
@@ -539,7 +543,10 @@ scaffolder-emitted agent files.
 - Never persisted: constraint-interview raw transcript, estimates or schedule dates
   (no-estimates rule), account credentials or anything secret-like (account *names*
   only, never keys).
-- Supersede, never delete, on revisit.
+- On revisit, revise both files in place; the revised STACK.md opens its micro-ADR list
+  with a dated revision entry stating what changed and why. Prior versions live in git
+  history (the store's item-file supersede idiom does not apply to path-addressed
+  singletons).
 
 ## 8. Anti-patterns (carried into SKILL.md)
 
