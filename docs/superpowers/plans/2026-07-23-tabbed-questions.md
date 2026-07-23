@@ -731,6 +731,12 @@ Expected: exactly 2 hits — the SKILL.md fallback line and the interview-guide.
 Run: `grep -rn "pick-one" plugins/select-stack --include=SKILL.md --include=interview-guide.md`
 Expected: the SAME 2 hits (wrap-proof token check — catches a skipped Step 3, whose old text wraps `pick-one` / `brackets` across lines)
 
+Run: `grep -rn "pick-one" plugins/select-stack --include=SKILL.md --include=interview-guide.md | grep -vc "fallback"`
+Expected: output `0` (exit 1 = pass; a surviving old bullet — SKILL.md's or the guide's — carries no "fallback" and makes this non-zero)
+
+Run: `grep -c "tabbed-questions.md" plugins/select-stack/skills/select-stack/references/interview-guide.md`
+Expected: `1` (Step 5's upgraded bullet — catches a skipped Step 5 inside this task instead of deferring detection to Task 7)
+
 - [ ] **Step 8: Commit**
 
 ```bash

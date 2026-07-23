@@ -232,7 +232,12 @@ paragraph:
 | refine-epic SKILL.md:45, decompose-epic SKILL.md:61, refine-feature SKILL.md:57, refine-story SKILL.md:62 (one-question bullets) | Qualified — §4 item 1 |
 | refine-epic SKILL.md:143 (Anti-patterns `"A or B?"`) | Qualified — §4 item 4 |
 | refine-epic SKILL.md:62 (`"big or small?" menu`) | Ban kept; stale justification reworded — §4 item 4 |
-| refine-epic SKILL.md:66 (`one open` size-fallback question) | Kept — self-framing evidence question, stays prose. (Found by manual read, NOT by the grep — the `**` bold markers around `one open` defeat the alternation; the grep yields 13 hits, this table lists 14 sites.) |
+| refine-epic SKILL.md:66 (`one open` size-fallback question) | Kept — self-framing evidence question, stays prose. (Found by manual read, NOT by the grep — the `**` bold markers around `one open` defeat the alternation.) |
+| refine-epic SKILL.md:96 (`big/small menu` phase-flow echo) | Kept — same size-is-evidence inference rule as :62, whose reworded justification its "(see Adaptive depth)" pointer lands on. (Found by manual read, round 3 — the slash form `big/small` defeats the grep's `big or small` alternation.) |
+
+The grep yields 13 hits; this table lists 15 sites — two (`:66`, `:96`) found only by
+manual read because markup and slash forms defeat the alternations. The population was
+swept by hand as well as by grep; "exhaustive" means both passes.
 | select-stack SKILL.md:149 + interview-guide.md:17 (`never offer a menu with an "…and also…"`) | Kept — bans stacked asks, not answer options; consistent with one-call-one-tab |
 | select-stack SKILL.md:122 + interview-guide.md:204 (`never offered for veto`) | Not menu-ban class (non-negotiables veto protection); kept |
 | build-a-great-elite-question SKILL.md:102, 118, 252 | **OUT OF SCOPE — must survive untouched.** All verification greps are scoped to the five suite plugins; a tree-wide menu grep WILL hit these and that is not a failure. |
