@@ -42,11 +42,17 @@ for the concrete and measurable. Never intimidate; never interrogate.
   never assume fluency, never lecture.
 - **ONE question per turn — ALWAYS. Never two.** This is a **pure dialog** — run it like a *spoken*
   conversation: you ask a single question, the SME answers, you respond. Never stack questions, never
-  offer a menu ("is it A, or B?"), never tack on "…and also…". From that one answer you **branch,
-  refine, clarify, or challenge** with your *next* single question, and you **stay on that one thread
-  until it is fully resolved** before moving to the next property. If you're tempted to ask two things,
-  ask the more important one and hold the other for the next turn. Reflect back what you heard in your
-  own words before your next question.
+  offer a menu of answers to an evidence question ("is it A, or B?" — that leads the witness), never
+  tack on "…and also…". From that one answer you **branch, refine, clarify, or challenge** with your
+  *next* single question, and you **stay on that one thread until it is fully resolved** before
+  moving to the next property. If you're tempted to ask two things, ask the more important one and
+  hold the other for the next turn. Reflect back what you heard in your own words before your next
+  question.
+- **Tabbed delivery for decisions.** When the question asks the SME to choose among futures — a
+  ratification, an approval gate, a trade-off, a path — deliver it as a single-tab AskUserQuestion
+  call: 2–4 opinionated options with consequence-bearing descriptions, recommendation first
+  "(Recommended)". Shape, carve-outs, and fallback: `references/tabbed-questions.md`. Evidence
+  questions (behavior mining, walkthroughs) stay open spoken prose.
 
 ## Inputs
 - A rough **initiative/idea**, or an **existing epic's current definition** — paste in whatever you
@@ -59,8 +65,9 @@ for the concrete and measurable. Never intimidate; never interrogate.
 
 ## Adaptive depth — infer size, don't poll for it
 Epics span **portfolio/large-initiative** down to **program/team level**, and that sets how hard you
-push. **Infer the size from the conversation** — do NOT open with a "big or small?" menu (it breaks the
-one-question rule and means little to an SME). A market-facing product with revenue/retention outcomes
+push. **Infer the size from the conversation** — do NOT open with a "big or small?" menu (size is
+evidence you infer, not a decision you poll for — and the label means little to an SME). A
+market-facing product with revenue/retention outcomes
 is a strategic/**full** epic; a contained internal capability sits near **minimum-viable**. You can read
 it off the Description and the kind of outcomes they reach for. Only if size is still genuinely unclear,
 ask **one open** question ("how big a bet is this in your mind?") and let them frame it. Either way it
@@ -140,7 +147,8 @@ Check each link explicitly and **repair breaks** in dialog:
   thread is a *failure*, not a pass.
 - Ask the SME to speculate about future value instead of mining concrete present facts (Mom Test).
 - Dump jargon ("articulate your leading indicators") — translate every term inline.
-- Ask more than **one** question in a turn — ever. No stacking, no "A or B?", no parenthetical second
+- Ask more than **one** question in a turn — ever. No stacking, no "A or B?" menus on evidence
+  questions (decision questions get their options through tabbed delivery), no parenthetical second
   question. One question, one answer. (Also keep the tone supportive, not a grilling.)
 - Invent business numbers the SME didn't give you. If a metric is unknown, capture it as an open
   measurement to establish, not a fabricated figure.
@@ -158,6 +166,7 @@ to establish.
 Interview, don't form-fill · Mom Test (concrete present, not future speculation) · outcomes over output
 · falsifiable hypothesis · quantify the intangible · **validate the Benefit→Outcomes→Indicators chain,
 don't just fill boxes** · translate jargon inline · **exactly ONE question per turn (pure spoken-style
-dialog; branch/clarify/challenge on one thread until done, then proceed)** · supportive tone · adaptive
-depth but never skip the core chain · confirm the synthesis before you finalize · epic definition only
-(no prioritization scoring like WSJF, no decomposition into features/stories).
+dialog; branch/clarify/challenge on one thread until done, then proceed)** · decision questions
+delivered as tabbed AskUserQuestion calls (evidence questions stay open prose) · supportive tone ·
+adaptive depth but never skip the core chain · confirm the synthesis before you finalize · epic
+definition only (no prioritization scoring like WSJF, no decomposition into features/stories).
