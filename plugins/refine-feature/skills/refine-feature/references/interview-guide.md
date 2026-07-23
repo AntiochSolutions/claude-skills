@@ -9,6 +9,10 @@ stems, not scripts — adapt wording to the SME's own vocabulary, keep the *move
 **sequence of turns** — ask the first, hold the rest. Multi-part stems below are banks of sequential
 moves, never one utterance.
 
+**Delivery:** decision questions (ratifications, gates, trade-offs) go out as single-tab
+AskUserQuestion calls — shape, the evidence-question carve-out, and the no-tool fallback are in
+`tabbed-questions.md` (this folder). Evidence questions stay open spoken prose.
+
 ## Intake & timing guard (phase 0)
 
 - Opening (after the user picks a feature): *"I've got `F03 — <title>` open, with its <N> story
