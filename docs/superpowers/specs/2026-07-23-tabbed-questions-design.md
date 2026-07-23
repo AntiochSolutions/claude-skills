@@ -1,6 +1,6 @@
 # Tabbed-questions capability — design
 
-**Status:** draft — pending Dan's review, 2026-07-23
+**Status:** approved 2026-07-23
 **Source request:** apply the guidelines in
 `C:\Users\dan\source\repos\thefrustratedbuilder.com\Documents\antioch-skills-tabbed-questions-prompt.md`
 to the interview suite. Source artifact: the tested skill at
@@ -172,10 +172,12 @@ Each SKILL.md:
    > walkthroughs) stay open spoken prose.
 
 3. **Extend the closing lists**: refine-feature and refine-story append to their
-   Anti-patterns line `· deliver a decision question as prose pick-one brackets when
+   Anti-patterns line `· deliver a decision question as prose brackets when
    AskUserQuestion is available`; decompose-epic adds the same as a Never-do list item;
    refine-epic appends to its closing principles run `· decision questions delivered as
-   tabbed AskUserQuestion calls (evidence questions stay open prose)`.
+   tabbed AskUserQuestion calls (evidence questions stay open prose)`. (These say
+   `prose brackets`, not `pick-one brackets`, so the §6 bracket-demotion grep keeps
+   exactly its two enumerated hits.)
 
 Each interview-guide.md: one **Delivery** pointer added after the one-question intro
 paragraph:
