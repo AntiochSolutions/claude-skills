@@ -9,6 +9,10 @@ wording to the SME's vocabulary, keep the *move* intact.
 **sequence of turns** — ask the first, hold the rest; follow-ups like *"…is there more?"* are their
 own turn. Multi-part stems below are banks of sequential moves, never one utterance.
 
+**Delivery:** decision questions (ratifications, gates, trade-offs) go out as single-tab
+AskUserQuestion calls — shape, the evidence-question carve-out, and the no-tool fallback are in
+`tabbed-questions.md` (this folder). Evidence questions stay open spoken prose.
+
 ## Entry checks (phase 0)
 
 - Opening (after the user picks a story): *"I've got `S07 — <title>` open — the card says: <Card

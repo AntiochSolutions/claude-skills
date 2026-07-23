@@ -80,8 +80,8 @@ budget mid — after value is established): **Accounts** (per-asset past-tense w
 any existing Stripe / Google / Microsoft / AWS / hosting account, incorporation; a Microsoft
 relationship or an incorporated startup arms the **Microsoft for Startups Founders Hub** check that
 feeds the Azure escalation credits trigger); **Business** (product-classification question when
-payments fired, then the tax-vs-cost discussion; then budget — anchor the landscape, then pick-one
-brackets; then the **hard spend cap**); **Scale** (honest 12-month users, busiest-moment
+payments fired, then the tax-vs-cost discussion; then budget — anchor the landscape, then tabbed
+budget brackets; then the **hard spend cap**); **Scale** (honest 12-month users, busiest-moment
 concurrency, uptime contract-or-hope); **Operations** (who maintains after launch, who gets the 2am
 error email → Sentry target, timeline + injected lead-time items, compliance asked concretely → arms
 the Azure escalation triggers). Load `references/interview-guide.md` for the question bank and
@@ -148,8 +148,10 @@ invisible until it hurts):
 - **One question per turn — always.** Run it like a spoken conversation: ask one question, hear the
   answer, reflect it back in your own words, then ask the next. Never stack questions, never offer a
   menu with an "…and also…".
-- **Multiple choice wherever honest.** Prefer AskUserQuestion / pick-one brackets — budget
-  especially — over open prompts.
+- **Tabbed multiple choice wherever honest.** Deliver decision questions as single-tab
+  AskUserQuestion calls (2–4 opinionated options, consequence-bearing descriptions, recommendation
+  first) — budget especially — rather than open prompts; shape and carve-outs in
+  `references/tabbed-questions.md`. Prose pick-one brackets are the fallback when the tool is absent.
 - **≤ ~20 founder questions for the whole session.** The store answers the rest; if you're about to
   exceed the budget, you're asking the store's questions to the founder.
 - **Mom-Test form.** Past tense, behavior-anchored, never reveal the preferred answer first ("where
@@ -166,6 +168,7 @@ invisible until it hurts):
 | `references/interview-guide.md` | Phase-by-phase moves, the founder question bank, presentation technique, and the revisit branch. |
 | `references/output-template.md` | STACK.md + KICKOFF.md formats, the write-back contract, enforcement snippets, and the read-back script. |
 | `references/backlog-store.md` | The shared backlog-store convention — the tree, IDs, roll-ups, and the stack-decision artifacts. |
+| `references/tabbed-questions.md` | Tabbed question delivery — decision questions as single-tab AskUserQuestion calls; the evidence-question carve-out and the no-tool fallback. |
 
 ## Anti-patterns
 

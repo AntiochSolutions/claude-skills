@@ -53,6 +53,12 @@
       "source": "./plugins/statusline",
       "description": "Installs a two-line Claude Code status line — model + reasoning effort, directory, git branch, session name, a color-coded context-usage bar, session cost and duration, and 5-hour/7-day rate-limit usage. Install the plugin, then say \"set up the status line\" — the skill configures it for your platform (Windows, macOS, or Linux) and verifies it works. Requires Python 3.",
       "keywords": ["statusline", "status-line", "status-bar", "prompt", "context-usage", "rate-limits", "session-cost", "git-branch", "claude-code", "terminal"]
+    },
+    {
+      "name": "tabbed-questions",
+      "source": "./plugins/tabbed-questions",
+      "description": "Makes Claude ask clarifying questions as clickable AskUserQuestion tabs instead of prose question walls — one tab per question, 2–4 opinionated options with consequence-bearing descriptions, recommendation first. Built and tested RED/GREEN; the epic-shaping suite's interviews deliver their decision questions this way.",
+      "keywords": ["ask-user-question", "clarifying-questions", "tabbed-questions", "ux", "interview", "tool-use", "claude-code"]
     }
   ]
 }

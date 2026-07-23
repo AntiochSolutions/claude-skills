@@ -59,11 +59,17 @@ question, never something to transcribe as-is.
   it reveals, and its answer is never written down. Sizing belongs to the team.
 - **ONE question per turn — ALWAYS. Never two.** This is a **pure dialog** — run it like a *spoken*
   conversation: you ask a single question, the SME answers, you respond. Never stack questions,
-  never offer a menu ("is it A, or B?"), never tack on "…and also…". From that one answer you
-  **branch, refine, clarify, or challenge** with your *next* single question, and you **stay on that
-  one thread until it is fully resolved** before moving to the next thread. If you're tempted to ask
-  two things, ask the more important one and hold the other for the next turn. Reflect back what you
-  heard in your own words before your next question.
+  never offer a menu of answers to an evidence question ("is it A, or B?" — that leads the witness),
+  never tack on "…and also…". From that one answer you **branch, refine, clarify, or challenge**
+  with your *next* single question, and you **stay on that one thread until it is fully resolved**
+  before moving to the next thread. If you're tempted to ask two things, ask the more important one
+  and hold the other for the next turn. Reflect back what you heard in your own words before your
+  next question.
+- **Tabbed delivery for decisions.** When the question asks the SME to choose among futures — a
+  ratification, an approval gate, a trade-off, a path — deliver it as a single-tab AskUserQuestion
+  call: 2–4 opinionated options with consequence-bearing descriptions, recommendation first
+  "(Recommended)". Shape, carve-outs, and fallback: `references/tabbed-questions.md`. Evidence
+  questions (behavior mining, walkthroughs) stay open spoken prose.
 - **Knowledge-state, never stage-gate.** "Ready enough with known unknowns" is a legitimate exit;
   the artifact is input to the team's conversation, owned by the named SME.
 
@@ -146,7 +152,8 @@ small checklist — a two-minute gate is the gate working. On a score-4–5 stor
 first probe only, and (e) is where the blocking questions land verbatim.
 
 ## Anti-patterns (do NOT)
-Ask more than one question per turn · say "acceptance criteria" / "Gherkin" / "INVEST" / "spike"
+Ask more than one question per turn · deliver a decision question as prose brackets when
+AskUserQuestion is available · say "acceptance criteria" / "Gherkin" / "INVEST" / "spike"
 untranslated · draft Given-When-Then live during the conversation · let any vague-word hit survive
 unconverted · write a Confirmation line the SME didn't originate or confirm · exceed 3–7 examples
 per rule or enumerate combinations · write more than one When in a scenario, or UI mechanics in any

@@ -54,11 +54,17 @@ for the behavior and the number underneath. Never intimidate; never interrogate.
   outputs — the backlog is sequenced later, with the whole team.
 - **ONE question per turn — ALWAYS. Never two.** This is a **pure dialog** — run it like a *spoken*
   conversation: you ask a single question, the SME answers, you respond. Never stack questions,
-  never offer a menu ("is it A, or B?"), never tack on "…and also…". From that one answer you
-  **branch, refine, clarify, or challenge** with your *next* single question, and you **stay on that
-  one thread until it is fully resolved** before moving to the next thread. If you're tempted to ask
-  two things, ask the more important one and hold the other for the next turn. Reflect back what you
-  heard in your own words before your next question.
+  never offer a menu of answers to an evidence question ("is it A, or B?" — that leads the witness),
+  never tack on "…and also…". From that one answer you **branch, refine, clarify, or challenge**
+  with your *next* single question, and you **stay on that one thread until it is fully resolved**
+  before moving to the next thread. If you're tempted to ask two things, ask the more important one
+  and hold the other for the next turn. Reflect back what you heard in your own words before your
+  next question.
+- **Tabbed delivery for decisions.** When the question asks the SME to choose among futures — a
+  ratification, an approval gate, a trade-off, a path — deliver it as a single-tab AskUserQuestion
+  call: 2–4 opinionated options with consequence-bearing descriptions, recommendation first
+  "(Recommended)". Shape, carve-outs, and fallback: `references/tabbed-questions.md`. Evidence
+  questions (behavior mining, walkthroughs) stay open spoken prose.
 - **Knowledge-state, never stage-gate.** The exit artifact reports what's agreed, what's open (with
   owners), and what's deliberately deferred — it is input to the team's conversation, not a
   certificate, and open questions are allowed on the way out.
@@ -145,7 +151,8 @@ its set *glance* flags waste rather than curating. The discovery-brief and hypot
 skip the gate; their bars are in Ending criteria.
 
 ## Anti-patterns (do NOT)
-Ask more than one question per turn · say "acceptance criteria" / "INVEST" / "spike" untranslated ·
+Ask more than one question per turn · deliver a decision question as prose brackets when
+AskUserQuestion is available · say "acceptance criteria" / "INVEST" / "spike" untranslated ·
 let any vague-word hit survive unconverted · write an AC the SME didn't originate or confirm ·
 accept an AC that restates scope (dual test, always) · let a bare direction word stand as a signal ·
 deepen a story Card (detail attaches as a note, never inlines) · write story-level AC or

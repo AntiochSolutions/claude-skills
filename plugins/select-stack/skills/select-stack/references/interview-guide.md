@@ -17,8 +17,10 @@ because live sessions use them as written.
   your own words, then ask the next. Never stack two asks, never offer a menu with an
   "…and also…". A stem with more than one question mark is a **sequence of turns**, not one
   utterance — ask the first, hold the rest.
-- **Multiple choice wherever honest.** Prefer AskUserQuestion-style pick-one brackets over
-  open prompts — budget especially. Only ask open when a bracket would be dishonest.
+- **Tabbed multiple choice wherever honest.** Deliver decision questions as single-tab
+  AskUserQuestion calls — budget especially — rather than open prompts; shape and carve-outs
+  in `tabbed-questions.md` (this folder). Only ask open when options would be dishonest.
+  Prose pick-one brackets are the fallback when the tool is absent.
 - **Mom-Test form.** Past tense, behavior-anchored, and **never reveal the preferred answer
   first** — "where's the domain registered?", not "you'll want Vercel, right?". Ask about
   what already exists and what already happened, not what the founder imagines they'll want.
@@ -144,7 +146,7 @@ A per-asset walk of what already exists — factual, never hypothetical. One ass
   Then work the tax-burden-vs-cost discussion and
   land the processor recommendation **in the order that rule specifies** (classification
   first, tax-vs-cost second, recommendation third). Don't restate the rule here — apply it.
-- **Budget — anchor, then pick-one brackets.** State the landscape and let the founder pick:
+- **Budget — anchor, then tabbed brackets.** State the landscape and let the founder pick (single-tab AskUserQuestion):
   *"Apps like this run $0–5/mo as a demo, ~$35/mo in production, $100+/mo when everything's paid — which range should we design for?"*
   (Use the stamped pricing framing from
   `house-stack.md`; re-verify the figures when web tools are available.)
