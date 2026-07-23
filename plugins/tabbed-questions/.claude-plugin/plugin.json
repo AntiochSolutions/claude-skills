@@ -1,0 +1,12 @@
+{
+  "name": "tabbed-questions",
+  "description": "Makes Claude ask clarifying questions as clickable AskUserQuestion tabs instead of prose question walls — one tab per question, 2–4 opinionated options with consequence-bearing descriptions, recommendation first. Built and tested RED/GREEN; the epic-shaping suite's interviews deliver their decision questions this way.",
+  "author": {
+    "name": "Antioch Solutions",
+    "email": "meet@antiochsolutions.com"
+  },
+  "homepage": "https://www.antiochsolutions.com/skills",
+  "repository": "https://github.com/AntiochSolutions/claude-skills",
+  "license": "MIT",
+  "keywords": ["ask-user-question", "clarifying-questions", "tabbed-questions", "ux", "interview", "tool-use", "claude-code"]
+}
