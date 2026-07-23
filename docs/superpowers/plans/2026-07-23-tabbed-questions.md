@@ -644,7 +644,7 @@ new string (the `pick-one brackets` phrase must stay on one line):
 ```markdown
 - **Tabbed multiple choice wherever honest.** Deliver decision questions as single-tab
   AskUserQuestion calls (2–4 opinionated options, consequence-bearing descriptions, recommendation
-  first) — budget especially — over open prompts; shape and carve-outs in
+  first) — budget especially — rather than open prompts; shape and carve-outs in
   `references/tabbed-questions.md`. Prose pick-one brackets are the fallback when the tool is absent.
 ```
 
@@ -709,7 +709,15 @@ Run: `grep -c "witness" plugins/select-stack/skills/select-stack/SKILL.md`
 Expected: `0` (grep exits 1 on zero matches — that exit code is the pass condition here, not a failure)
 
 Run: `grep -c "AskUserQuestion" plugins/select-stack/skills/select-stack/SKILL.md`
-Expected: `2` (upgraded interview-rules bullet + References-table row — if this is 1, Step 2 or Step 4 was skipped)
+Expected: `2`. CAUTION: this count does NOT detect a skipped Step 2 — the OLD bullet Step 2
+replaces already contains `AskUserQuestion`, so the count is 2 whether or not Step 2 ran. It
+catches a skipped Step 4 (drops to 1). Step 2's own verifiers are the next two greps.
+
+Run: `grep -c "Tabbed multiple choice" plugins/select-stack/skills/select-stack/SKILL.md`
+Expected: `1` (pins Step 2's bullet upgrade — pre-state 0)
+
+Run: `grep -c "tabbed-questions.md" plugins/select-stack/skills/select-stack/SKILL.md`
+Expected: `2` (Step 2's bullet + Step 4's table row; 1 means one of them was skipped — pre-state 0)
 
 Run: `grep -c "then tabbed" plugins/select-stack/skills/select-stack/SKILL.md`
 Expected: `1` (Step 3's Phase 3 budget line)
@@ -786,6 +794,12 @@ Expected: the SAME 2 hits and no others. (Wrap-proof token check: the pre-build 
 line-wrapped `pick-one` / `brackets` occurrence at select-stack SKILL.md:83–84 that the phrase
 grep cannot see; this token grep catches it if the Task 6 Step 3 edit was skipped.)
 
+Run: `grep -rn "pick-one" plugins/ --include=SKILL.md --include=interview-guide.md | grep -vc "fallback"`
+Expected: output `0` (the executable form of "both hits are on fallback lines" — the second
+grep exits 1 when its count is 0, and that exit code is the pass condition). A surviving
+pre-build `pick-one` line, such as the old select-stack bullet, contains no "fallback" and
+makes this output non-zero.
+
 - [ ] **Step 7: Wiring counts — the per-file matrix (spec §6.7)**
 
 ```bash
@@ -794,10 +808,14 @@ ls plugins/refine-epic/skills/refine-epic/references/tabbed-questions.md plugins
 grep -c "tabbed-questions.md" plugins/refine-epic/skills/refine-epic/references/interview-guide.md plugins/decompose-epic/skills/decompose-epic/references/interview-guide.md plugins/refine-feature/skills/refine-feature/references/interview-guide.md plugins/refine-story/skills/refine-story/references/interview-guide.md plugins/select-stack/skills/select-stack/references/interview-guide.md
 ```
 
-Expected: `AskUserQuestion` count = exactly `2` for EVERY one of the five SKILL.md files —
-each file's two hits come from two different planned edits (bullet + closing-list item, or
-bullet + References-table row), so a `1` means a specific edit was skipped; five reference
-paths listed with no error; `tabbed-questions.md` count ≥ 1 for every interview-guide.md
+Expected: `AskUserQuestion` count = exactly `2` for EVERY one of the five SKILL.md files.
+For the four refine/decompose files the two hits come from two different planned edits
+(delivery bullet + closing-list item), so a `1` means a specific edit was skipped. CAUTION —
+select-stack: its OLD interview-rules bullet already contained `AskUserQuestion`, so its count
+cannot detect a skipped bullet upgrade; that edit's verifiers are Step 10's `Tabbed multiple
+choice` = 1 and `tabbed-questions.md` = 2 greps. Five reference paths listed with no error;
+`tabbed-questions.md` count = exactly `1` for every interview-guide.md (a `2` means the
+Delivery pointer was applied twice — the append-style edits are double-applicable)
 
 - [ ] **Step 8: Menu-clause qualification (spec §6.8)**
 
@@ -822,6 +840,13 @@ scope per the Global Constraints, and must NOT be edited.
 
 - [ ] **Step 10: select-stack rewording present (spec §6.10)**
 
+Run: `grep -c "Tabbed multiple choice" plugins/select-stack/skills/select-stack/SKILL.md`
+Expected: `1` (the interview-rules bullet upgrade — the ONE select-stack edit the
+AskUserQuestion count cannot see, because the old bullet also contained that token)
+
+Run: `grep -c "tabbed-questions.md" plugins/select-stack/skills/select-stack/SKILL.md`
+Expected: `2` (upgraded bullet + References-table row)
+
 Run: `grep -c "then tabbed" plugins/select-stack/skills/select-stack/SKILL.md`
 Expected: `1`
 
@@ -829,3 +854,8 @@ Run: `grep -c "tabbed brackets" plugins/select-stack/skills/select-stack/referen
 Expected: `1`
 
 - [ ] **Step 11: Report** — no commit unless a fix was needed; report each oracle's actual output in the task report.
+
+**Fix-path rule (non-negotiable):** if any oracle fails and you fix it, (a) a fix that touches
+`references/tabbed-questions.md` must be applied to ALL FIVE copies in the same commit — never
+one copy alone (the byte-identity invariant holds at every commit); (b) after ANY fix commit,
+re-run this task from Step 1 — a fix can invalidate an oracle that passed earlier.

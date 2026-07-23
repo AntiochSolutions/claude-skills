@@ -173,13 +173,15 @@ Each SKILL.md:
    > fallback: `references/tabbed-questions.md`. Evidence questions (behavior mining,
    > walkthroughs) stay open spoken prose.
 
-3. **Extend the closing lists**: refine-feature and refine-story append to their
-   Anti-patterns line `· deliver a decision question as prose brackets when
-   AskUserQuestion is available`; decompose-epic adds the same as a Never-do list item;
-   refine-epic appends to its closing principles run `· decision questions delivered as
-   tabbed AskUserQuestion calls (evidence questions stay open prose)`. (These say
-   `prose brackets`, not `pick-one brackets`, so the §6 bracket-demotion grep keeps
-   exactly its two enumerated hits.)
+3. **Extend the closing lists** (each addition is inserted immediately after the
+   list's one-question item, not at the end of the run): refine-feature and
+   refine-story insert into their Anti-patterns run `· deliver a decision question as
+   prose brackets when AskUserQuestion is available`; decompose-epic adds the same as
+   a Never-do list item directly after its one-question item; refine-epic inserts into
+   its closing principles run `· decision questions delivered as tabbed AskUserQuestion
+   calls (evidence questions stay open prose)`. (These say `prose brackets`, not
+   `pick-one brackets`, so the §6 bracket-demotion grep keeps exactly its two
+   enumerated hits.)
 4. **refine-epic only — two further menu-ban sites** (found by the 2026-07-23
    class-widening audit; the spec's original inventory missed them):
    - Anti-patterns entry (~line 143): `No stacking, no "A or B?", no parenthetical
@@ -207,9 +209,9 @@ paragraph:
   Prefer AskUserQuestion / pick-one brackets — budget especially — over open prompts.`
   becomes: `**Tabbed multiple choice wherever honest.** Deliver decision questions as
   single-tab AskUserQuestion calls (2–4 opinionated options, consequence-bearing
-  descriptions, recommendation first) — budget especially — over open prompts; shape
-  and carve-outs in references/tabbed-questions.md. Prose pick-one brackets are the
-  fallback when the tool is absent.`
+  descriptions, recommendation first) — budget especially — rather than open prompts;
+  shape and carve-outs in references/tabbed-questions.md. Prose pick-one brackets are
+  the fallback when the tool is absent.`
 - SKILL.md Phase 3 summary (the Constraint-interview paragraph; an earlier revision
   of this spec mislabeled it "Phase 2"): `then pick-one brackets` → `then tabbed
   budget brackets`.
@@ -230,7 +232,7 @@ paragraph:
 | refine-epic SKILL.md:45, decompose-epic SKILL.md:61, refine-feature SKILL.md:57, refine-story SKILL.md:62 (one-question bullets) | Qualified — §4 item 1 |
 | refine-epic SKILL.md:143 (Anti-patterns `"A or B?"`) | Qualified — §4 item 4 |
 | refine-epic SKILL.md:62 (`"big or small?" menu`) | Ban kept; stale justification reworded — §4 item 4 |
-| refine-epic SKILL.md:66 (`one open` size-fallback question) | Kept — self-framing evidence question, stays prose |
+| refine-epic SKILL.md:66 (`one open` size-fallback question) | Kept — self-framing evidence question, stays prose. (Found by manual read, NOT by the grep — the `**` bold markers around `one open` defeat the alternation; the grep yields 13 hits, this table lists 14 sites.) |
 | select-stack SKILL.md:149 + interview-guide.md:17 (`never offer a menu with an "…and also…"`) | Kept — bans stacked asks, not answer options; consistent with one-call-one-tab |
 | select-stack SKILL.md:122 + interview-guide.md:204 (`never offered for veto`) | Not menu-ban class (non-negotiables veto protection); kept |
 | build-a-great-elite-question SKILL.md:102, 118, 252 | **OUT OF SCOPE — must survive untouched.** All verification greps are scoped to the five suite plugins; a tree-wide menu grep WILL hit these and that is not a failure. |
@@ -283,21 +285,28 @@ verifier** — no element is checked only by its author or only by a human revie
 5. **README registration:** `grep -c "tabbed-questions@antioch-skills" README.md` →
    `1` (the marketplace validator never reads README.md — this is the row's only
    deterministic check).
-6. **Bracket demotion (phrase + wrap-proof token):**
+6. **Bracket demotion (phrase + wrap-proof token + executable fallback check):**
    `grep -rn "pick-one brackets" plugins/ --include=SKILL.md --include=interview-guide.md`
-   → exactly the two enumerated fallback-context hits in §4, and
+   → exactly the two enumerated fallback-context hits in §4;
    `grep -rn "pick-one" plugins/ --include=SKILL.md --include=interview-guide.md` →
    the SAME two hits (the pre-build tree has a line-wrapped `pick-one`/`brackets`
-   occurrence at select-stack SKILL.md:83–84 that the phrase grep cannot see).
+   occurrence at select-stack SKILL.md:83–84 that the phrase grep cannot see); and
+   the same token grep piped through `| grep -vc "fallback"` → `0` (executable form
+   of "both hits are on fallback lines" — a surviving pre-build `pick-one` line
+   contains no "fallback" and makes this non-zero).
 7. **Wiring counts — the per-file matrix:** `grep -c "AskUserQuestion"` → exactly `2`
-   in each of the five suite SKILL.md files. Each file's two hits come from two
-   DIFFERENT planned edits (refine-epic: delivery bullet + guardrails recap;
-   decompose-epic: delivery bullet + Never-do item; refine-feature and refine-story:
-   delivery bullet + Anti-patterns append; select-stack: interview-rules bullet +
-   References-table row), so any skipped closing-list or table-row edit drops that
-   file to `1`. Plus: each of the five plugins has `references/tabbed-questions.md`
-   on disk, and each of the five interview-guide.md files contains
-   `tabbed-questions.md`.
+   in each of the five suite SKILL.md files. For the FOUR refine/decompose files the
+   two hits come from two DIFFERENT planned edits (refine-epic: delivery bullet +
+   guardrails recap; decompose-epic: delivery bullet + Never-do item; refine-feature
+   and refine-story: delivery bullet + Anti-patterns insertion), so any skipped
+   closing-list edit drops that file to `1`. **select-stack caveat:** its OLD
+   interview-rules bullet already contains `AskUserQuestion`, so this count CANNOT
+   detect a skipped bullet upgrade (it still catches a skipped References-table row);
+   the bullet upgrade's verifiers are §6.10's `Tabbed multiple choice` = 1 and
+   `tabbed-questions.md` = 2 greps. Plus: each of the five plugins has
+   `references/tabbed-questions.md` on disk, and each of the five interview-guide.md
+   files contains `tabbed-questions.md` exactly once (a `2` means the append-style
+   Delivery pointer was applied twice).
 8. **Menu-clause qualification:** `grep -c "witness"` → exactly `1` in each of the
    four refine/decompose SKILL.md files and `0` in select-stack's SKILL.md (its
    menu clause is not edited). For refine-epic's two extra §4-item-4 edits:
@@ -310,11 +319,18 @@ verifier** — no element is checked only by its author or only by a human revie
    NEVER run this unscoped as a pass/fail gate: `build-a-great-elite-question`
    SKILL.md:102 legitimately contains the clause, is out of scope, and must not be
    edited (see the menu-ban population table).
-10. **select-stack rewording present:** `grep -c "then tabbed"
-    plugins/select-stack/skills/select-stack/SKILL.md` → `1` (the Phase 3 budget
-    line) and `grep -c "tabbed brackets"
+10. **select-stack edits present:** `grep -c "Tabbed multiple choice"
+    plugins/select-stack/skills/select-stack/SKILL.md` → `1` (the interview-rules
+    bullet upgrade — the one select-stack edit §6.7's count cannot see);
+    `grep -c "tabbed-questions.md"` on the same file → `2` (bullet + References-table
+    row); `grep -c "then tabbed"` on the same file → `1` (the Phase 3 budget line);
+    and `grep -c "tabbed brackets"
     plugins/select-stack/skills/select-stack/references/interview-guide.md` → `1`
     (the Budget stem heading).
+
+**Fix-path rule:** any fix that touches `references/tabbed-questions.md` is applied to
+all five copies in the same commit (the byte-identity invariant holds at every commit),
+and after any fix commit the full oracle sweep re-runs from the top.
 
 ## 7. Branching & delivery
 
