@@ -13,6 +13,8 @@
 ## Global Constraints
 
 - **Branch:** all work on `feat/tabbed-questions` (stacked on `feat/select-stack`). Never commit to main or feat/select-stack.
+- **Out-of-scope plugins — NEVER edit:** `plugins/build-a-great-elite-question` and `plugins/ikigai-discovery` keep their current questioning styles by locked decision. build-a-great-elite-question's SKILL.md contains menu-ban language at lines 102/118/252 that is INTENTIONAL and must survive — if any grep you run tree-wide hits it, that is not a failure and must not be "fixed".
+- **Line endings:** target files are mixed — refine-epic and decompose-epic files are CRLF on disk; refine-feature, refine-story, and select-stack are LF. The plan's old strings match after newline normalization, which the Edit tool performs automatically. Do not convert line endings, and do not treat a raw-byte comparison mismatch as an old-string error.
 - **No `version` field** in any plugin.json or marketplace.json entry (repo convention; `claude plugin validate` warns about it — that warning is expected and acceptable).
 - **Windows/Git Bash oracles:** CRLF stderr warnings (`LF will be replaced by CRLF`) are NOT failures. Byte checks use `git diff --no-index --quiet A B; echo "EXIT:$?"` and judge ONLY the `EXIT:` line: `EXIT:0` = identical, `EXIT:1` = different.
 - **Wrap rule:** every new line containing the phrase `pick-one brackets` must keep that phrase unwrapped on one physical line (a grep oracle depends on it).
@@ -95,6 +97,9 @@ Expected: `OK: marketplace valid - 9 plugin(s)` (with `ok  tabbed-questions - 1 
 Run: `claude plugin validate .`
 Expected: passes; warnings about missing `version` are expected and acceptable.
 
+Run: `grep -c "tabbed-questions@antioch-skills" README.md`
+Expected: `1` (the validators never read README.md — this grep is the row's only deterministic check)
+
 - [ ] **Step 7: Commit**
 
 ```bash
@@ -108,7 +113,7 @@ git commit -m "feat: add tabbed-questions plugin (9th marketplace member)"
 
 **Files:**
 - Create: `plugins/refine-epic/skills/refine-epic/references/tabbed-questions.md` (authoritative copy — Tasks 3–6 `cp` from THIS file)
-- Modify: `plugins/refine-epic/skills/refine-epic/SKILL.md` (one-question bullet ~lines 43–49; Guardrails recap ~lines 158–163)
+- Modify: `plugins/refine-epic/skills/refine-epic/SKILL.md` (one-question bullet ~lines 43–49; Adaptive-depth justification ~lines 62–63; Anti-patterns entry ~lines 143–144; Guardrails recap ~lines 158–163)
 - Modify: `plugins/refine-epic/skills/refine-epic/references/interview-guide.md` (after the intro paragraph, ~line 9)
 
 **Interfaces:**
@@ -210,7 +215,37 @@ adaptive depth but never skip the core chain · confirm the synthesis before you
 definition only (no prioritization scoring like WSJF, no decomposition into features/stories).
 ```
 
-- [ ] **Step 4: Add the Delivery pointer to interview-guide.md** — old string (exact, end of intro paragraph, ~lines 8–9, plus the blank line after):
+- [ ] **Step 4: Qualify the Anti-patterns "A or B?" entry in SKILL.md** — this is refine-epic's second menu-ban site, missed by the spec's first pass (spec §4 item 4). Old string (exact, ~lines 143–144):
+
+```markdown
+- Ask more than **one** question in a turn — ever. No stacking, no "A or B?", no parenthetical second
+  question. One question, one answer. (Also keep the tone supportive, not a grilling.)
+```
+
+new string:
+
+```markdown
+- Ask more than **one** question in a turn — ever. No stacking, no "A or B?" menus on evidence
+  questions (decision questions get their options through tabbed delivery), no parenthetical second
+  question. One question, one answer. (Also keep the tone supportive, not a grilling.)
+```
+
+- [ ] **Step 5: Reword the stale Adaptive-depth justification in SKILL.md** — the "big or small?" ban STAYS (it is an infer-don't-poll evidence rule); only its parenthetical justification changes, because a single-tab call no longer breaks the one-question rule. Old string (exact, ~lines 62–63):
+
+```markdown
+push. **Infer the size from the conversation** — do NOT open with a "big or small?" menu (it breaks the
+one-question rule and means little to an SME). A market-facing product with revenue/retention outcomes
+```
+
+new string:
+
+```markdown
+push. **Infer the size from the conversation** — do NOT open with a "big or small?" menu (size is
+evidence you infer, not a decision you poll for — and the label means little to an SME). A
+market-facing product with revenue/retention outcomes
+```
+
+- [ ] **Step 6: Add the Delivery pointer to interview-guide.md** — old string (exact, end of intro paragraph, ~lines 8–9, plus the blank line after):
 
 ```markdown
 proceed to the next property). Follow the SME's energy, reflect back before your next question. Never
@@ -230,15 +265,28 @@ AskUserQuestion calls — shape, the evidence-question carve-out, and the no-too
 
 ```
 
-- [ ] **Step 5: Verify wiring**
+- [ ] **Step 7: Verify wiring**
 
 Run: `grep -c "witness" plugins/refine-epic/skills/refine-epic/SKILL.md`
 Expected: `1`
 
+Run: `grep -c "AskUserQuestion" plugins/refine-epic/skills/refine-epic/SKILL.md`
+Expected: `2` (delivery bullet + Guardrails recap — if this is 1, a step above was skipped)
+
+Run: `grep -c "menus" plugins/refine-epic/skills/refine-epic/SKILL.md`
+Expected: `1` (from Step 4)
+
+Run: `grep -c "poll" plugins/refine-epic/skills/refine-epic/SKILL.md`
+Expected: `2` (pre-existing section heading + Step 5's rewording)
+
 Run: `grep -c "tabbed-questions.md" plugins/refine-epic/skills/refine-epic/SKILL.md plugins/refine-epic/skills/refine-epic/references/interview-guide.md`
 Expected: `...SKILL.md:1` and `...interview-guide.md:1`
 
-- [ ] **Step 6: Commit**
+Run: `grep -c "pick-one brackets" plugins/refine-epic/skills/refine-epic/references/tabbed-questions.md`
+Expected: `2` — and run: `grep -c "The options ARE the conversation" plugins/refine-epic/skills/refine-epic/references/tabbed-questions.md`
+Expected: `1` (spot-checks that Step 1's transcription wasn't re-wrapped; Tasks 3–6 inherit fidelity via byte-identity)
+
+- [ ] **Step 8: Commit**
 
 ```bash
 git add plugins/refine-epic
@@ -334,6 +382,9 @@ AskUserQuestion calls — shape, the evidence-question carve-out, and the no-too
 
 Run: `grep -c "witness" plugins/decompose-epic/skills/decompose-epic/SKILL.md`
 Expected: `1`
+
+Run: `grep -c "AskUserQuestion" plugins/decompose-epic/skills/decompose-epic/SKILL.md`
+Expected: `2` (delivery bullet + Never-do item — if this is 1, Step 2 or Step 3 was skipped)
 
 Run: `grep -c "tabbed-questions.md" plugins/decompose-epic/skills/decompose-epic/SKILL.md plugins/decompose-epic/skills/decompose-epic/references/interview-guide.md`
 Expected: `1` in each file
@@ -436,6 +487,9 @@ AskUserQuestion calls — shape, the evidence-question carve-out, and the no-too
 
 Run: `grep -c "witness" plugins/refine-feature/skills/refine-feature/SKILL.md`
 Expected: `1`
+
+Run: `grep -c "AskUserQuestion" plugins/refine-feature/skills/refine-feature/SKILL.md`
+Expected: `2` (delivery bullet + Anti-patterns append — if this is 1, Step 2 or Step 3 was skipped)
 
 Run: `grep -c "tabbed-questions.md" plugins/refine-feature/skills/refine-feature/SKILL.md plugins/refine-feature/skills/refine-feature/references/interview-guide.md`
 Expected: `1` in each file
@@ -540,6 +594,9 @@ AskUserQuestion calls — shape, the evidence-question carve-out, and the no-too
 
 Run: `grep -c "witness" plugins/refine-story/skills/refine-story/SKILL.md`
 Expected: `1`
+
+Run: `grep -c "AskUserQuestion" plugins/refine-story/skills/refine-story/SKILL.md`
+Expected: `2` (delivery bullet + Anti-patterns append — if this is 1, Step 2 or Step 3 was skipped)
 
 Run: `grep -c "tabbed-questions.md" plugins/refine-story/skills/refine-story/SKILL.md plugins/refine-story/skills/refine-story/references/interview-guide.md`
 Expected: `1` in each file
@@ -651,8 +708,20 @@ new string:
 Run: `grep -c "witness" plugins/select-stack/skills/select-stack/SKILL.md`
 Expected: `0` (grep exits 1 on zero matches — that exit code is the pass condition here, not a failure)
 
+Run: `grep -c "AskUserQuestion" plugins/select-stack/skills/select-stack/SKILL.md`
+Expected: `2` (upgraded interview-rules bullet + References-table row — if this is 1, Step 2 or Step 4 was skipped)
+
+Run: `grep -c "then tabbed" plugins/select-stack/skills/select-stack/SKILL.md`
+Expected: `1` (Step 3's Phase 3 budget line)
+
+Run: `grep -c "tabbed brackets" plugins/select-stack/skills/select-stack/references/interview-guide.md`
+Expected: `1` (Step 6's Budget stem heading)
+
 Run: `grep -rn "pick-one brackets" plugins/select-stack --include=SKILL.md --include=interview-guide.md`
 Expected: exactly 2 hits — the SKILL.md fallback line and the interview-guide.md fallback line
+
+Run: `grep -rn "pick-one" plugins/select-stack --include=SKILL.md --include=interview-guide.md`
+Expected: the SAME 2 hits (wrap-proof token check — catches a skipped Step 3, whose old text wraps `pick-one` / `brackets` across lines)
 
 - [ ] **Step 8: Commit**
 
@@ -686,7 +755,7 @@ done
 
 Expected: four lines, each ending `EXIT:0`
 
-- [ ] **Step 3: Structure validators (spec §6.3)**
+- [ ] **Step 3: Structure validators (spec §6.4)**
 
 Run: `node scripts/validate-marketplace.mjs`
 Expected: `OK: marketplace valid - 9 plugin(s)`
@@ -694,22 +763,43 @@ Expected: `OK: marketplace valid - 9 plugin(s)`
 Run: `claude plugin validate .`
 Expected: passes (no-version warnings acceptable)
 
-- [ ] **Step 4: Bracket demotion (spec §6.4)**
+- [ ] **Step 4: Reference fidelity to spec §3 (spec §6.3)**
+
+Run: `grep -c "pick-one brackets" plugins/refine-epic/skills/refine-epic/references/tabbed-questions.md`
+Expected: `2`
+
+Run: `grep -c "The options ARE the conversation" plugins/refine-epic/skills/refine-epic/references/tabbed-questions.md`
+Expected: `1` (these spot-check the Task 2 transcription; Step 2's byte-identity propagates fidelity to the other four copies)
+
+- [ ] **Step 5: README registration (spec §6.5)**
+
+Run: `grep -c "tabbed-questions@antioch-skills" README.md`
+Expected: `1` (neither validator reads README.md — this is the row's only deterministic check)
+
+- [ ] **Step 6: Bracket demotion (spec §6.6, phrase + wrap-proof token)**
 
 Run: `grep -rn "pick-one brackets" plugins/ --include=SKILL.md --include=interview-guide.md`
 Expected: exactly 2 hits, both in `plugins/select-stack/`, both on lines containing "fallback"
 
-- [ ] **Step 5: Wiring presence (spec §6.5)**
+Run: `grep -rn "pick-one" plugins/ --include=SKILL.md --include=interview-guide.md`
+Expected: the SAME 2 hits and no others. (Wrap-proof token check: the pre-build tree has a
+line-wrapped `pick-one` / `brackets` occurrence at select-stack SKILL.md:83–84 that the phrase
+grep cannot see; this token grep catches it if the Task 6 Step 3 edit was skipped.)
+
+- [ ] **Step 7: Wiring counts — the per-file matrix (spec §6.7)**
 
 ```bash
-grep -l "AskUserQuestion" plugins/refine-epic/skills/refine-epic/SKILL.md plugins/decompose-epic/skills/decompose-epic/SKILL.md plugins/refine-feature/skills/refine-feature/SKILL.md plugins/refine-story/skills/refine-story/SKILL.md plugins/select-stack/skills/select-stack/SKILL.md | wc -l
+grep -c "AskUserQuestion" plugins/refine-epic/skills/refine-epic/SKILL.md plugins/decompose-epic/skills/decompose-epic/SKILL.md plugins/refine-feature/skills/refine-feature/SKILL.md plugins/refine-story/skills/refine-story/SKILL.md plugins/select-stack/skills/select-stack/SKILL.md
 ls plugins/refine-epic/skills/refine-epic/references/tabbed-questions.md plugins/decompose-epic/skills/decompose-epic/references/tabbed-questions.md plugins/refine-feature/skills/refine-feature/references/tabbed-questions.md plugins/refine-story/skills/refine-story/references/tabbed-questions.md plugins/select-stack/skills/select-stack/references/tabbed-questions.md
 grep -c "tabbed-questions.md" plugins/refine-epic/skills/refine-epic/references/interview-guide.md plugins/decompose-epic/skills/decompose-epic/references/interview-guide.md plugins/refine-feature/skills/refine-feature/references/interview-guide.md plugins/refine-story/skills/refine-story/references/interview-guide.md plugins/select-stack/skills/select-stack/references/interview-guide.md
 ```
 
-Expected: `5`; five paths listed with no error; count ≥ 1 for every file
+Expected: `AskUserQuestion` count = exactly `2` for EVERY one of the five SKILL.md files —
+each file's two hits come from two different planned edits (bullet + closing-list item, or
+bullet + References-table row), so a `1` means a specific edit was skipped; five reference
+paths listed with no error; `tabbed-questions.md` count ≥ 1 for every interview-guide.md
 
-- [ ] **Step 6: Menu-clause qualification (spec §6.6)**
+- [ ] **Step 8: Menu-clause qualification (spec §6.8)**
 
 Run: `grep -c "witness" plugins/refine-epic/skills/refine-epic/SKILL.md plugins/decompose-epic/skills/decompose-epic/SKILL.md plugins/refine-feature/skills/refine-feature/SKILL.md plugins/refine-story/skills/refine-story/SKILL.md`
 Expected: `1` for each of the four files
@@ -717,9 +807,25 @@ Expected: `1` for each of the four files
 Run: `grep -c "witness" plugins/select-stack/skills/select-stack/SKILL.md`
 Expected: `0` (grep exit 1 = pass here)
 
-- [ ] **Step 7: Old menu clause is gone everywhere**
+Run: `grep -c "menus" plugins/refine-epic/skills/refine-epic/SKILL.md`
+Expected: `1` (Task 2 Step 4's qualified Anti-patterns entry)
 
-Run: `grep -rn 'offer a menu ("is it A' plugins/`
-Expected: no output (grep exit 1 = pass)
+Run: `grep -c "poll" plugins/refine-epic/skills/refine-epic/SKILL.md`
+Expected: `2` (pre-existing Adaptive-depth heading + Task 2 Step 5's rewording)
 
-- [ ] **Step 8: Report** — no commit unless a fix was needed; report each oracle's actual output in the task report.
+- [ ] **Step 9: Old menu clause gone from the five suite plugins — SCOPED (spec §6.9)**
+
+Run: `grep -rn 'offer a menu ("is it A' plugins/refine-epic plugins/decompose-epic plugins/refine-feature plugins/refine-story plugins/select-stack`
+Expected: no output (grep exit 1 = pass). Do NOT widen this grep to all of `plugins/`:
+`build-a-great-elite-question` SKILL.md:102 legitimately contains the clause, is out of
+scope per the Global Constraints, and must NOT be edited.
+
+- [ ] **Step 10: select-stack rewording present (spec §6.10)**
+
+Run: `grep -c "then tabbed" plugins/select-stack/skills/select-stack/SKILL.md`
+Expected: `1`
+
+Run: `grep -c "tabbed brackets" plugins/select-stack/skills/select-stack/references/interview-guide.md`
+Expected: `1`
+
+- [ ] **Step 11: Report** — no commit unless a fix was needed; report each oracle's actual output in the task report.

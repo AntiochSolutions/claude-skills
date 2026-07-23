@@ -44,7 +44,9 @@ draws that line explicitly.
   load-bearing part and is preserved exactly. Build-time oracle: `git diff --no-index`
   against the home file exits 0.
 - `.claude-plugin/plugin.json` — house style, **no `version` field**:
-  name `tabbed-questions`; author Antioch Solutions / meet@antiochsolutions.com;
+  name `tabbed-questions`; description (the registration blurb below — house style
+  puts the same description in plugin.json and the marketplace entry); author
+  Antioch Solutions / meet@antiochsolutions.com;
   homepage `https://www.antiochsolutions.com/skills`; repository
   `https://github.com/AntiochSolutions/claude-skills`; license MIT;
   keywords `["ask-user-question", "clarifying-questions", "tabbed-questions", "ux",
@@ -178,6 +180,18 @@ Each SKILL.md:
    tabbed AskUserQuestion calls (evidence questions stay open prose)`. (These say
    `prose brackets`, not `pick-one brackets`, so the §6 bracket-demotion grep keeps
    exactly its two enumerated hits.)
+4. **refine-epic only — two further menu-ban sites** (found by the 2026-07-23
+   class-widening audit; the spec's original inventory missed them):
+   - Anti-patterns entry (~line 143): `No stacking, no "A or B?", no parenthetical
+     second question` becomes `No stacking, no "A or B?" menus on evidence questions
+     (decision questions get their options through tabbed delivery), no parenthetical
+     second question`.
+   - Adaptive-depth section (~line 62): the now-stale justification `(it breaks the
+     one-question rule and means little to an SME)` becomes `(size is evidence you
+     infer, not a decision you poll for — and the label means little to an SME)`.
+     The "big or small?" ban itself stays — it is an infer-don't-poll evidence rule —
+     and the `one open question` size fallback at ~line 66 stays prose (a self-framing
+     evidence question).
 
 Each interview-guide.md: one **Delivery** pointer added after the one-question intro
 paragraph:
@@ -196,11 +210,30 @@ paragraph:
   descriptions, recommendation first) — budget especially — over open prompts; shape
   and carve-outs in references/tabbed-questions.md. Prose pick-one brackets are the
   fallback when the tool is absent.`
-- SKILL.md Phase 2 summary: `then pick-one brackets` → `then tabbed budget brackets`.
+- SKILL.md Phase 3 summary (the Constraint-interview paragraph; an earlier revision
+  of this spec mislabeled it "Phase 2"): `then pick-one brackets` → `then tabbed
+  budget brackets`.
+- SKILL.md References table: add a row for `references/tabbed-questions.md` (the
+  table enumerates every file in `references/`; omitting the new one would leave the
+  table lying).
 - interview-guide.md: the matching `Multiple choice wherever honest` bullet upgraded
   the same way; the Budget stem heading `**Budget — anchor, then pick-one brackets.**`
   → `**Budget — anchor, then tabbed brackets.**` with `(single-tab AskUserQuestion)`
   noted in its lead-in.
+
+### Menu-ban population (exhaustive — 2026-07-23 class-widening audit)
+
+`grep -rniE 'offer a menu|"A or B|A, or B|big or small|no menu|menu of|one open question|never offer' plugins/` yields, with dispositions:
+
+| Site | Disposition |
+|---|---|
+| refine-epic SKILL.md:45, decompose-epic SKILL.md:61, refine-feature SKILL.md:57, refine-story SKILL.md:62 (one-question bullets) | Qualified — §4 item 1 |
+| refine-epic SKILL.md:143 (Anti-patterns `"A or B?"`) | Qualified — §4 item 4 |
+| refine-epic SKILL.md:62 (`"big or small?" menu`) | Ban kept; stale justification reworded — §4 item 4 |
+| refine-epic SKILL.md:66 (`one open` size-fallback question) | Kept — self-framing evidence question, stays prose |
+| select-stack SKILL.md:149 + interview-guide.md:17 (`never offer a menu with an "…and also…"`) | Kept — bans stacked asks, not answer options; consistent with one-call-one-tab |
+| select-stack SKILL.md:122 + interview-guide.md:204 (`never offered for veto`) | Not menu-ban class (non-negotiables veto protection); kept |
+| build-a-great-elite-question SKILL.md:102, 118, 252 | **OUT OF SCOPE — must survive untouched.** All verification greps are scoped to the five suite plugins; a tree-wide menu grep WILL hit these and that is not a failure. |
 
 ### Surviving `pick-one brackets` occurrences (exhaustive)
 
@@ -217,9 +250,11 @@ goes blind to it.
 ## 5. Out of scope
 
 - **backlog-store.md is untouched** (all copies). Its store-offer and root-path
-  questions are single quick conversational questions — permitted prose under the
-  rule's own carve-outs — and changing it would force re-verifying byte-identity
-  across all its copies for no behavioral gain.
+  questions are decision questions, so under the new reference they will naturally be
+  delivered as single-tab AskUserQuestion calls — and backlog-store.md's existing
+  wording ("one question, on its own turn") accommodates a single tab without any
+  text change. Editing it would force re-verifying byte-identity across all its
+  copies for no behavioral gain.
 - ikigai-discovery and build-a-great-elite-question keep their current questioning
   styles (deliberately open-ended coaching interviews).
 - Stop hook, CLAUDE.md rule, RED/GREEN transcript re-runs — excluded by Dan's scope
@@ -230,23 +265,56 @@ goes blind to it.
 Windows/Git Bash conventions apply: CRLF stderr warnings are not failures; byte
 checks use `git diff --no-index --quiet A B; echo "EXIT:$?"`.
 
+Design rule (from the gate review): **every planned edit has a named deterministic
+verifier** — no element is checked only by its author or only by a human reviewer.
+
 1. **Plugin skill fidelity:** `git diff --no-index --quiet` between
    `plugins/tabbed-questions/skills/tabbed-questions/SKILL.md` and
    `C:\Users\dan\.claude\skills\tabbed-questions\SKILL.md` → `EXIT:0`.
 2. **Reference byte-identity ×5:** the refine-epic copy diffed pairwise against the
    other four → `EXIT:0` four times.
-3. **Structure:** `node scripts/validate-marketplace.mjs` → `OK: marketplace valid - 9
+3. **Reference fidelity to this spec:** on the refine-epic copy,
+   `grep -c "pick-one brackets"` → `2` and
+   `grep -c "The options ARE the conversation"` → `1` (spot-checks that the
+   transcription of §3 wasn't re-wrapped or "normalized"; byte-identity then
+   propagates fidelity to the other four copies).
+4. **Structure:** `node scripts/validate-marketplace.mjs` → `OK: marketplace valid - 9
    plugin(s)`; `claude plugin validate .` green (no-version warnings acceptable).
-4. **Bracket demotion:** `grep -rn "pick-one brackets" plugins/ --include=SKILL.md
-   --include=interview-guide.md` → exactly the two enumerated fallback-context hits
-   in §4 (the reference copies are excluded by design).
-5. **Wiring presence:** `grep -l "AskUserQuestion"` over the five interview SKILL.md
-   files → 5 hits; each of the five plugins has `references/tabbed-questions.md`;
-   each of the five interview-guide.md files contains `tabbed-questions.md`.
-6. **Menu-clause qualification:** `grep -c "witness"` → exactly 1 in each of the four
-   refine/decompose SKILL.md files (from `leads the witness` in the qualified menu
-   clause; single-word grep so line wrapping cannot blind it), and 0 in select-stack's
-   SKILL.md (its menu clause is not edited).
+5. **README registration:** `grep -c "tabbed-questions@antioch-skills" README.md` →
+   `1` (the marketplace validator never reads README.md — this is the row's only
+   deterministic check).
+6. **Bracket demotion (phrase + wrap-proof token):**
+   `grep -rn "pick-one brackets" plugins/ --include=SKILL.md --include=interview-guide.md`
+   → exactly the two enumerated fallback-context hits in §4, and
+   `grep -rn "pick-one" plugins/ --include=SKILL.md --include=interview-guide.md` →
+   the SAME two hits (the pre-build tree has a line-wrapped `pick-one`/`brackets`
+   occurrence at select-stack SKILL.md:83–84 that the phrase grep cannot see).
+7. **Wiring counts — the per-file matrix:** `grep -c "AskUserQuestion"` → exactly `2`
+   in each of the five suite SKILL.md files. Each file's two hits come from two
+   DIFFERENT planned edits (refine-epic: delivery bullet + guardrails recap;
+   decompose-epic: delivery bullet + Never-do item; refine-feature and refine-story:
+   delivery bullet + Anti-patterns append; select-stack: interview-rules bullet +
+   References-table row), so any skipped closing-list or table-row edit drops that
+   file to `1`. Plus: each of the five plugins has `references/tabbed-questions.md`
+   on disk, and each of the five interview-guide.md files contains
+   `tabbed-questions.md`.
+8. **Menu-clause qualification:** `grep -c "witness"` → exactly `1` in each of the
+   four refine/decompose SKILL.md files and `0` in select-stack's SKILL.md (its
+   menu clause is not edited). For refine-epic's two extra §4-item-4 edits:
+   `grep -c "menus"` → `1` (from the qualified Anti-patterns entry) and
+   `grep -c "poll"` → `2` (the pre-existing section heading plus the reworded
+   justification) in refine-epic SKILL.md.
+9. **Old menu clause eradicated — scoped:**
+   `grep -rn 'offer a menu ("is it A' plugins/refine-epic plugins/decompose-epic
+   plugins/refine-feature plugins/refine-story plugins/select-stack` → no output.
+   NEVER run this unscoped as a pass/fail gate: `build-a-great-elite-question`
+   SKILL.md:102 legitimately contains the clause, is out of scope, and must not be
+   edited (see the menu-ban population table).
+10. **select-stack rewording present:** `grep -c "then tabbed"
+    plugins/select-stack/skills/select-stack/SKILL.md` → `1` (the Phase 3 budget
+    line) and `grep -c "tabbed brackets"
+    plugins/select-stack/skills/select-stack/references/interview-guide.md` → `1`
+    (the Budget stem heading).
 
 ## 7. Branching & delivery
 
