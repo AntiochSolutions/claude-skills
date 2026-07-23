@@ -8,6 +8,10 @@ one answer; then branch, clarify, or challenge on that same thread with your nex
 until it's resolved, then proceed to the next phase). Follow the SME's energy, reflect back before
 your next question. Never read them out as a checklist, and never stack two questions.
 
+**Delivery:** decision questions (ratifications, gates, trade-offs) go out as single-tab
+AskUserQuestion calls — shape, the evidence-question carve-out, and the no-tool fallback are in
+`tabbed-questions.md` (this folder). Evidence questions stay open spoken prose.
+
 The spine across all of it is **The Mom Test** (Rob Fitzpatrick), the same spine `refine-epic`
 uses: capabilities come from **narrated past behavior**, not speculation about a future idea. A
 workaround the SME already pays for in time or hassle is the strongest evidence you'll get; an

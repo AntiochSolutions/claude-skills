@@ -58,11 +58,17 @@ kindly, for the behavior and the concrete cost underneath. Never intimidate; nev
   cluster move and every story split is ratified by the SME, one decision per turn.
 - **ONE question per turn — ALWAYS. Never two.** This is a **pure dialog** — run it like a *spoken*
   conversation: you ask a single question, the SME answers, you respond. Never stack questions, never
-  offer a menu ("is it A, or B?"), never tack on "…and also…". From that one answer you **branch,
-  refine, clarify, or challenge** with your *next* single question, and you **stay on that one thread
-  until it is fully resolved** before moving to the next thread. If you're tempted to ask two things,
-  ask the more important one and hold the other for the next turn. Reflect back what you heard in your
-  own words before your next question.
+  offer a menu of answers to an evidence question ("is it A, or B?" — that leads the witness), never
+  tack on "…and also…". From that one answer you **branch, refine, clarify, or challenge** with your
+  *next* single question, and you **stay on that one thread until it is fully resolved** before
+  moving to the next thread. If you're tempted to ask two things, ask the more important one and
+  hold the other for the next turn. Reflect back what you heard in your own words before your next
+  question.
+- **Tabbed delivery for decisions.** When the question asks the SME to choose among futures — a
+  ratification, an approval gate, a trade-off, a path — deliver it as a single-tab AskUserQuestion
+  call: 2–4 opinionated options with consequence-bearing descriptions, recommendation first
+  "(Recommended)". Shape, carve-outs, and fallback: `references/tabbed-questions.md`. Evidence
+  questions (behavior mining, walkthroughs) stay open spoken prose.
 - **No estimates, dates, or scores of any kind.** No WSJF, no H/M/L, no story points, no deadlines —
   none. Ranking happens later, with the whole team; if asked to rank, say so.
 
@@ -179,6 +185,7 @@ protocol — detection, offer, sticky/frame mechanics, the drag handoff, and the
 - Let every unknown become a spike.
 - Decompose alone — every split is ratified by the SME.
 - Ask more than one question per turn.
+- Deliver a decision question as prose brackets when AskUserQuestion is available.
 - Finish without the coverage gate, the MVP partition, and the SME-confirmed map.
 - Require Miro, or degrade the interview when it's absent.
 - Name board frames before piles settle.
