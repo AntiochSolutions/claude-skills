@@ -63,6 +63,19 @@ Then **restart Claude Code** — plugin changes apply to new sessions.
   `refine-epic` itself changes — existing epics enter the store whenever `decompose-epic` runs on
   them.
 
+### The build rule (copy into your project's CLAUDE.md)
+
+Consuming projects that want build-story's discipline to be the default should carry this rule:
+
+> Implementation starts from a `ready` story in the backlog store, through build-story —
+> no story, no code. Checks are the spec: weakening one to reach green, unflagged, is a defect.
+
+The skill carries the how; this line carries the always. The plugin's hooks enforce what they
+can mechanically (plan-before-code, flagged check edits, completion claims without a green
+suite). The hooks read an optional `.build-story.json` at the project root — keys `store`,
+`testGlobs`, `alwaysAllow`, and `suitePatterns` — and keep session state in `.build-story/` — add
+`.build-story/` to your project's `.gitignore`.
+
 ### Migrating an existing epic (and Miro board) into the store
 
 Refined an epic with the original `refine-epic` and kept your working state on a Miro board? The
@@ -134,19 +147,6 @@ decompose-epic → refine-feature → refine-story → select-stack → build-st
 refine-story, select-stack, and build-story plugins carry **verbatim copies** of it (plugins
 install independently) — when the
 convention changes, update **every copy in the same commit**.
-
-### The build rule (copy into your project's CLAUDE.md)
-
-Consuming projects that want build-story's discipline to be the default should carry this rule:
-
-> Implementation starts from a `ready` story in the backlog store, through build-story —
-> no story, no code. Checks are the spec: weakening one to reach green, unflagged, is a defect.
-
-The skill carries the how; this line carries the always. The plugin's hooks enforce what they
-can mechanically (plan-before-code, flagged check edits, completion claims without a green
-suite). The hooks read an optional `.build-story.json` at the project root (store path,
-source/test globs, test-runner patterns) and keep session state in `.build-story/` — add
-`.build-story/` to your project's `.gitignore`.
 
 ## Validate
 
