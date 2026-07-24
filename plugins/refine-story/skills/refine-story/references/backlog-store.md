@@ -1,13 +1,13 @@
 # The backlog store — shared convention
 
-The epic-shaping suite (refine-epic → decompose-epic → refine-feature → refine-story → select-stack) keeps its work
+The epic-shaping suite (refine-epic → decompose-epic → refine-feature → refine-story → select-stack → build-story) keeps its work
 in a **backlog store**: one markdown file per epic, feature, and story, in the user's working
 folder. **The markdown tree is the single system of record — always.** A Miro board may mirror it as
 a Card story-map, but the board is a render of the files, never the record.
 
-> **Keep in sync:** this file is duplicated verbatim into the refine-feature, refine-story, and
-> select-stack plugins (marketplace plugins install independently). When the convention changes,
-> change every copy in the same commit.
+> **Keep in sync:** this file is duplicated verbatim into the refine-feature, refine-story,
+> select-stack, and build-story plugins (marketplace plugins install independently). When the
+> convention changes, change every copy in the same commit.
 
 ## The tree (system of record)
 
@@ -137,7 +137,7 @@ type: story
 feature: F01               # parent feature's ID
 title: Create account with work email    # short activity phrase; names the file
 order: 1
-status: skeleton           # skeleton | ready | parked | superseded
+status: skeleton           # skeleton | ready | building | built | parked | superseded
 kind: walking-skeleton     # walking-skeleton | variation | discovery | placeholder
 tags: []                   # optional — e.g. illustrative (curation-added)
 ---
@@ -153,7 +153,7 @@ refine-story pass, never inlined into the line itself.
 | --- | --- | --- |
 | epic | `refined` (fixed) | refine-epic (outside the store) |
 | feature | `skeleton` → `refined` \| `needs-discovery`; `needs-discovery` → `refined` | refine-feature |
-| story | `skeleton` → `ready`; any → `parked`; `parked` → `skeleton`; any → `superseded` | refine-story (`ready`); refine-feature curation (the rest) |
+| story | `skeleton` → `ready` → `building` → `built`; `building` → `ready`; `built` → `ready`; any → `parked`; `parked` → `skeleton`; any → `superseded` | refine-story (`ready`; `built` → `ready` on revisit); build-story (`building`, `built`; releases `building` → `ready`); refine-feature curation (the rest) |
 | stack | `decided` (revised in place on re-selection) | select-stack |
 
 Parked stories keep their file with `status: parked` and a one-line reason; a story replaced by a
@@ -196,7 +196,9 @@ state. Every epic, feature, and story is a **Card object** — never a sticky no
   include `kind`). The Miro MCP exposes **no tag API** — the state line and the theme color ARE the
   board-visible state.
 - **Theme color** (`theme=`) encodes status: skeleton `#2d9bf0` (blue) · refined/ready `#23c27f`
-  (green) · needs-discovery `#ffa500` (orange) · parked/superseded `#808080` (gray).
+  (green) · needs-discovery `#ffa500` (orange) · building `#7c4dff` (violet) · built `#0e6b45`
+  (deep green) · parked/superseded `#808080` (gray). The state line in the Card description is
+  ground truth; color is the at-a-glance convenience.
 - **DSL mechanics:** the layout DSL is line-oriented — encode body paragraphs as `<p>…</p>` blocks
   and never emit raw newlines or double quotes inside `desc="…"` (swap `"` for `'`). Call
   `layout_get_dsl` once before the first `layout_create`; re-render existing Cards with
@@ -231,9 +233,12 @@ After the SME confirms the map and the canonical model + markdown feature map ar
 ## How later skills address the store
 
 A session opens on the store's **directory path**. List default candidates by ID and title —
-features with `status: skeleton`/`needs-discovery`, or stories with `status: skeleton`, per skill —
-and let the user pick exactly one. `refined`/`ready` items may be re-opened as a revisit session
-("what do you want to change, and why?" — work only that thread); a `parked` story may be un-parked
-during refine-feature curation (back to `skeleton`, reason recorded). Every write-back updates the
-item file, refreshes the parent roll-up (and the epic's `## Features` row on a feature status or
-title change), and re-renders touched Cards when a board is attached.
+features with `status: skeleton`/`needs-discovery`, stories with `status: skeleton`, or — for
+build-story — stories with `status: ready` (kinds `walking-skeleton` and `variation`; a ready
+`discovery` story builds as a probe per its route; `placeholder` is never offered), per skill —
+and let the user pick exactly one. `refined`/`ready`/`built` items may be re-opened as a revisit
+session ("what do you want to change, and why?" — work only that thread; re-opening `built`
+returns the story to `ready` carrying the build's answers); a `parked` story may be un-parked
+during refine-feature curation (back to `skeleton`, reason recorded). Every write-back updates
+the item file, refreshes the parent roll-up (and the epic's `## Features` row on a feature
+status or title change), and re-renders touched Cards when a board is attached.
