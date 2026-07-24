@@ -59,6 +59,12 @@
       "source": "./plugins/tabbed-questions",
       "description": "Makes Claude ask clarifying questions as clickable AskUserQuestion tabs instead of prose question walls — one tab per question, 2–4 opinionated options with consequence-bearing descriptions, recommendation first. Built and tested RED/GREEN; the epic-shaping suite's interviews deliver their decision questions this way.",
       "keywords": ["ask-user-question", "clarifying-questions", "tabbed-questions", "ux", "interview", "tool-use", "claude-code"]
+    },
+    {
+      "name": "build-story",
+      "source": "./plugins/build-story",
+      "description": "Builds one ready story from the backlog store — plan, RED, GREEN, still-walking, fresh-eyes review — in the codebase the epic's stack decision governs, then writes the knowledge back: an Implementation plan and a state-of-proof Implementation report, never a done-certificate. Ships plan-before-code, flagged-edit, and completion-claim detection hooks. Pairs with refine-story — run that first to take the story to ready.",
+      "keywords": ["story", "build", "tdd", "red-green", "walking-skeleton", "verification", "backlog-store", "hooks", "implementation", "agile", "fresh-eyes-review"]
     }
   ]
 }

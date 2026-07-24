@@ -34,8 +34,9 @@ That installs **only** `ikigai-discovery` — none of the other skills. Install 
 
 ### Returning users — upgrading to the full epic-shaping suite
 
-Already using `refine-epic`? It's now the first of **five** skills that work a shared backlog:
-**refine-epic → decompose-epic → refine-feature → refine-story → select-stack**. To get the rest:
+Already using `refine-epic`? It's now the first of **six** skills that work a shared backlog:
+**refine-epic → decompose-epic → refine-feature → refine-story → select-stack → build-story**.
+To get the rest:
 
 ```text
 /plugin marketplace update antioch-skills
@@ -44,6 +45,7 @@ Already using `refine-epic`? It's now the first of **five** skills that work a s
 /plugin install refine-feature@antioch-skills
 /plugin install refine-story@antioch-skills
 /plugin install select-stack@antioch-skills
+/plugin install build-story@antioch-skills
 ```
 
 Then **restart Claude Code** — plugin changes apply to new sessions.
@@ -56,7 +58,8 @@ Then **restart Claude Code** — plugin changes apply to new sessions.
   the map as a **backlog store** (one markdown file per epic/feature/story — say yes and give it a
   folder, default `./backlog/`) → `/refine-feature` on one feature at a time → `/refine-story` on
   one story Card at a time, both picking items straight from that store → `/select-stack` once the
-  store exists, to choose the tech stack and generate the build kickoff. Nothing about
+  store exists, to choose the tech stack and generate the build kickoff → `/build-story` to
+  take each ready story to built, one at a time. Nothing about
   `refine-epic` itself changes — existing epics enter the store whenever `decompose-epic` runs on
   them.
 
@@ -99,6 +102,7 @@ back — by design.
 | [`select-stack`](plugins/select-stack) | `/plugin install select-stack@antioch-skills` | Interviews a non-technical founder to select the tech stack a Claude Code instance will build — derives the app's demands from the backlog store (every signal cited), asks only founder-level constraint questions, applies a researched house stack with an Azure escalation tier and six non-negotiables (QA+PROD, scripted infra, API-first, managed API keys, gated releases, TDD), and writes STACK.md + KICKOFF.md into the epic folder. Pairs with [`decompose-epic`](plugins/decompose-epic) — run that first to create the store. |
 | [`statusline`](plugins/statusline) | `/plugin install statusline@antioch-skills` | Installs a two-line Claude Code status line — model + reasoning effort, directory, git branch, session name, a color-coded context bar, cost, duration, and 5h/7d rate-limit usage. After installing, say "set up the status line". Requires Python 3. |
 | [`tabbed-questions`](plugins/tabbed-questions) | `/plugin install tabbed-questions@antioch-skills` | Makes Claude ask clarifying questions as clickable AskUserQuestion tabs instead of prose question walls — one tab per question, 2–4 opinionated options with consequence-bearing descriptions, recommendation first. The epic-shaping suite's interviews deliver their decision questions this way. |
+| [`build-story`](plugins/build-story) | `/plugin install build-story@antioch-skills` | Builds one ready story from the backlog store — plan, RED, GREEN, still-walking, fresh-eyes review — in the stack the epic decided, then writes back an Implementation plan and a state-of-proof Implementation report. Ships plan-before-code, flagged-edit, and completion-claim detection hooks. Pairs with [`refine-story`](plugins/refine-story) — run that first. |
 
 ## Add a new skill
 
@@ -126,9 +130,23 @@ Run the validator, and commit. Use [`plugins/ikigai-discovery`](plugins/ikigai-d
 
 [`plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md`](plugins/decompose-epic/skills/decompose-epic/references/backlog-store.md)
 is the canonical **backlog-store convention** for the epic-shaping suite (refine-epic →
-decompose-epic → refine-feature → refine-story → select-stack). The refine-feature, refine-story,
-and select-stack plugins carry **verbatim copies** of it (plugins install independently) — when the
+decompose-epic → refine-feature → refine-story → select-stack → build-story). The refine-feature,
+refine-story, select-stack, and build-story plugins carry **verbatim copies** of it (plugins
+install independently) — when the
 convention changes, update **every copy in the same commit**.
+
+### The build rule (copy into your project's CLAUDE.md)
+
+Consuming projects that want build-story's discipline to be the default should carry this rule:
+
+> Implementation starts from a `ready` story in the backlog store, through build-story —
+> no story, no code. Checks are the spec: weakening one to reach green, unflagged, is a defect.
+
+The skill carries the how; this line carries the always. The plugin's hooks enforce what they
+can mechanically (plan-before-code, flagged check edits, completion claims without a green
+suite). The hooks read an optional `.build-story.json` at the project root (store path,
+source/test globs, test-runner patterns) and keep session state in `.build-story/` — add
+`.build-story/` to your project's `.gitignore`.
 
 ## Validate
 
