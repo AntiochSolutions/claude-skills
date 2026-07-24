@@ -210,7 +210,11 @@ A copy-paste block in the README's consuming-projects section, verbatim:
 > unflagged, is a defect."*
 
 The skill carries the how; the CLAUDE.md line carries the always. (Plugins cannot
-inject CLAUDE.md text; README copy-paste is the delivery vehicle.)
+inject CLAUDE.md text; README copy-paste is the delivery vehicle.) The same README
+section documents the plugin's hook configuration for consumers: the optional
+`.build-story.json` (store path, source/test globs, test-runner patterns), the
+`.build-story/` state directory, and the gitignore line it needs — without this, the
+state file lands in consumers' commits.
 
 ## 5. Deliverable D — the hooks (plugin-shipped, detection layer)
 
@@ -249,14 +253,18 @@ session state; hooks read them from disk rather than trusting a session flag.
    - `suite-recorder.mjs` — `PostToolUse`, matcher `Bash`: parses `tool_input.command`
      against test-runner patterns (configurable; defaults: `npm test`, `npx vitest`,
      `pnpm test`, `npx playwright test`, `dotnet test`, `pytest`, `go test`); on match,
-     records `{ts, ok}` (pass/fail read from `tool_response`) to the state file.
+     records `{ts, ok, session}` (pass/fail read from `tool_response`; session = the
+     hook stdin's `session_id`) to the state file.
    - `stop-backstop.mjs` — `Stop`, empty matcher: honors `stop_hook_active` first; reads
      the transcript tail (`transcript_path` JSONL) for a completion claim
      (built/done/passing/complete near a story ID); carve-outs — claim words inside code
      blocks or interrogative lines are not claims, and the hook never fires when the
-     state file records no source edits this session; if the last recorded full-suite
-     pass predates the last source edit → `decision: "block"` with a reminder to run the
-     full suite + the walk. False negatives acceptable; false positives rare.
+     state file records no source edits **from the current session** (every state entry
+     carries the writing hook's `session_id`; a stale timestamp from an abandoned
+     session must never fire the backstop — gate round 1 finding); if the last recorded
+     full-suite pass is from another session or predates the last source edit →
+     `decision: "block"` with a reminder to run the full suite + the walk. False
+     negatives acceptable; false positives rare.
 
 **State file:** `<project>/.build-story/state.json` (project-local, gitignore guidance
 documented). **Config:** optional `<project>/.build-story.json` — store path (default
@@ -291,6 +299,21 @@ line, no faked perf assertion · fence unbuilt · trace complete both directions
 run · both sections appended after `## Knowledge-state report` ·
 `ready → building → built` · roll-up refreshed · verbatim closing line. Documented at
 `docs/superpowers/evidence/2026-07-24-build-story-green.md`.
+
+**Hook realism replay (acceptance criterion 5's second half).** The plugin's hooks are
+NOT installed during the GREEN run — it is a skill-files-as-context session — so the
+"silent on normal-run transcripts" requirement is tested by replay: the GREEN agent's
+ACTUAL transcript JSONL is fed to `stop-backstop.mjs` with a same-session state whose
+suite pass postdates the last edit (expect silence) and again with `ok: false` (expect
+block — proving the parser reads the real shape both directions); one REAL Bash
+`tool_response` captured from the GREEN run's suite command is fed to
+`suite-recorder.mjs` (expect a correct `ok` recording). Results in the GREEN evidence
+doc. This is also the falsification path for the tool_response/transcript shape
+assumptions.
+
+**Miro contrast deferral:** no Miro tools are expected in the campaign sessions; the
+theme-color contrast check (§3.5) is deferred with a dated note recorded in the GREEN
+evidence doc.
 
 **Negative test:** a seeded smuggled-scope change past the fence; the fresh-eyes review
 gate (story + diff only) must catch it. Documented with the GREEN evidence.
@@ -356,8 +379,9 @@ verifier.)
 ## 10. Build order & delivery
 
 Fixture → baselines ×2 + evidence → store lifecycle change (5 copies, one commit) +
-references → SKILL.md (counter-table from evidence) → hooks RED-first → GREEN + negative
-test + acceptance sweep → registration + README rule. TDD binds every code artifact;
+references → SKILL.md (counter-table from evidence) → hooks RED-first → registration +
+README rule (the validators must see the complete plugin before the campaign closes) →
+GREEN + hook-realism replay + negative test → acceptance sweep. TDD binds every code artifact;
 implementer dispatches load `superpowers:test-driven-development`. Then: plan-gate
 (fresh reviewers to OBVIOUS×2) → SDD build → final whole-branch review → PR against
 main from `feat/build-story`.
