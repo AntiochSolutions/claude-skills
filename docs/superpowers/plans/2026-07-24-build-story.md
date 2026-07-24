@@ -117,6 +117,8 @@ Expected: exits 0.
 Run: `npm run walk`
 Expected: FAILS (src/walk.ts missing) — that failure is the correct pre-story state; record it.
 
+**TDD note for this task:** the recorded `npm run walk` failure IS this task's RED evidence — the fixture's whole purpose is to be an unbuilt story, and the walk failing for the right reason is the watched-failing artifact. The smoke test is sanity scaffolding for the harness, not a behavior under test; the Global TDD constraint's red-first cycle applies to it via the walk failure, not via a separate red for `APP === "parkpal"`.
+
 - [ ] **Step 3: Write the store files** — exact contents:
 
 `tests/fixtures/build-story/backlog/Epic #01 - ParkPal/epic.md`:
@@ -368,7 +370,10 @@ mkdir -p "$SCRATCH" && cp -r tests/fixtures/build-story "$SCRATCH/run-1" && cp -
 # build-story baseline evidence — run <N> (no skill)
 
 - Date: 2026-07-24 · Model: sonnet · Fixture: tests/fixtures/build-story @ <commit>
-- Prompt: "Open the backlog store at ./backlog and implement S01." (verbatim, no skill)
+- Prompt (full dispatched text, no skill): "Work in `<SCRATCH>/run-<N>`. Open the backlog store
+  at ./backlog and implement S01. When you consider the work finished, say so and summarize what
+  you did." (The work-dir and reporting sentences are operational additions beyond spec §6's
+  minimal prompt — contamination-neutral.)
 
 ## What happened (timeline)
 
@@ -911,7 +916,7 @@ git commit -m "feat: build-story SKILL.md — spine, phase flow, observed-ration
 
 **Interfaces:**
 - Consumes: nothing from other tasks (synthetic fixtures built in temp dirs).
-- Produces: the hook suite Task 9 runs (`node --test tests/hooks/`); the hooks.json Task 7's registration relies on.
+- Produces: the hook suite Task 9 runs (`node --test "tests/hooks/*.test.mjs"` — quoted-glob form always); the hooks.json Task 7's registration relies on.
 
 - [ ] **Step 1 (RED): Write the test helper** — exact content of `tests/hooks/helper.mjs`:
 
@@ -1132,6 +1137,12 @@ test("dotnet-style failure summary records ok:false", () => {
   assert.equal(state(root).lastSuiteRun.ok, false);
 });
 
+test("object-shaped tool_response: stringified with newlines restored, failure detected", () => {
+  const root = makeProject({ storyStatus: "building", withPlan: true });
+  runHook("suite-recorder.mjs", bash(root, "go test ./...", { stdout: "--- FAIL: TestQuote (0.00s)\nFAIL\nFAIL\tparkpal/fee\t0.012s" }));
+  assert.equal(state(root).lastSuiteRun.ok, false);
+});
+
 test("non-suite command: no state written", () => {
   const root = makeProject({ storyStatus: "building", withPlan: true });
   runHook("suite-recorder.mjs", bash(root, "ls -la", "total 0"));
@@ -1187,12 +1198,14 @@ test("suite pass from another session does not count: blocks", () => {
   assert.equal(blocked(runHook("stop-backstop.mjs", stopInput(root, t))), true);
 });
 
-test("claim line only inside a code block: silent (the strip is load-bearing)", () => {
+test("claim line only inside a code block: silent (the fence strip is load-bearing)", () => {
   const root = makeProject({ storyStatus: "building", withPlan: true });
   writeState(root, { lastSourceEditTs: 2000, lastSourceEditSession: "sess-1", lastSuiteRun: { ts: 1000, ok: true, session: "sess-1" } });
-  // The fenced line is a CLEAN claim (no forward markers) — only the code-block strip
-  // saves this from blocking, so a mutant lacking the strip fails this test.
-  const t = writeTranscript(root, "Status snapshot:\n```\nS01 is built and passing.\n```\nContinuing with AC3.");
+  // The fenced content is a CLEAN claim (no forward markers) preceded by an ODD backtick
+  // ("see `note") — the odd backtick defeats the inline-code strip's pairing, so ONLY the
+  // fence strip removes the claim. A mutant lacking the fence strip leaks the claim into
+  // prose and blocks, failing this test. (Verified by mutation at gate round 3.)
+  const t = writeTranscript(root, "Status snapshot:\n```\nsee `note\nS01 is built and passing.\n```\nContinuing with AC3.");
   assert.equal(blocked(runHook("stop-backstop.mjs", stopInput(root, t))), false);
 });
 
@@ -1228,7 +1241,7 @@ test("stop_hook_active: exits silently (loop guard)", () => {
 
 Run: `node --test "tests/hooks/*.test.mjs"`
 (The quoted-glob form is required — a bare directory argument fails with MODULE_NOT_FOUND on this host's node and never runs the tests.)
-Expected: ALL 28 tests FAIL. The mechanism: the helper's `runHook` throws on any nonzero hook exit, and with the scripts absent every spawn exits 1 (module not found) — so silence-side tests cannot pass trivially here. Record the failing output. If any test passes at this stage, the helper's throw guard is missing or broken — fix THAT (the test bodies are verbatim), then re-run.
+Expected: ALL 29 tests FAIL. The mechanism: the helper's `runHook` throws on any nonzero hook exit, and with the scripts absent every spawn exits 1 (module not found) — so silence-side tests cannot pass trivially here. Record the failing output. If any test passes at this stage, the helper's throw guard is missing or broken — fix THAT (the test bodies are verbatim), then re-run.
 
 - [ ] **Step 4 (GREEN): Write the shared lib** — exact content of `plugins/build-story/hooks/scripts/lib.mjs`:
 
@@ -1326,7 +1339,7 @@ export function writeState(cwd, patch) {
 
 ```js
 #!/usr/bin/env node
-import { readStdin, loadConfig, storeRoot, buildingStories, matchesGlob, relToProject, norm } from "./lib.mjs";
+import { readStdin, loadConfig, storeRoot, buildingStories, matchesGlob, relToProject } from "./lib.mjs";
 
 const input = readStdin();
 const cwd = input.cwd || process.cwd();
@@ -1518,7 +1531,7 @@ process.exit(0);
 - [ ] **Step 7 (GREEN): Watch them pass**
 
 Run: `node --test "tests/hooks/*.test.mjs"`
-Expected: all 28 tests pass (9 plan-gate, 4 flagged-edit, 6 suite-recorder, 9 stop-backstop), 0 fail. Record the summary line.
+Expected: all 29 tests pass (9 plan-gate, 4 flagged-edit, 7 suite-recorder, 9 stop-backstop), 0 fail. Record the summary line.
 Run: `node -e "JSON.parse(require('node:fs').readFileSync('plugins/build-story/hooks/hooks.json','utf8')); console.log('hooks.json OK')"`
 Expected: `hooks.json OK`
 
@@ -1555,7 +1568,7 @@ git commit -m "feat: build-story hooks (plan-gate, flagged-edit, suite-recorder,
   "homepage": "https://www.antiochsolutions.com/skills",
   "repository": "https://github.com/AntiochSolutions/claude-skills",
   "license": "MIT",
-  "keywords": ["story", "build", "tdd", "red-green", "walking-skeleton", "verification", "backlog-store", "hooks", "implementation", "agile", "sme-interview"]
+  "keywords": ["story", "build", "tdd", "red-green", "walking-skeleton", "verification", "backlog-store", "hooks", "implementation", "agile", "fresh-eyes-review"]
 }
 ```
 
@@ -1566,7 +1579,7 @@ git commit -m "feat: build-story hooks (plan-gate, flagged-edit, suite-recorder,
       "name": "build-story",
       "source": "./plugins/build-story",
       "description": "Builds one ready story from the backlog store — plan, RED, GREEN, still-walking, fresh-eyes review — in the codebase the epic's stack decision governs, then writes the knowledge back: an Implementation plan and a state-of-proof Implementation report, never a done-certificate. Ships plan-before-code, flagged-edit, and completion-claim detection hooks. Pairs with refine-story — run that first to take the story to ready.",
-      "keywords": ["story", "build", "tdd", "red-green", "walking-skeleton", "verification", "backlog-store", "hooks", "implementation", "agile", "sme-interview"]
+      "keywords": ["story", "build", "tdd", "red-green", "walking-skeleton", "verification", "backlog-store", "hooks", "implementation", "agile", "fresh-eyes-review"]
     }
 ```
 
@@ -1593,7 +1606,33 @@ Already using `refine-epic`? It's now the first of **six** skills that work a sh
 To get the rest:
 ```
 
-The install-commands cluster (~line 46) gains a line `/plugin install build-story@antioch-skills`; the workflow sentence (~lines 55–58) gains, after the select-stack step: `→ /build-story to take each ready story to built, one at a time` (keep `take each ready story to built` unwrapped — it is grepped).
+**Install cluster** — old (exact, lines ~46–47):
+
+```markdown
+/plugin install select-stack@antioch-skills
+```
+
+(the line inside the fenced `text` block, immediately before the closing fence) — new:
+
+```markdown
+/plugin install select-stack@antioch-skills
+/plugin install build-story@antioch-skills
+```
+
+**Workflow sentence** (~lines 58–59) — old (exact):
+
+```markdown
+one story Card at a time, both picking items straight from that store → `/select-stack` once the
+store exists, to choose the tech stack and generate the build kickoff. Nothing about
+```
+
+new (the new command is backticked per the sentence's house style; keep `take each ready story to built` unwrapped — it is grepped):
+
+```markdown
+one story Card at a time, both picking items straight from that store → `/select-stack` once the
+store exists, to choose the tech stack and generate the build kickoff → `/build-story` to
+take each ready story to built, one at a time. Nothing about
+```
 
 3. **Keep-in-sync holder sentence + suite chain** (~lines 128–130) — old (exact, three lines):
 
@@ -1678,7 +1717,7 @@ route named aloud · gate #1 rendered tabbed + scripted-approved · `## Implemen
 
 - [ ] **Step 4: Seeded negative test.** Take the GREEN diff; append a smuggled hunk (e.g., an unrequested `export function receiptEmailBody(...)` in a new `src/receipt.ts` plus an import). Dispatch a fresh reviewer subagent with ONLY the story file and the doctored diff, instructed per the skill's phase 6 (trace both directions, fence check). Expected: the reviewer flags the receipt code as smuggled scope (not traceable to a criterion or plan-listed enabling work). Record verdict verbatim.
 
-- [ ] **Step 5: Hook realism replay (acceptance criterion 5's second half — the hooks were NOT active during the GREEN run).** Transcript acquisition: the Agent dispatch's result names the GREEN agent's task output file — a JSONL transcript; that exact path is the replay input (never the parent session's transcript, whose last assistant message is the controller's own).
+- [ ] **Step 5: Hook realism replay (acceptance criterion 5's second half — the hooks were NOT active during the GREEN run).** Transcript acquisition: the Agent dispatch's result names the GREEN agent's task output file — a JSONL transcript (this harness returns `output_file: …/tasks/<id>.output` on every dispatch; measured, ledger L13); that exact path is the replay input (never the parent session's transcript, whose last assistant message is the controller's own). Fallback if no path is named: locate the newest task transcript under the harness's task directory for this session; if none can be found, record the replay as BLOCKED-by-harness in the evidence doc with a dated deviation note and escalate to Dan — never substitute a reconstructed or parent transcript.
   Pre-check: scan the transcript's assistant messages for a qualifying claim line (story ID + completion word, not a question, no forward markers). The skill's closing-line idiom means the FINAL message may legitimately contain none — if so, replay direction 2 against the last claim-bearing assistant message instead, and if none exists anywhere, record that as a content caveat in the evidence doc (NOT a hook bug — do not touch the claim regex for this).
   Feed the transcript to `stop-backstop.mjs` three ways, all with `cwd` = the scratch dir and `session_id: "replay-1"`:
   1. State: `{lastSourceEditTs: 1000, lastSourceEditSession: "replay-1", lastSuiteRun: {ts: 2000, ok: true, session: "replay-1"}}` → expect SILENT (a normal completed run never fires).
@@ -1702,12 +1741,12 @@ If any GREEN assertion fails: fix the skill text (not the fixture) in a named co
 
 ### Task 9: Final verification sweep
 
-**Files:** none (fixes only if an oracle fails; any fix commit names the failed oracle; a fix touching backlog-store.md or tabbed-questions.md hits ALL copies in the same commit; after ANY fix, re-run from Step 1).
+**Files:** none (fixes only if an oracle fails; any fix commit names the failed oracle; a fix touching backlog-store.md or tabbed-questions.md hits ALL copies in the same commit; after ANY fix, re-run from Step 1). Paths used below: the GREEN evidence doc is `docs/superpowers/evidence/2026-07-24-build-story-green.md`; the canonical backlog-store copy is decompose-epic's; the tabbed-questions canonical is refine-epic's.
 
-- [ ] **Step 1: Byte-identity** — backlog-store ×5: pairwise vs the decompose-epic canonical → `EXIT:0` ×4. tabbed-questions ×6: pairwise vs the refine-epic copy → `EXIT:0` ×5.
+- [ ] **Step 1: Byte-identity + copy counts** — backlog-store ×5: pairwise vs the decompose-epic canonical → `EXIT:0` ×4. tabbed-questions ×6: pairwise vs the refine-epic copy → `EXIT:0` ×5. Then copy-count oracles (a stray EXTRA copy would hide from both the pairwise diffs and Step 9's filter): `find plugins -name backlog-store.md | wc -l` → `5`; `find plugins -name tabbed-questions.md | wc -l` → `6`.
 - [ ] **Step 2: Validators** — `node scripts/validate-marketplace.mjs` → `OK: marketplace valid - 10 plugin(s)`; `claude plugin validate .` green (no-version warnings acceptable).
 - [ ] **Step 3: Lifecycle touch points** — on EACH of the 5 backlog-store copies: `grep -c "building | built"` → `1`; `grep -c "build-story"` → `4`; `grep -c "#7c4dff"` → `1`; `grep -c "#0e6b45"` → `1`. Tree-wide: `grep -rn "skeleton | ready | parked | superseded" plugins/` → no output (exit 1 = pass).
-- [ ] **Step 4: Hook suite** — `node --test "tests/hooks/*.test.mjs"` → all 28 pass, 0 fail (the quoted-glob form is required; a bare directory argument fails with MODULE_NOT_FOUND on this host).
+- [ ] **Step 4: Hook suite** — `node --test "tests/hooks/*.test.mjs"` → all 29 pass, 0 fail (the quoted-glob form is required; a bare directory argument fails with MODULE_NOT_FOUND on this host).
 - [ ] **Step 5: Closing line** — `grep -c "Proof left to the Meters"`: SKILL.md → `1`; build-write-back.md → `1`; the GREEN evidence doc → ≥1.
 - [ ] **Step 6: Counter-table provenance** — every row of the SKILL.md counter-table carries a `(run 1)`, `(run 2)`, `(runs 1, 2)`, or `(silent — run N)` marker: `grep -c "run 1\|run 2\|runs 1" plugins/build-story/skills/build-story/SKILL.md` ≥ 2, and a read of the table confirms each row's content appears in or faithfully paraphrases the cited evidence doc (this half is reviewer-verified at the final whole-branch review — flag it there explicitly).
 - [ ] **Step 7: Registration greps** — `grep -c "build-story@antioch-skills" README.md` → `2`; `grep -c "no story, no code" README.md` → `1`; `grep -c "select-stack → build-story" README.md` → `2` (the bold suite chain at ~line 38 and the backlog-store section's chain at ~line 129); `grep -c "first of \*\*six\*\*" README.md` → `1`; `grep -c "take each ready story to built" README.md` → `1`; `grep -cF ".build-story/" README.md` → `2`.
