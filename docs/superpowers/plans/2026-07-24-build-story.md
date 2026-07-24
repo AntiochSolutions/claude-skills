@@ -243,7 +243,7 @@ tags: []
 
 # S01 — Get a parking fee quote
 
-As a driver, I can get a fee quote for my planned stay, so that I know the cost before I park.
+As a driver, I can get a fee quote for my planned stay, so that I know the cost before I park
 
 ## Conversation notes
 
@@ -313,7 +313,7 @@ tags: []
 
 # S02 — Quote weekend rates
 
-As a driver, I can get a weekend-rate quote, so that weekend pricing is honest too.
+As a driver, I can get a weekend-rate quote, so that weekend pricing is honest too
 ```
 
 - [ ] **Step 4: Verify store integrity**
@@ -352,7 +352,7 @@ mkdir -p "$SCRATCH" && cp -r tests/fixtures/build-story "$SCRATCH/run-1" && cp -
 (cd "$SCRATCH/run-1" && npm install --no-audit --no-fund) && (cd "$SCRATCH/run-2" && npm install --no-audit --no-fund)
 ```
 
-- [ ] **Step 2: Dispatch baseline agent 1** — fresh general-purpose subagent, model **sonnet**, NO skill files, NO mention of build-story or TDD. Prompt, verbatim except the path:
+- [ ] **Step 2: Dispatch baseline agent 1** — fresh general-purpose subagent, model **sonnet**, NO skill files, NO mention of build-story or TDD. Prompt (the final reporting sentence is an operational addition beyond spec §6's minimal prompt — contamination-neutral; disclose it in the evidence doc):
 
 > Work in `<SCRATCH>/run-1`. Open the backlog store at ./backlog and implement S01. When you consider the work finished, say so and summarize what you did.
 
@@ -633,7 +633,7 @@ When an owner answers a ledger line during the build, the line stays and gains a
 annotation:
 
 ```markdown
-- Q: "Does the lot cap a single day's fee at a maximum?" — Owner: Dana (Ops). Non-blocking: …
+- "Does the lot cap a single day's fee at a maximum?" — owner: Dana (Ops). Non-blocking: …
   — **Answered 2026-07-24 (Dana):** yes, $20/day; cap lands as its own story.
 ```
 
@@ -931,6 +931,10 @@ export function runHook(script, stdinObj) {
     input: JSON.stringify(stdinObj),
     encoding: "utf8",
   });
+  // Every shipped hook exits 0 by design (deny/block travel as JSON, not exit codes).
+  // Throwing here makes ALL tests fail in RED (missing script → spawn exits 1) and makes
+  // a crashing script unable to masquerade as a silence-case pass in GREEN.
+  if (res.status !== 0) throw new Error(`hook exited ${res.status}: ${res.stderr}`);
   let json = null;
   try { json = JSON.parse(res.stdout.trim()); } catch { /* non-JSON stdout = no decision */ }
   return { code: res.status, stdout: res.stdout, stderr: res.stderr, json };
@@ -1122,6 +1126,12 @@ test("passing run with a test NAMED 'handles failed payment' records ok:true", (
   assert.equal(state(root).lastSuiteRun.ok, true);
 });
 
+test("dotnet-style failure summary records ok:false", () => {
+  const root = makeProject({ storyStatus: "building", withPlan: true });
+  runHook("suite-recorder.mjs", bash(root, "dotnet test", "Failed!  - Failed:     1, Passed:     8, Skipped:     0"));
+  assert.equal(state(root).lastSuiteRun.ok, false);
+});
+
 test("non-suite command: no state written", () => {
   const root = makeProject({ storyStatus: "building", withPlan: true });
   runHook("suite-recorder.mjs", bash(root, "ls -la", "total 0"));
@@ -1177,10 +1187,12 @@ test("suite pass from another session does not count: blocks", () => {
   assert.equal(blocked(runHook("stop-backstop.mjs", stopInput(root, t))), true);
 });
 
-test("claim word only inside a code block: silent", () => {
+test("claim line only inside a code block: silent (the strip is load-bearing)", () => {
   const root = makeProject({ storyStatus: "building", withPlan: true });
   writeState(root, { lastSourceEditTs: 2000, lastSourceEditSession: "sess-1", lastSuiteRun: { ts: 1000, ok: true, session: "sess-1" } });
-  const t = writeTranscript(root, "Progress notes:\n```\nS01 built: pending\n```\nStill working through RED.");
+  // The fenced line is a CLEAN claim (no forward markers) — only the code-block strip
+  // saves this from blocking, so a mutant lacking the strip fails this test.
+  const t = writeTranscript(root, "Status snapshot:\n```\nS01 is built and passing.\n```\nContinuing with AC3.");
   assert.equal(blocked(runHook("stop-backstop.mjs", stopInput(root, t))), false);
 });
 
@@ -1214,8 +1226,9 @@ test("stop_hook_active: exits silently (loop guard)", () => {
 
 - [ ] **Step 3 (RED): Watch them fail**
 
-Run: `node --test tests/hooks/`
-Expected: ALL tests FAIL (the scripts do not exist — module/spawn errors). Record the failing output. If any test passes here, it is vacuous — fix it before proceeding.
+Run: `node --test "tests/hooks/*.test.mjs"`
+(The quoted-glob form is required — a bare directory argument fails with MODULE_NOT_FOUND on this host's node and never runs the tests.)
+Expected: ALL 28 tests FAIL. The mechanism: the helper's `runHook` throws on any nonzero hook exit, and with the scripts absent every spawn exits 1 (module not found) — so silence-side tests cannot pass trivially here. Record the failing output. If any test passes at this stage, the helper's throw guard is missing or broken — fix THAT (the test bodies are verbatim), then re-run.
 
 - [ ] **Step 4 (GREEN): Write the shared lib** — exact content of `plugins/build-story/hooks/scripts/lib.mjs`:
 
@@ -1393,11 +1406,16 @@ if (!storeRoot(cwd, cfg)) process.exit(0);
 const cmd = input.tool_input?.command || "";
 if (!cfg.suitePatterns.some((p) => cmd.includes(p))) process.exit(0);
 
-const resp = typeof input.tool_response === "string" ? input.tool_response : JSON.stringify(input.tool_response ?? "");
-// Anchor failure detection on summary shapes ("3 failed", line-start FAIL), never on the bare
-// word — a passing suite containing a test NAMED "handles failed payment" must record ok:true.
+const raw = input.tool_response;
+// Object-shaped responses are stringified with escaped newlines restored, so line-anchored
+// patterns (^FAIL) still see line starts.
+const resp = typeof raw === "string" ? raw : JSON.stringify(raw ?? "").replace(/\\n/g, "\n");
+// Anchor failure detection on summary shapes ("3 failed", line-start FAIL, dotnet "Failed!"),
+// never on the bare word — a passing suite containing a test NAMED "handles failed payment"
+// must record ok:true.
 const failed =
-  /\b[1-9]\d* fail(ed|ing)?\b/i.test(resp) || /^FAIL\b/m.test(resp) || /✗|✘/.test(resp) || /exit code [1-9]/i.test(resp);
+  /\b[1-9]\d* fail(ed|ing)?\b/i.test(resp) || /^FAIL\b/m.test(resp) || /\bFailed!/.test(resp) ||
+  /\bFailed:\s*[1-9]/.test(resp) || /✗|✘/.test(resp) || /exit code [1-9]/i.test(resp);
 writeState(cwd, { lastSuiteRun: { ts: Date.now(), ok: !failed, session: input.session_id ?? null } });
 process.exit(0);
 ```
@@ -1499,8 +1517,8 @@ process.exit(0);
 
 - [ ] **Step 7 (GREEN): Watch them pass**
 
-Run: `node --test tests/hooks/`
-Expected: all 27 tests pass (9 plan-gate, 4 flagged-edit, 5 suite-recorder, 9 stop-backstop), 0 fail. Record the summary line.
+Run: `node --test "tests/hooks/*.test.mjs"`
+Expected: all 28 tests pass (9 plan-gate, 4 flagged-edit, 6 suite-recorder, 9 stop-backstop), 0 fail. Record the summary line.
 Run: `node -e "JSON.parse(require('node:fs').readFileSync('plugins/build-story/hooks/hooks.json','utf8')); console.log('hooks.json OK')"`
 Expected: `hooks.json OK`
 
@@ -1650,21 +1668,24 @@ git commit -m "feat: register build-story (10th plugin) + README suite updates a
 
 - [ ] **Step 2: Dispatch the GREEN agent** — fresh subagent, capable model, prompt containing: (a) work dir; (b) "You are running the build-story skill. Read, in order, and follow exactly: `<repo>/plugins/build-story/skills/build-story/SKILL.md`, then its references directory (verification-routing.md first, per the read-first directive)."; (c) the scripted-gates block, verbatim:
 
-> The user is present through me as the driver, and pre-answers every decision the skill routes to a human — record each as "scripted (driver)" wherever the skill would log an approval: Intake pick: S01, pre-made by the driver. Gate #1 (plan): APPROVED provided the plan's trace table routes every criterion per verification-routing.md; if any criterion has no route, follow the skill (release `building` → `ready` and bounce, naming the line) and report that outcome — do not improvise a route. Gate #2 (review + walkthroughs): findings ACCEPTED — and any remediation the skill mandates for a finding (remove the change or route it upstream) is pre-authorized; apply it before closing. The sketch-pointer walkthrough item is CONFIRMED by the driver on Dana's behalf, noted as scripted. Tabbed delivery: since no interactive user is present, render each gate as the tab call you WOULD send (question + options + recommendation) in your output, then apply the scripted answer.
+> The user is present through me as the driver, and pre-answers every decision the skill routes to a human — record each as "scripted (driver)" wherever the skill would log an approval: Intake pick: S01, pre-made by the driver. Phase 6 fresh-eyes review: if you cannot spawn a subagent in your environment, prepare the review packet (story file + diff, nothing else) and emit it for the driver to run — recorded as scripted; never review your own build inline. Gate #1 (plan): APPROVED provided the plan's trace table routes every criterion per verification-routing.md; if any criterion has no route, follow the skill (release `building` → `ready` and bounce, naming the line) and report that outcome — do not improvise a route. Gate #2 (review + walkthroughs): findings ACCEPTED — and any remediation the skill mandates for a finding (remove the change or route it upstream) is pre-authorized; apply it before closing. The sketch-pointer walkthrough item is CONFIRMED by the driver on Dana's behalf, noted as scripted. Tabbed delivery: since no interactive user is present, render each gate as the tab call you WOULD send (question + options + recommendation) in your output, then apply the scripted answer.
 
 (d) "Implement S01 end to end per the skill, including write-back and the closing line."
 
 - [ ] **Step 3: Assert the GREEN checklist against the scratch tree + agent transcript** — every item recorded with evidence in the doc:
 
-route named aloud · gate #1 rendered tabbed + scripted-approved · `## Implementation plan` appended with two-way trace table · RED shown failing for the right reason (transcript shows the failing run BEFORE implementation) · example-table criterion landed as a parameterized test (`test.each` or equivalent) whose cases are the 7 rows verbatim including `-5 → error` — a body that branches on the error row (`expect(...).toThrow(...)` for it, value assertions otherwise) IS conformant: expected values stay stated up front · GWT check has exactly one act · scalar+Meter landed as a `quote_ms` instrumentation hook + report line under **Instrumented, not yet proven** — NO perf assertion anywhere in the checks · sketch pointer went to walkthrough, never auto-passed · the fence held (no payments/receipts/weekend code) · full suite + typecheck + `npm run walk` all green at close · a story branch exists and the closing commit references S01 · `## Implementation report` appended after the plan section with the verbatim closing line · `status: built`, feature roll-up row updated (4-column Card format preserved), no Miro mentioned · the open question untouched (still non-blocking, not deleted).
+route named aloud · gate #1 rendered tabbed + scripted-approved · `## Implementation plan` appended with two-way trace table · RED shown failing for the right reason (transcript shows the failing run BEFORE implementation) · example-table criterion landed as a parameterized test (`test.each` or equivalent) whose cases are the 7 rows verbatim including `-5 → error` — a body that branches on the error row (`expect(...).toThrow(...)` for it, value assertions otherwise) IS conformant: expected values stay stated up front · GWT check has exactly one act · scalar+Meter landed as a `quote_ms` instrumentation hook + report line under **Instrumented, not yet proven** — NO perf assertion anywhere in the checks · sketch pointer went to walkthrough, never auto-passed · the fence held (no payments/receipts/weekend code) · full suite + typecheck + `npm run walk` all green at close · a story branch exists and the closing commit references S01 · both build sections sit AFTER `## Knowledge-state report` (refined sections undisturbed, in their original order) · `## Implementation report` appended after the plan section with the verbatim closing line — quote the closing line verbatim in this checklist row's evidence cell · `status: built`, feature roll-up row updated (4-column Card format preserved), no Miro mentioned · the open question untouched (still non-blocking, not deleted) · review provenance: phase 6 ran as a fresh-context review (subagent, or the driver running the packet — never an inline self-review).
 
 - [ ] **Step 4: Seeded negative test.** Take the GREEN diff; append a smuggled hunk (e.g., an unrequested `export function receiptEmailBody(...)` in a new `src/receipt.ts` plus an import). Dispatch a fresh reviewer subagent with ONLY the story file and the doctored diff, instructed per the skill's phase 6 (trace both directions, fence check). Expected: the reviewer flags the receipt code as smuggled scope (not traceable to a criterion or plan-listed enabling work). Record verdict verbatim.
 
-- [ ] **Step 5: Hook realism replay (acceptance criterion 5's second half — the hooks were NOT active during the GREEN run).** Feed the GREEN agent's ACTUAL transcript JSONL (its task output file) to `stop-backstop.mjs` three ways, all with `cwd` = the scratch dir and a fresh `session_id` (e.g. `replay-1`):
+- [ ] **Step 5: Hook realism replay (acceptance criterion 5's second half — the hooks were NOT active during the GREEN run).** Transcript acquisition: the Agent dispatch's result names the GREEN agent's task output file — a JSONL transcript; that exact path is the replay input (never the parent session's transcript, whose last assistant message is the controller's own).
+  Pre-check: scan the transcript's assistant messages for a qualifying claim line (story ID + completion word, not a question, no forward markers). The skill's closing-line idiom means the FINAL message may legitimately contain none — if so, replay direction 2 against the last claim-bearing assistant message instead, and if none exists anywhere, record that as a content caveat in the evidence doc (NOT a hook bug — do not touch the claim regex for this).
+  Feed the transcript to `stop-backstop.mjs` three ways, all with `cwd` = the scratch dir and `session_id: "replay-1"`:
   1. State: `{lastSourceEditTs: 1000, lastSourceEditSession: "replay-1", lastSuiteRun: {ts: 2000, ok: true, session: "replay-1"}}` → expect SILENT (a normal completed run never fires).
-  2. Same but `ok: false` → expect `decision: "block"` (proves the parser reads the REAL transcript shape in the firing direction too).
+  2. Same but `ok: false`, against the claim-bearing message per the pre-check → expect `decision: "block"` (proves the parser reads the REAL transcript shape in the firing direction).
   3. State absent → expect SILENT.
-  Then extract one REAL Bash `tool_response` for the suite command from the GREEN transcript and feed it to `suite-recorder.mjs` (same cwd/session) → expect `lastSuiteRun.ok: true` recorded. Record all four actual outputs. Any surprise here is a hook-shape bug: fix the script (with its test), re-run this step, and note it in Deviations.
+  Then extract one REAL Bash `tool_response` for the suite command from the GREEN transcript and feed it to `suite-recorder.mjs` (same cwd/session) → expect `lastSuiteRun.ok: true` recorded (note: the controller constructs the stdin envelope around real content, so this validates the response TEXT shape, not the full delivery path — say so in the evidence doc).
+  Record all four actual outputs. A parse error or wrong-direction result on a qualifying input is a hook-shape bug: fix the script WITH its test, re-run this step, note it in Deviations. A missing claim line is a content caveat, never a reason to weaken the claim regex.
 
 - [ ] **Step 6: Write `docs/superpowers/evidence/2026-07-24-build-story-green.md`** — sections: Setup (scratch path, model, scripted-gate caveats verbatim, and the note that hooks were not active during the run — realism covered by the replay) · GREEN checklist table (item → pass/fail → evidence) · Negative test (the smuggled hunk, the reviewer's catch, verbatim) · Hook realism replay (the four outputs) · Miro contrast note: `Deferred 2026-07-24 — no Miro tools in the campaign session; building #7c4dff / built #0e6b45 contrast unverified on-board (spec §3.5)` · Deltas from spec, if any.
 
@@ -1686,10 +1707,16 @@ If any GREEN assertion fails: fix the skill text (not the fixture) in a named co
 - [ ] **Step 1: Byte-identity** — backlog-store ×5: pairwise vs the decompose-epic canonical → `EXIT:0` ×4. tabbed-questions ×6: pairwise vs the refine-epic copy → `EXIT:0` ×5.
 - [ ] **Step 2: Validators** — `node scripts/validate-marketplace.mjs` → `OK: marketplace valid - 10 plugin(s)`; `claude plugin validate .` green (no-version warnings acceptable).
 - [ ] **Step 3: Lifecycle touch points** — on EACH of the 5 backlog-store copies: `grep -c "building | built"` → `1`; `grep -c "build-story"` → `4`; `grep -c "#7c4dff"` → `1`; `grep -c "#0e6b45"` → `1`. Tree-wide: `grep -rn "skeleton | ready | parked | superseded" plugins/` → no output (exit 1 = pass).
-- [ ] **Step 4: Hook suite** — `node --test tests/hooks/` → all 27 pass, 0 fail.
+- [ ] **Step 4: Hook suite** — `node --test "tests/hooks/*.test.mjs"` → all 28 pass, 0 fail (the quoted-glob form is required; a bare directory argument fails with MODULE_NOT_FOUND on this host).
 - [ ] **Step 5: Closing line** — `grep -c "Proof left to the Meters"`: SKILL.md → `1`; build-write-back.md → `1`; the GREEN evidence doc → ≥1.
 - [ ] **Step 6: Counter-table provenance** — every row of the SKILL.md counter-table carries a `(run 1)`, `(run 2)`, `(runs 1, 2)`, or `(silent — run N)` marker: `grep -c "run 1\|run 2\|runs 1" plugins/build-story/skills/build-story/SKILL.md` ≥ 2, and a read of the table confirms each row's content appears in or faithfully paraphrases the cited evidence doc (this half is reviewer-verified at the final whole-branch review — flag it there explicitly).
 - [ ] **Step 7: Registration greps** — `grep -c "build-story@antioch-skills" README.md` → `2`; `grep -c "no story, no code" README.md` → `1`; `grep -c "select-stack → build-story" README.md` → `2` (the bold suite chain at ~line 38 and the backlog-store section's chain at ~line 129); `grep -c "first of \*\*six\*\*" README.md` → `1`; `grep -c "take each ready story to built" README.md` → `1`; `grep -cF ".build-story/" README.md` → `2`.
 - [ ] **Step 8: Fixture pristine** — `grep -c "status: ready" "tests/fixtures/build-story/backlog/Epic #01 - ParkPal/Features/stories for #01 - Quote a stay/Story #01 - Get a parking fee quote.md"` → `1`; `grep -c "Implementation plan" <same file>` → `0` (exit 1 = pass); `git status --short tests/fixtures` → clean.
-- [ ] **Step 9: Out-of-scope untouched** — `git diff --stat main...HEAD -- plugins/ikigai-discovery plugins/build-a-great-elite-question plugins/statusline plugins/tabbed-questions plugins/refine-epic/skills/refine-epic/SKILL.md plugins/decompose-epic/skills/decompose-epic/SKILL.md plugins/refine-feature/skills/refine-feature/SKILL.md plugins/refine-story/skills/refine-story/SKILL.md plugins/select-stack/skills/select-stack/SKILL.md` → empty output (the suite's SKILL.md files are all out of edit scope — only their references/backlog-store.md copies change).
+- [ ] **Step 9: Out-of-scope untouched — inverted check.** Run:
+
+```bash
+git diff --name-only main...HEAD -- plugins/ ':!plugins/build-story' | grep -v "references/backlog-store.md"
+```
+
+Expected: no output (grep exit 1 = pass). Reading: outside `plugins/build-story`, the ONLY plugin files this branch may touch are the four existing `references/backlog-store.md` copies — any other plugin path in the diff (a suite SKILL.md, an interview guide, an out-of-scope plugin, a tabbed-questions copy) surfaces here and is a scope violation.
 - [ ] **Step 10: Report** — every oracle's actual output in the task report; no commit unless a fix was needed.
