@@ -1493,7 +1493,22 @@ git commit -m "feat: build-story hooks (plan-gate, flagged-edit, suite-recorder,
 
 2. **Suite mentions** — the sentence at ~line 37 (`It's now the first of **five** skills that work a shared backlog: **refine-epic → decompose-epic → refine-feature → refine-story → select-stack**`) becomes **six** and the chain gains ` → build-story`; the install-commands cluster (~line 46) gains a line `/plugin install build-story@antioch-skills`; the workflow sentence (~line 55–58) gains, after the select-stack step: `→ /build-story to take each ready story to built, one at a time`.
 
-3. **Keep-in-sync holder sentence** (~lines 127–129): `The refine-feature, refine-story, and select-stack plugins carry **verbatim copies** of it` gains build-story: `The refine-feature, refine-story, select-stack, and build-story plugins carry **verbatim copies** of it`.
+3. **Keep-in-sync holder sentence + suite chain** (~lines 128–130) — old (exact, three lines):
+
+```markdown
+is the canonical **backlog-store convention** for the epic-shaping suite (refine-epic →
+decompose-epic → refine-feature → refine-story → select-stack). The refine-feature, refine-story,
+and select-stack plugins carry **verbatim copies** of it (plugins install independently) — when the
+```
+
+new:
+
+```markdown
+is the canonical **backlog-store convention** for the epic-shaping suite (refine-epic →
+decompose-epic → refine-feature → refine-story → select-stack → build-story). The refine-feature,
+refine-story, select-stack, and build-story plugins carry **verbatim copies** of it (plugins
+install independently) — when the
+```
 
 4. **The build rule** — new subsection immediately after the workflow/backlog-store section (locate `## ` heading that follows the keep-in-sync paragraph and insert before it):
 
@@ -1576,7 +1591,7 @@ If any GREEN assertion fails: fix the skill text (not the fixture) in a named co
 - [ ] **Step 4: Hook suite** — `node --test tests/hooks/` → all pass, 0 fail.
 - [ ] **Step 5: Closing line** — `grep -c "Proof left to the Meters"`: SKILL.md → `1`; build-write-back.md → `1`; the GREEN evidence doc → ≥1.
 - [ ] **Step 6: Counter-table provenance** — every row of the SKILL.md counter-table carries a `(run 1)`, `(run 2)`, `(runs 1, 2)`, or `(silent — run N)` marker: `grep -c "run 1\|run 2\|runs 1" plugins/build-story/skills/build-story/SKILL.md` ≥ 2, and a read of the table confirms each row's content appears in or faithfully paraphrases the cited evidence doc (this half is reviewer-verified at the final whole-branch review — flag it there explicitly).
-- [ ] **Step 7: Registration greps** — `grep -c "build-story@antioch-skills" README.md` → `2`; `grep -c "no story, no code" README.md` → `1`; README suite chain contains `select-stack → build-story` (grep → 1).
+- [ ] **Step 7: Registration greps** — `grep -c "build-story@antioch-skills" README.md` → `2`; `grep -c "no story, no code" README.md` → `1`; `grep -c "select-stack → build-story" README.md` → `2` (the bold suite chain at ~line 38 and the backlog-store section's chain at ~line 129).
 - [ ] **Step 8: Fixture pristine** — `grep -c "status: ready" "tests/fixtures/build-story/backlog/Epic #01 - ParkPal/Features/stories for #01 - Quote a stay/Story #01 - Get a parking fee quote.md"` → `1`; `grep -c "Implementation plan" <same file>` → `0` (exit 1 = pass); `git status --short tests/fixtures` → clean.
 - [ ] **Step 9: Out-of-scope untouched** — `git diff --stat main...HEAD -- plugins/ikigai-discovery plugins/build-a-great-elite-question plugins/statusline plugins/tabbed-questions plugins/refine-epic/skills/refine-epic/SKILL.md` → empty output.
 - [ ] **Step 10: Report** — every oracle's actual output in the task report; no commit unless a fix was needed.
