@@ -1606,32 +1606,34 @@ Already using `refine-epic`? It's now the first of **six** skills that work a sh
 To get the rest:
 ```
 
-**Install cluster** — old (exact, lines ~46–47):
+**Install cluster** — old (exact, lines ~46–47; the closing fence line is part of the anchor — the bare install line alone also occurs inside the select-stack table row and is NOT unique):
 
-```markdown
+````markdown
 /plugin install select-stack@antioch-skills
 ```
+````
 
-(the line inside the fenced `text` block, immediately before the closing fence) — new:
+new:
 
-```markdown
+````markdown
 /plugin install select-stack@antioch-skills
 /plugin install build-story@antioch-skills
 ```
+````
 
-**Workflow sentence** (~lines 58–59) — old (exact):
+**Workflow sentence** (~lines 58–59) — old (exact; BOTH lines carry a two-space leading indent — they are continuations of the `- The workflow:` bullet, and the indent is part of the anchor):
 
 ```markdown
-one story Card at a time, both picking items straight from that store → `/select-stack` once the
-store exists, to choose the tech stack and generate the build kickoff. Nothing about
+  one story Card at a time, both picking items straight from that store → `/select-stack` once the
+  store exists, to choose the tech stack and generate the build kickoff. Nothing about
 ```
 
-new (the new command is backticked per the sentence's house style; keep `take each ready story to built` unwrapped — it is grepped):
+new (all three lines keep the two-space bullet-continuation indent; the new command is backticked per the sentence's house style; keep `take each ready story to built` unwrapped — it is grepped):
 
 ```markdown
-one story Card at a time, both picking items straight from that store → `/select-stack` once the
-store exists, to choose the tech stack and generate the build kickoff → `/build-story` to
-take each ready story to built, one at a time. Nothing about
+  one story Card at a time, both picking items straight from that store → `/select-stack` once the
+  store exists, to choose the tech stack and generate the build kickoff → `/build-story` to
+  take each ready story to built, one at a time. Nothing about
 ```
 
 3. **Keep-in-sync holder sentence + suite chain** (~lines 128–130) — old (exact, three lines):
@@ -1713,7 +1715,7 @@ git commit -m "feat: register build-story (10th plugin) + README suite updates a
 
 - [ ] **Step 3: Assert the GREEN checklist against the scratch tree + agent transcript** — every item recorded with evidence in the doc:
 
-route named aloud · gate #1 rendered tabbed + scripted-approved · `## Implementation plan` appended with two-way trace table · RED shown failing for the right reason (transcript shows the failing run BEFORE implementation) · example-table criterion landed as a parameterized test (`test.each` or equivalent) whose cases are the 7 rows verbatim including `-5 → error` — a body that branches on the error row (`expect(...).toThrow(...)` for it, value assertions otherwise) IS conformant: expected values stay stated up front · GWT check has exactly one act · scalar+Meter landed as a `quote_ms` instrumentation hook + report line under **Instrumented, not yet proven** — NO perf assertion anywhere in the checks · sketch pointer went to walkthrough, never auto-passed · the fence held (no payments/receipts/weekend code) · full suite + typecheck + `npm run walk` all green at close · a story branch exists and the closing commit references S01 · both build sections sit AFTER `## Knowledge-state report` (refined sections undisturbed, in their original order) · `## Implementation report` appended after the plan section with the verbatim closing line — quote the closing line verbatim in this checklist row's evidence cell · `status: built`, feature roll-up row updated (4-column Card format preserved), no Miro mentioned · the open question untouched (still non-blocking, not deleted) · review provenance: phase 6 ran as a fresh-context review (subagent, or the driver running the packet — never an inline self-review).
+route named aloud · the intake claim ran: the transcript/tree shows `status: building` (and the roll-up refresh) BEFORE the plan gate — the flip is the claim mechanism, not a formality · gate #1 rendered tabbed + scripted-approved · `## Implementation plan` appended with two-way trace table · RED shown failing for the right reason (transcript shows the failing run BEFORE implementation) · example-table criterion landed as a parameterized test (`test.each` or equivalent) whose cases are the 7 rows verbatim including `-5 → error` — a body that branches on the error row (`expect(...).toThrow(...)` for it, value assertions otherwise) IS conformant: expected values stay stated up front · GWT check has exactly one act · scalar+Meter landed as a `quote_ms` instrumentation hook + report line under **Instrumented, not yet proven** — NO perf assertion anywhere in the checks · sketch pointer went to walkthrough, never auto-passed · the fence held (no payments/receipts/weekend code) · full suite + typecheck + `npm run walk` all green at close · a story branch exists and the closing commit references S01 · both build sections sit AFTER `## Knowledge-state report` (refined sections undisturbed, in their original order) · `## Implementation report` appended after the plan section with the verbatim closing line — quote the closing line verbatim in this checklist row's evidence cell · `status: built`, feature roll-up row updated (4-column Card format preserved), no Miro mentioned · the open question untouched (still non-blocking, not deleted) · review provenance: phase 6 ran as a fresh-context review (subagent, or the driver running the packet — never an inline self-review).
 
 - [ ] **Step 4: Seeded negative test.** Take the GREEN diff; append a smuggled hunk (e.g., an unrequested `export function receiptEmailBody(...)` in a new `src/receipt.ts` plus an import). Dispatch a fresh reviewer subagent with ONLY the story file and the doctored diff, instructed per the skill's phase 6 (trace both directions, fence check). Expected: the reviewer flags the receipt code as smuggled scope (not traceable to a criterion or plan-listed enabling work). Record verdict verbatim.
 
