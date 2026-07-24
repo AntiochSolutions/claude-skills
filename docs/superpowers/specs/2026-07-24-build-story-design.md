@@ -1,6 +1,6 @@
 # build-story capability — design
 
-**Status:** draft — pending Dan's review, 2026-07-24
+**Status:** approved 2026-07-24
 **Source request:**
 `C:\Users\dan\source\repos\thefrustratedbuilder.com\Documents\antioch-skills-build-story-prompt.md`
 (the authoritative requirements prompt; its verbatim artifacts — the closing line, report
