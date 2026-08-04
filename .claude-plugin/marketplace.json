@@ -13,40 +13,10 @@
       "keywords": ["ikigai", "purpose", "coaching", "career", "self-discovery"]
     },
     {
-      "name": "refine-epic",
-      "source": "./plugins/refine-epic",
-      "description": "Interactively shape a well-formed Agile Epic through an SME interview — a falsifiable Benefit Hypothesis, measurable Business Outcomes, predictive Leading Indicators, quantified NFRs, and Out-of-Scope — then hand back a structured result and a markdown brief for any backlog tool.",
-      "keywords": ["epic", "agile", "safe", "backlog-refinement", "benefit-hypothesis", "business-outcomes", "leading-indicators", "product-management", "lean-startup", "mom-test"]
-    },
-    {
       "name": "build-a-great-elite-question",
       "source": "./plugins/build-a-great-elite-question",
       "description": "Interviews you to turn a real founder situation into a sharp, well-diagnosed question for Dan Martell's Elite group, framed as \"I'm Here\" / \"I want to be there\" / \"My bottleneck is...\", and produces a one-page prep sheet.",
       "keywords": ["dan-martell", "elite", "coaching", "founder", "saas", "question-prep", "hot-seat"]
-    },
-    {
-      "name": "decompose-epic",
-      "source": "./plugins/decompose-epic",
-      "description": "Decomposes a refined Agile Epic into skeleton Features and Stories through an SME interview — Mom-Test behavior mining, KJ affinity clustering, per-feature benefit hypotheses, a two-way outcome coverage gate, and an MVP partition — rendered as a feature map for any backlog tool, or materialized as a backlog store of markdown files (optional Miro Card story-map mirror). Optional Miro card-wall mode. Pairs with refine-epic — run that first on a raw epic.",
-      "keywords": ["epic", "features", "user-stories", "decomposition", "story-mapping", "affinity-mapping", "kj-method", "product-management", "agile", "mvp", "sme-interview", "miro"]
-    },
-    {
-      "name": "refine-feature",
-      "source": "./plugins/refine-feature",
-      "description": "Takes one skeleton feature from the backlog store to build-ready through an SME interview — four-risks triage (fast lane / full pass / discovery-brief exit), a behavior-change hypothesis, a quantified success signal, dual-test feature acceptance criteria, critical-few NFRs, and shallow story-set curation with a nominated first slice. Writes back to the backlog store in place (optional Miro Card mirror). Pairs with decompose-epic — run that first to create the store.",
-      "keywords": ["feature", "feature-refinement", "backlog-refinement", "acceptance-criteria", "benefit-hypothesis", "success-signal", "nfr", "story-splitting", "discovery", "product-management", "agile", "sme-interview", "backlog-store"]
-    },
-    {
-      "name": "refine-story",
-      "source": "./plugins/refine-story",
-      "description": "Takes one story Card from the backlog store to ready-for-sprint-planning through an SME interview — a real happy path, Example-Mapping rule/example mining with Break-the-Model refutation, an adaptive Confirmation (checklist by default; example table or Given-When-Then only when the cases demand it), INVEST E/S/T engines with honest splitting, and the Demo-and-Read-Back gate. The Card line never fattens. Writes back to the backlog store in place (optional Miro Card mirror). Pairs with refine-feature — run that on the feature first.",
-      "keywords": ["story", "user-stories", "story-refinement", "backlog-refinement", "acceptance-criteria", "example-mapping", "given-when-then", "invest", "story-splitting", "product-management", "agile", "sme-interview", "backlog-store"]
-    },
-    {
-      "name": "select-stack",
-      "source": "./plugins/select-stack",
-      "description": "Interviews a non-technical founder to select the tech stack a Claude Code instance will build — reads the backlog store to derive functional demands (every signal cited to a feature or story), asks only founder-level constraint questions (existing accounts, budget brackets, honest scale, operations, compliance), and applies a researched house stack with graduated swap rules and an Azure escalation tier. Writes STACK.md (plain-language rationale + agent-actionable build rules) and KICKOFF.md (a staged, TDD-first build bootstrap) into the epic folder. Pairs with decompose-epic — run that first to create the store.",
-      "keywords": ["tech-stack", "stack-selection", "architecture", "founder", "web-app", "nextjs", "azure", "api-first", "tdd", "backlog-store", "kickoff-prompt", "sme-interview", "product-management", "agile"]
     },
     {
       "name": "statusline",
@@ -57,14 +27,8 @@
     {
       "name": "tabbed-questions",
       "source": "./plugins/tabbed-questions",
-      "description": "Makes Claude ask clarifying questions as clickable AskUserQuestion tabs instead of prose question walls — one tab per question, 2–4 opinionated options with consequence-bearing descriptions, recommendation first. Built and tested RED/GREEN; the epic-shaping suite's interviews deliver their decision questions this way.",
+      "description": "Makes Claude ask clarifying questions as clickable AskUserQuestion tabs instead of prose question walls — one tab per question, 2–4 opinionated options with consequence-bearing descriptions, recommendation first. Built and tested RED/GREEN.",
       "keywords": ["ask-user-question", "clarifying-questions", "tabbed-questions", "ux", "interview", "tool-use", "claude-code"]
-    },
-    {
-      "name": "build-story",
-      "source": "./plugins/build-story",
-      "description": "Builds one ready story from the backlog store — plan, RED, GREEN, still-walking, fresh-eyes review — in the codebase the epic's stack decision governs, then writes the knowledge back: an Implementation plan and a state-of-proof Implementation report, never a done-certificate. Ships plan-before-code, flagged-edit, and completion-claim detection hooks. Pairs with refine-story — run that first to take the story to ready.",
-      "keywords": ["story", "build", "tdd", "red-green", "walking-skeleton", "verification", "backlog-store", "hooks", "implementation", "agile", "fresh-eyes-review"]
     }
   ]
 }
