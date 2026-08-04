@@ -1,0 +1,12 @@
+{
+  "name": "statusline",
+  "description": "Installs a two-line Claude Code status line: model + reasoning effort, directory, git branch, session name, a color-coded context-usage bar, session cost and duration, and 5-hour/7-day rate-limit usage. After installing the plugin, say \"set up the status line\" and the bundled skill configures it for your platform (Windows, macOS, or Linux) and verifies it works. Requires Python 3.",
+  "author": {
+    "name": "Antioch Solutions",
+    "email": "meet@antiochsolutions.com"
+  },
+  "homepage": "https://www.antiochsolutions.com/skills",
+  "repository": "https://github.com/AntiochSolutions/claude-skills",
+  "license": "MIT",
+  "keywords": ["statusline", "status-line", "status-bar", "prompt", "context-usage", "rate-limits", "session-cost", "git-branch", "claude-code", "terminal"]
+}

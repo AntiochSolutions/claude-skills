@@ -1,0 +1,34 @@
+{
+  "name": "antioch-skills",
+  "owner": {
+    "name": "Antioch Solutions",
+    "email": "meet@antiochsolutions.com"
+  },
+  "description": "Practical Claude Code skills from Antioch Solutions — install only the ones you need.",
+  "plugins": [
+    {
+      "name": "ikigai-discovery",
+      "source": "./plugins/ikigai-discovery",
+      "description": "Guides you through a rigorous Ikigai interview to find your reason for being, then produces a polished report.",
+      "keywords": ["ikigai", "purpose", "coaching", "career", "self-discovery"]
+    },
+    {
+      "name": "build-a-great-elite-question",
+      "source": "./plugins/build-a-great-elite-question",
+      "description": "Interviews you to turn a real founder situation into a sharp, well-diagnosed question for Dan Martell's Elite group, framed as \"I'm Here\" / \"I want to be there\" / \"My bottleneck is...\", and produces a one-page prep sheet.",
+      "keywords": ["dan-martell", "elite", "coaching", "founder", "saas", "question-prep", "hot-seat"]
+    },
+    {
+      "name": "statusline",
+      "source": "./plugins/statusline",
+      "description": "Installs a two-line Claude Code status line — model + reasoning effort, directory, git branch, session name, a color-coded context-usage bar, session cost and duration, and 5-hour/7-day rate-limit usage. Install the plugin, then say \"set up the status line\" — the skill configures it for your platform (Windows, macOS, or Linux) and verifies it works. Requires Python 3.",
+      "keywords": ["statusline", "status-line", "status-bar", "prompt", "context-usage", "rate-limits", "session-cost", "git-branch", "claude-code", "terminal"]
+    },
+    {
+      "name": "tabbed-questions",
+      "source": "./plugins/tabbed-questions",
+      "description": "Makes Claude ask clarifying questions as clickable AskUserQuestion tabs instead of prose question walls — one tab per question, 2–4 opinionated options with consequence-bearing descriptions, recommendation first. Built and tested RED/GREEN.",
+      "keywords": ["ask-user-question", "clarifying-questions", "tabbed-questions", "ux", "interview", "tool-use", "claude-code"]
+    }
+  ]
+}
