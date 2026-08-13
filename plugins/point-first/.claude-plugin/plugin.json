@@ -1,0 +1,12 @@
+{
+  "name": "point-first",
+  "description": "Six always-on writing rules that make every Claude reply readable once — injected each session by a SessionStart hook — plus a restate protocol: any sign of reader confusion triggers a rewrite of the previous reply instead of a longer explanation. /restate is the explicit path to the same rewrite.",
+  "author": {
+    "name": "Antioch Solutions",
+    "email": "meet@antiochsolutions.com"
+  },
+  "homepage": "https://www.antiochsolutions.com/skills",
+  "repository": "https://github.com/AntiochSolutions/claude-skills",
+  "license": "MIT",
+  "keywords": ["writing", "clarity", "concise", "point-first", "plain-language", "restate", "communication", "claude-code"]
+}
