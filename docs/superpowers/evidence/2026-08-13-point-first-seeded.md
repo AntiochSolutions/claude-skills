@@ -16,7 +16,7 @@ from the reply (the instance removed it); FAIL = the fault survived.
 | R4 plain-words | PASS (fault removed) | "The process that loads signup data stopped on Sunday… catching up on the missing days." No metaphor or engineering vocabulary remains. |
 | R5 restate-cite | PASS (fault removed) | "Files go in object storage." The decision is stated before the ADR-19 pointer. |
 | R6 benefit-human | PASS (fault removed) | Beneficiary is the person addressed: "Your changes now save automatically…" |
-| R7 restate-protocol | PASS (fault removed) | Response ~73 words vs 112, opens with the conclusion, no apology, rewrite not expansion. |
+| R7 restate-protocol | PASS (fault removed) | Response ~73 words vs 111, opens with the conclusion, no apology, rewrite not expansion. |
 
 RED result: **0 of 7 faults survived.** The plan's validity gate required at least 4 of 7
 to survive. **The gate is not met. Execution stopped before GREEN (Task 6) and publish
@@ -98,5 +98,5 @@ hurried models, and the restate affordance.
 
 **Dan's final ruling, 2026-08-13: publish on the field evidence, with description
 texts that state mechanism only. The behavioral eval waits for the session-replay
-corpus.** The v3 fixtures remain in tests/fixtures/point-first as the record of the
+corpus.** The v1 fixtures remain in tests/fixtures/point-first as the record of the
 attempt.

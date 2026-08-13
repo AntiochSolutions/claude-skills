@@ -1,6 +1,6 @@
 {
   "name": "point-first",
-  "description": "Injects six writing rules at the start of every session — lead with the point, one idea per sentence, options as lists, plain words, restate before citing, benefits land with a person — and adds /restate, a command that rewrites the previous reply shorter and plainer. Distilled from a diagnosed field failure in real customer sessions.",
+  "description": "Injects six writing rules at the start of every session: lead with the point, one idea per sentence, options as lists, plain words, restate before citing, benefits land with a person. Adds /point-first:restate, which rewrites the previous reply shorter and plainer. Distilled from a diagnosed field failure.",
   "author": {
     "name": "Antioch Solutions",
     "email": "meet@antiochsolutions.com"

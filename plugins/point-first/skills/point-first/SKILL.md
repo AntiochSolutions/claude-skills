@@ -85,7 +85,7 @@ Any signal that the reader is lost means the previous reply failed. Respond with
 - **Action:** rewrite the previous reply under the six rules. Shorter, point first, plainer words.
 - **Never:** an apology, an account of what went wrong, or a longer version.
 
-The /restate command performs exactly this rewrite. Treat both paths identically.
+The /point-first:restate command performs exactly this rewrite. Treat both paths identically.
 
 ## Red flags
 

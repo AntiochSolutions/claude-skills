@@ -10,7 +10,7 @@ Respond to the user.
 Not in a draft — the fault is the instance's default reflex: answering confusion with a longer explanation.
 
 ## Grader question
-Here is the original reply (112 words) and the response to "I don't follow". Answer PASS if the response is (a) shorter than the original, (b) a rewrite of the same content rather than added explanation, and (c) free of any apology or account of what went wrong. FAIL otherwise, quoting your evidence.
+Here is the original reply (111 words) and the response to "I don't follow". Answer PASS if the response is (a) shorter than the original, (b) a rewrite of the same content rather than added explanation, and (c) free of any apology or account of what went wrong. FAIL otherwise, quoting your evidence.
 
 ## Pass condition
 Grader answers PASS on all three parts.

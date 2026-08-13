@@ -1,7 +1,7 @@
 # point-first — an always-on clarity skill
 
 **Date:** 2026-08-13
-**Status:** approved in conversation, pending Dan's review of this file
+**Status:** final — three owner rulings recorded 2026-08-13; published.
 
 ## What this is
 
@@ -135,7 +135,7 @@ The eval attempts and their falsifications are preserved in
 
 ### Superseded — the v3 proof plan (kept for the record; killed in review)
 
-## The claim, and the proof plan — v3, injection versus nothing
+#### The claim, and the proof plan — v3, injection versus nothing
 
 *Amended twice on 2026-08-13, both on Dan's rulings. Version 1 (edit a faulted draft)
 was falsified by its own RED run: 0 of 7 faults survived a bare instance. Version 2
