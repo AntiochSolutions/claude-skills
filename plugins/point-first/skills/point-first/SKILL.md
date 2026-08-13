@@ -1,6 +1,6 @@
 ---
 name: point-first
-description: Use when starting any conversation and before sending any reply — six rules that make a reply readable once, and a rewrite protocol for any sign of reader confusion.
+description: Use when starting any conversation and before sending any reply — six writing rules and a rewrite protocol for any sign of reader confusion.
 ---
 
 # Point First

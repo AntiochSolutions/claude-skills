@@ -1,6 +1,6 @@
 {
   "name": "point-first",
-  "description": "Six always-on writing rules that make every Claude reply readable once — injected each session by a SessionStart hook — plus a restate protocol: any sign of reader confusion triggers a rewrite of the previous reply instead of a longer explanation. /restate is the explicit path to the same rewrite.",
+  "description": "Injects six writing rules at the start of every session — lead with the point, one idea per sentence, options as lists, plain words, restate before citing, benefits land with a person — and adds /restate, a command that rewrites the previous reply shorter and plainer. Distilled from a diagnosed field failure in real customer sessions.",
   "author": {
     "name": "Antioch Solutions",
     "email": "meet@antiochsolutions.com"
