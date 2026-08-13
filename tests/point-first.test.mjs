@@ -24,3 +24,14 @@ test("hooks.json wires SessionStart to inject.mjs", () => {
   assert.match(cmds, /inject\.mjs/);
   assert.match(cmds, /CLAUDE_PLUGIN_ROOT/);
 });
+
+test("all 7 fixtures carry the four required sections", () => {
+  const dir = `${ROOT}/tests/fixtures/point-first`;
+  const files = ["R1-point-first.md","R2-one-idea.md","R3-lists.md","R4-plain-words.md","R5-restate-cite.md","R6-benefit-human.md","R7-restate-protocol.md"];
+  for (const f of files) {
+    const text = readFileSync(`${dir}/${f}`, "utf8");
+    for (const h of ["## Scenario","## Seeded fault","## Grader question","## Pass condition"]) {
+      assert.ok(text.includes(h), `${f} missing ${h}`);
+    }
+  }
+});
