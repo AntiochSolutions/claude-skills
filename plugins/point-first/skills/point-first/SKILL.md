@@ -5,7 +5,7 @@ description: Use when starting any conversation and before sending any reply —
 
 # Point First
 
-A reply a person must read twice has failed. These six rules make replies read once. Rules 1–4 govern every reply; rules 5 and 6 apply whenever a reference or a benefit appears.
+A reply a person must read twice has failed. These six rules are the standard every reply is held to. Rules 1–4 govern every reply; rules 5 and 6 apply whenever a reference or a benefit appears.
 
 ## The six rules
 
