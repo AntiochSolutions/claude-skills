@@ -696,3 +696,67 @@ git add docs/writing-rules.md
 git commit -m "docs(writing-rules): the copies ledger gains the point-first plugin"
 git push
 ```
+
+---
+
+## Final amendment — 2026-08-13, publish on field evidence (Dan's ruling)
+
+Three eval designs were attempted and none survived. v1 (edit a faulted draft) was
+falsified by its own RED run: 0 of 7 faults survived a bare instance. v2 (composition
+under load) and v3 (injection versus nothing) each drew two DEFICIENT verdicts in
+fresh-context design review before running. The reviews converged on a structural
+pincer, recorded in the evidence file: hand the instance the content and the test is
+trivially easy; let it compose and the two arms stop being content-matched, so
+"clearer" is unmeasurable; and rules that ship with worked examples make
+template-matching indistinguishable from rule-following on example-adjacent topics.
+The field condition (long, loaded sessions) is the one no in-session eval reproduces.
+
+Dan ruled: publish on the field evidence, with description texts that state mechanism
+only — no universal outcome claims. The behavioral eval moves to the session-replay
+corpus already on the backlogbuilder telemetry backlog. Tasks 5–6 are closed
+unexecuted. Task 4's fixtures remain in the repo as the record of the attempt. Tasks
+A2 and 7f below replace Task 7; Task 8 is unchanged.
+
+### Task A2: Honest description texts
+
+**Files:**
+- Modify: `plugins/point-first/skills/point-first/SKILL.md` (frontmatter description only)
+- Modify: `plugins/point-first/.claude-plugin/plugin.json` (description only)
+
+New SKILL.md description, exactly:
+"Use when starting any conversation and before sending any reply — six writing rules and a rewrite protocol for any sign of reader confusion."
+
+New plugin.json description, exactly:
+"Injects six writing rules at the start of every session — lead with the point, one idea per sentence, options as lists, plain words, restate before citing, benefits land with a person — and adds /restate, a command that rewrites the previous reply shorter and plainer. Distilled from a diagnosed field failure in real customer sessions."
+
+No other line in either file changes. Run node --test tests/point-first.test.mjs (the
+hook test must still pass — the description is frontmatter, which inject.mjs strips).
+Commit: "feat(point-first): descriptions state mechanism, not outcome — per Dan's ruling"
+and push.
+
+### Task 7f: Publish — marketplace entry and README row, honest texts
+
+**Files:**
+- Modify: `.claude-plugin/marketplace.json` (append one entry to `plugins`)
+- Modify: `README.md` (append one row to the Available skills table)
+
+Marketplace entry, exactly:
+
+```json
+{
+  "name": "point-first",
+  "source": "./plugins/point-first",
+  "description": "Injects six writing rules at the start of every session — lead with the point, one idea per sentence, options as lists, plain words, restate before citing, benefits land with a person — and adds /restate, a command that rewrites the previous reply shorter and plainer. Distilled from a diagnosed field failure in real customer sessions.",
+  "keywords": ["writing", "clarity", "concise", "point-first", "plain-language", "restate", "communication", "claude-code"]
+}
+```
+
+README row, exactly:
+
+```markdown
+| [`point-first`](plugins/point-first) | `/plugin install point-first@antioch-skills` | Injects six writing rules at the start of every session and adds `/restate`, which rewrites the previous reply shorter and plainer. Distilled from a diagnosed field failure; a behavioral eval awaits a session-replay corpus. |
+```
+
+Run: `node scripts/validate-marketplace.mjs && node --test tests/point-first.test.mjs`
+Expected: `ok  point-first - 1 skill(s)`; OK line; 3 tests pass.
+Commit: "feat(point-first): publish — field-evidence basis, mechanism-only texts" and push.

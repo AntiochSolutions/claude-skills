@@ -100,18 +100,85 @@ wins" section gains one line naming this plugin (a follow-up commit there, on ma
 skill carries a one-line provenance note pointing back. If the rules themselves change,
 they change there first.
 
-## Proof plan — seeded-fault eval, RED then GREEN
+## The claim, and the publishing standard — final, 2026-08-13
 
-The marketplace entry does not land until this passes.
+**The plugin publishes on its field evidence, and every shipped text states mechanism,
+not outcome.** Dan's ruling after three eval designs failed — one by its own run, two in
+fresh-context design review (four DEFICIENT verdicts). The reviews established a
+structural pincer no cheap synthetic eval escapes:
 
-1. Write fixture replies: clean answers to realistic prompts, then seed each with one
-   fault per rule — six faulted fixtures minimum, stored in `tests/fixtures/point-first/`.
-2. **RED:** a fresh instance without the skill, asked to respond in each scenario, leaves
-   the faults (or produces equivalents). Record the transcript.
-3. **GREEN:** a fresh instance with the skill injected catches and rewrites every seeded
-   fault. Record the transcript.
-4. The restate protocol gets its own fixture: a confused user turn, where GREEN is a
-   rewrite that is shorter than the original and RED is an elaboration.
+- Hand the instance the content and the test is trivially easy — a bare frontier
+  instance edits a faulted draft clean (measured: RED v1, 0 of 7 faults survived).
+- Let the instance compose and the two arms stop being content-matched — a
+  rules-injected reply that drops the reasons grades as perfectly clear while serving
+  the reader worse, so "clearer" is not what the instrument measures.
+- Rules that ship with worked examples make template-matching indistinguishable from
+  rule-following on any example-adjacent topic.
+- The condition the field complaints came from — long, loaded sessions — is the one
+  condition no in-session eval reproduces.
+
+What publishing rests on instead: three customers raised the same complaint about
+Claude's output in Antioch products; the originating diagnosis found seven faults in one
+seventy-eight-word paragraph; the rules have run as live global instructions since
+2026-08-11. What the texts may say: what the plugin does (injects the rules each
+session; /restate rewrites the previous reply shorter and plainer) and where the rules
+came from. No universal outcome sentence.
+
+**The behavioral eval is deferred, not abandoned.** The honest instrument is the
+session-replay corpus already on the backlogbuilder telemetry backlog: real loaded-
+session replies, re-run with and without injection, graded on content-matched pairs.
+When that corpus exists, this section gains its successor.
+
+The eval attempts and their falsifications are preserved in
+`docs/superpowers/evidence/2026-08-13-point-first-seeded.md` and in the fixtures under
+`tests/fixtures/point-first/` — kept as the record of why this standard is what it is.
+
+### Superseded — the v3 proof plan (kept for the record; killed in review)
+
+## The claim, and the proof plan — v3, injection versus nothing
+
+*Amended twice on 2026-08-13, both on Dan's rulings. Version 1 (edit a faulted draft)
+was falsified by its own RED run: 0 of 7 faults survived a bare instance. Version 2
+(composition under load) was falsified in design review before it ran: its six scenarios
+were built from the skill's own worked examples, so the injected rules contained each
+fixture's answer; its thresholds, guards and effort condition also failed review. Both
+falsifications are recorded in `docs/superpowers/evidence/2026-08-13-point-first-seeded.md`
+and the plan's gate ledger.*
+
+**The claim the plugin ships is the deployment claim: injecting these rules at session
+start produces clearer replies than injecting nothing.** No shipped text claims every
+reply becomes readable once — seven fixtures cannot support a universal sentence, and
+the install decision is the injection decision anyway. All description texts (SKILL.md
+frontmatter, plugin.json, marketplace entry, README row) carry the deployment claim.
+
+The marketplace entry does not land until this passes:
+
+1. **Six rule scenarios plus one restate scenario, topics disjoint from SKILL.md.** No
+   scenario shares subject matter with any SKILL.md example. No scenario states its own
+   pass condition (no "for that reader", no "who has not read X"). Option-set notes
+   arrive as prose, not bullets. Three additional held-out scenarios are written and
+   sealed — used only to detect overfit if the skill text is ever sharpened.
+2. **Matched arms, paired runs.** Each rule scenario runs twice per arm (RED bare,
+   GREEN = SKILL.md body injected as the hook would), same low reasoning effort, same
+   self-contained prompt, same no-tools line. The restate scenario is a separate claim:
+   it tests the protocol, runs GREEN-only, twice.
+3. **Guards, all mechanical:** the runner never grades a null, empty, or non-answer
+   reply (graders can return NOT_AN_ANSWER; such runs retry once, then count as
+   invalid, never as fault-absent); every instance transcript must show low effort
+   actually applied or its run is invalid; the post-run audit greps instance
+   transcripts for tool use and rules text.
+4. **RED validity (instrument, not verdict):** at least 4 of 6 rule scenarios show
+   their fault in at least one valid RED run. Below that, the run stops and the
+   finding goes to Dan as an instrument result — it is per-rule information, not proof
+   the skill lacks justification.
+5. **GREEN publish gate:** every valid GREEN run of every rule scenario is fault-free,
+   at least 10 of 12 GREEN runs are valid, and every scenario that faulted in RED is
+   clean in GREEN. The restate scenario passes both its runs (shorter rewrite, no
+   apology, no expansion).
+6. **Sharpening is bounded:** at most two rounds, touching only rule text and examples;
+   no word appearing in any fixture scenario may be introduced into SKILL.md; RED
+   re-runs for any rule whose text changed; the three held-out scenarios must stay
+   clean after any sharpening, or the sharpening is reverted and the failure reported.
 
 Evidence lands in `docs/superpowers/evidence/` with the date, matching house practice.
 
@@ -130,3 +197,10 @@ Evidence lands in `docs/superpowers/evidence/` with the date, matching house pra
 - Always-on only, via SessionStart hook; no behavior gated on the model choosing to load.
 - Restate: both layers — natural signals and /restate.
 - Home: this repository, as plugin point-first.
+- After eval v1's falsification: redesign to composition under load, rerun (2026-08-13).
+- After eval v2's design review (two DEFICIENT verdicts): the plugin ships the
+  deployment claim — injection beats no injection — and the proof standard is the v3
+  eval, re-gated before build (2026-08-13).
+- After eval v3's design review (two more DEFICIENT verdicts; the synthetic-eval pincer
+  established): publish on field evidence with mechanism-only texts; the behavioral
+  eval moves to the session-replay corpus (2026-08-13, final).
