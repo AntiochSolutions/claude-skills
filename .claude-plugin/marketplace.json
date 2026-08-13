@@ -23,6 +23,12 @@
       "source": "./plugins/tabbed-questions",
       "description": "Makes Claude ask clarifying questions as clickable AskUserQuestion tabs instead of prose question walls — one tab per question, 2–4 opinionated options with consequence-bearing descriptions, recommendation first. Built and tested RED/GREEN.",
       "keywords": ["ask-user-question", "clarifying-questions", "tabbed-questions", "ux", "interview", "tool-use", "claude-code"]
+    },
+    {
+      "name": "point-first",
+      "source": "./plugins/point-first",
+      "description": "Injects six writing rules at the start of every session — lead with the point, one idea per sentence, options as lists, plain words, restate before citing, benefits land with a person — and adds /restate, a command that rewrites the previous reply shorter and plainer. Distilled from a diagnosed field failure in real customer sessions.",
+      "keywords": ["writing", "clarity", "concise", "point-first", "plain-language", "restate", "communication", "claude-code"]
     }
   ]
 }
