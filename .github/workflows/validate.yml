@@ -16,4 +16,4 @@ jobs:
       - run: node scripts/validate-marketplace.mjs
       # the plugin tests existed before CI ran them; a broken SessionStart hook
       # shipped green until 2026-08-14
-      - run: node --test "tests/*.test.mjs"
+      - run: node --test tests/*.test.mjs
