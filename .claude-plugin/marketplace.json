@@ -29,6 +29,12 @@
       "source": "./plugins/point-first",
       "description": "Injects six writing rules at the start of every session: lead with the point, one idea per sentence, options as lists, plain words, restate before citing, benefits land with a person. Adds /point-first:restate, which rewrites the previous reply shorter and plainer. Distilled from a diagnosed field failure.",
       "keywords": ["writing", "clarity", "concise", "point-first", "plain-language", "restate", "communication", "claude-code"]
+    },
+    {
+      "name": "save-context",
+      "source": "./plugins/save-context",
+      "description": "Writes the current session's working state to a handoff file in the project's auto-memory before you /clear, indexes it in MEMORY.md so the next session loads it, and prints a one-line restore prompt to paste after clearing. It saves; you run /clear.",
+      "keywords": ["context", "handoff", "session", "clear", "memory", "resume", "claude-code"]
     }
   ]
 }
